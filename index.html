@@ -94,7 +94,7 @@
             cursor: pointer; font-weight: bold; font-size: 11px;
         }
 
-        /* JADWAL BANK STYLE - FIXED */
+        /* JADWAL BANK STYLE - FIX KE SAMPING */
         .bank-container { 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -120,11 +120,11 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 12px;
-            padding: 5px;
+            padding: 8px;
         }
         .bank-logo { 
-            max-width: 90%;
-            max-height: 80%;
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
         }
         .divider { width: 100%; height: 2px; background: #00d4ff; margin-bottom: 12px; }
@@ -271,7 +271,8 @@
         document.getElementById('menu-bank').classList.add('active-menu');
 
         const grid = document.getElementById('main-grid');
-        grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(250px, 1fr))";
+        // PENTING: Gunakan display block untuk grid luar, isi dalamnya pakai bank-container
+        grid.style.display = "block"; 
 
         const now = new Date();
         const hr = now.getHours();
@@ -280,21 +281,21 @@
         const day = now.getDay();
 
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
-            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
-            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
-            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
-            { name: "CIMB NIAGA", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
-            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
-            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" },
-            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gojek_logo_2019.svg/1200px-Gojek_logo_2019.svg.png" },
-            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/1200px-LinkAja.svg.png" },
-            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" },
-            { name: "USDT", schedule: "Online 24 Jam (Crypto)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Tether_Logo.svg/1200px-Tether_Logo.svg.png" }
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/512px-Bank_Central_Asia.svg.png" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/512px-BNI_logo.svg.png" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/512px-BRI_Logo.svg.png" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/512px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/512px-Logo_Danamon.svg.png" },
+            { name: "CIMB NIAGA", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/512px-CIMB_Niaga_logo.svg.png" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/512px-Logo_dana_blue.svg.png" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://i.ibb.co/pP6ZpXf/ovo.png" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gojek_logo_2019.svg/512px-Gojek_logo_2019.svg.png" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/512px-LinkAja.svg.png" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/512px-Logo_QRIS.svg.png" },
+            { name: "USDT", schedule: "Online 24 Jam (Crypto)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Tether_Logo.svg/512px-Tether_Logo.svg.png" }
         ];
 
-        let bankHtml = "";
+        let bankHtml = '<div class="bank-container">';
         banks.forEach(bank => {
             let isOnline = true;
             if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
@@ -311,7 +312,7 @@
             bankHtml += `
                 <div class="bank-card">
                     <div class="logo-wrapper">
-                        <img src="${bank.logo}" class="bank-logo">
+                        <img src="${bank.logo}" class="bank-logo" alt="${bank.name}" onerror="this.src='https://via.placeholder.com/150?text=${bank.name}'">
                     </div>
                     <div class="divider"></div>
                     <div class="bank-info">
@@ -324,7 +325,8 @@
                     </div>
                 </div>`;
         });
-        document.getElementById('main-grid').innerHTML = bankHtml;
+        bankHtml += '</div>';
+        grid.innerHTML = bankHtml;
     }
 
     function copyAction(index) {
