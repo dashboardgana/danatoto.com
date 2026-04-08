@@ -87,8 +87,15 @@
         .row-data { display: flex; justify-content: space-between; border-bottom: 1px solid #21262d; padding: 6px 0; }
         .val-bbfs { color: #ffeb3b; font-size: 15px; letter-spacing: 1px; font-weight: bold; }
         .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 12px; text-transform: lowercase; }
+        
+        /* Tombol Copy per pasaran */
+        .btn-copy {
+            width: 100%; padding: 8px; margin-top: 10px; background: #30363d;
+            border: 1px solid #00d4ff; border-radius: 6px; color: #00d4ff;
+            cursor: pointer; font-weight: bold; font-size: 11px;
+        }
 
-        /* JADWAL BANK STYLE (HORIZONTAL) */
+        /* JADWAL BANK STYLE (BIRU - RAPI KEK UNGU) */
         .bank-container { 
             display: flex; 
             flex-wrap: wrap; 
@@ -97,32 +104,34 @@
             justify-content: flex-start;
         }
         .bank-card { 
-            background: #0d1117; 
-            border-radius: 12px; 
-            padding: 15px; 
-            border: 1px solid #00d4ff;
+            background: linear-gradient(180deg, #001f3f 0%, #000b1a 100%); 
+            border-radius: 15px; 
+            padding: 20px; 
+            border: 2px solid #00d4ff;
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            width: 280px; /* Ukuran kotak bank tetap agar rapi ke samping */
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+            width: 300px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         .bank-logo { 
-            width: 120px; 
-            height: 50px; 
+            width: 140px; 
+            height: 60px; 
             object-fit: contain; 
-            background: #fff; 
-            border-radius: 6px; 
-            padding: 5px; 
-            margin-bottom: 10px;
+            background: rgba(255,255,255,0.9); 
+            border-radius: 8px; 
+            padding: 8px; 
+            margin-bottom: 15px;
         }
-        .bank-info { width: 100%; text-align: center; border-top: 1px solid #1a237e; pt: 10px; margin-top: 10px; }
-        .bank-name { font-weight: bold; font-size: 14px; color: #00d4ff; margin: 5px 0; }
-        .bank-schedule { font-size: 11px; color: #fff; line-height: 1.5; }
-        .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; justify-content: center; }
-        .lamp { width: 10px; height: 10px; border-radius: 50%; background: #00c853; box-shadow: 0 0 10px #00c853; }
-        .status-text { color: #00c853; font-size: 12px; font-weight: bold; }
-        .gangguan-note { color: #ffeb3b; font-size: 10px; font-style: italic; margin-top: 5px; }
+        .divider { width: 100%; height: 2px; background: #00d4ff; margin-bottom: 15px; }
+        .bank-info { width: 100%; text-align: center; }
+        .bank-schedule { font-size: 12px; color: #fff; line-height: 1.6; font-weight: 500; }
+        .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 15px; justify-content: center; }
+        .lamp { width: 12px; height: 12px; border-radius: 50%; background: #00c853; box-shadow: 0 0 10px #00c853; }
+        .status-text { color: #00c853; font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+        .gangguan-note { color: #ffeb3b; font-size: 11px; font-weight: bold; margin-top: 8px; }
 
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
@@ -175,6 +184,10 @@
 <script>
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
+    
+    // Daftar Tanggal Merah 2026 (Contoh beberapa hari besar)
+    const tanggalMerah2026 = ["2026-01-01", "2026-01-29", "2026-02-15", "2026-03-20", "2026-03-25", "2026-04-03", "2026-05-01", "2026-05-14", "2026-05-27", "2026-08-17", "2026-12-25"];
+
     let masterData = [];
 
     function doLogin() {
@@ -238,7 +251,7 @@
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
                         <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
                         <div class="row-data"><span class="label">SHIO</span><span class="val">${shioUtama}</span></div>
-                        <div class="-text">Selalu utamakan prediksi sendiri</div>
+                        <div class="ups-text">Selalu utamakan prediksi sendiri</div>
                         <button class="btn-copy" onclick="copyAction(${i})">SALIN PREDIKSI</button>
                     </div>
                 </div>`;
@@ -247,7 +260,7 @@
 
     function loadJadwalBank() {
         resetMenu();
-        document.getElementById('main-grid').style.display = "block"; // Change grid to block for flex container
+        document.getElementById('main-grid').style.display = "block";
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
         document.getElementById('txt-tanggal').innerText = "STATUS BANK";
@@ -255,8 +268,19 @@
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-bank').classList.add('active-menu');
 
+        const d = new Date();
+        const hariIndo = d.getDay(); // 0=Minggu, 6=Sabtu
+        const formatTgl = d.toISOString().split('T')[0];
+        const isTanggalMerah = tanggalMerah2026.includes(formatTgl);
+        
+        // Logika Khusus BCA Online 24 Jam
+        let bcaSchedule = "Senin-Jumat : 21.00 - 00.20 WIB<br>Sabtu-Minggu : 24 Jam";
+        if(hariIndo === 0 || hariIndo === 6 || isTanggalMerah) {
+            bcaSchedule = "<span style='color:#00ff00; font-weight:bold;'>BANK BCA ONLINE 24 JAM</span><br>(Hari Libur/Tanggal Merah)";
+        }
+
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 21.00 - 00.20 WIB<br>Sabtu-Minggu : 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
+            { name: "BCA", schedule: bcaSchedule, logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
             { name: "BNI", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
             { name: "BRI", schedule: "Senin-Minggu : 22.00 - 03.30 WIB", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
             { name: "MANDIRI", schedule: "Senin-Minggu : 22.45 - 03.30 WIB", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
@@ -271,8 +295,8 @@
             bankHtml += `
                 <div class="bank-card">
                     <img src="${bank.logo}" class="bank-logo">
+                    <div class="divider"></div>
                     <div class="bank-info">
-                        <div class="bank-name">${bank.name}</div>
                         <div class="bank-schedule">${bank.schedule}</div>
                         <div class="gangguan-note">(Terkecuali Gangguan)</div>
                     </div>
