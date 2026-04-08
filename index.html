@@ -50,34 +50,42 @@
         /* Content Area */
         .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; }
         
-        /* Box Welcome dengan Efek Lampu */
+        /* Box Header Utama */
         .header-box { 
             width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; 
             border: 1px solid #00d4ff; margin-bottom: 30px; text-align: center;
             position: relative; 
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 10px rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Efek Lampu Glowing (Hanya muncul di Dashboard) */
+        .glow-active {
             animation: glow-pulse 2s infinite alternate;
         }
 
-        /* Animasi Lampu Berkedip Halus */
         @keyframes glow-pulse {
             from { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); border-color: #00d4ff; }
             to { box-shadow: 0 0 25px rgba(0, 212, 255, 0.7); border-color: #fff; }
         }
 
-        /* running text style */
+        /* Running Text Style */
         .running-text {
             color: #00d4ff; font-size: 22px; font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
-            white-space: nowrap; overflow: hidden;
+            display: none; /* Default sembunyi */
         }
+
+        /* Judul Tanggal Style */
+        .date-display {
+            font-size: 28px; font-weight: bold; color: #fff;
+        }
+        .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; }
 
         .btn-copy-all {
             position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
             padding: 10px 15px; background: #ff5252; color: white; border: none;
             border-radius: 8px; cursor: pointer; font-weight: bold; display: none;
         }
-        .btn-copy-all:hover { background: #ff1744; }
 
         /* Grid Utama */
         #main-grid { 
@@ -90,11 +98,7 @@
             overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .card:hover { 
-            border-color: #00d4ff; 
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); 
-            transform: translateY(-5px);
-        }
+        .card:hover { border-color: #00d4ff; transform: translateY(-5px); }
         
         .card-header { 
             background: linear-gradient(90deg, #00d4ff, #008fb3); padding: 12px; 
@@ -114,7 +118,7 @@
 
         .ups-text {
             color: #ff5252; font-size: 11px; font-weight: bold; text-align: center;
-            margin-top: 15px; text-shadow: 0 0 5px rgba(255, 82, 82, 0.2);
+            margin-top: 15px;
         }
 
         .btn-copy {
@@ -135,33 +139,35 @@
 <div id="login-page">
     <div class="login-card">
         <i class="fas fa-lock fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
-        <h2>VIP LOGIN</h2>
+        <h2>SILAHKAN LOGIN</h2>
         <input type="text" id="user" placeholder="Username">
         <input type="password" id="pass" placeholder="Password">
-        <button onclick="doLogin()">MASUK KE SISTEM</button>
+        <button onclick="doLogin()">MASUK KE SISTEM➡️</button>
         <p id="err" style="color: #ff5252; margin-top: 15px;"></p>
     </div>
 </div>
 
 <div id="main-dashboard">
     <div class="sidebar">
-        <h2>GANES PRAKAS</h2>
-        <div class="menu-item active-menu" onclick="showWelcome()"><i class="fas fa-home"></i> DASHBOARD</div>
-        
-        <div class="menu-item" style="background: #1a237e; color: #fff; margin-top: 20px;" onclick="loadAllPasaran()">
+        <h2>VIP PANEL</h2>
+        <div id="menu-dash" class="menu-item active-menu" onclick="showWelcome()"><i class="fas fa-home"></i> DASHBOARD</div>
+        <div id="menu-pred" class="menu-item" style="background: #1a237e; color: #fff; margin-top: 20px;" onclick="loadAllPasaran()">
             <i class="fas fa-fire"></i> <b>PREDIKSI TOGEL</b>
         </div>
-
         <div class="menu-item"><i class="fas fa-university"></i> JADWAL BANK</div>
         <div class="menu-item"><i class="fas fa-book"></i> BUKU MIMPI</div>
         <div class="menu-item" onclick="location.reload()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
 
     <div class="content">
-        <div class="header-box">
-            <marquee class="running-text" direction="left" scrollamount="7">
+        <div id="header-container" class="header-box glow-active">
+            <marquee id="txt-jalan" class="running-text" direction="left" scrollamount="7">
                 SELAMAT DATANG SILAHKAN PILIH MENU YANG INGIN ANDA CARI 🔍✨
             </marquee>
+
+            <div id="txt-tanggal" class="date-display" style="display: none;"></div>
+            <div id="sub-txt-tanggal" class="sub-date" style="display: none;">MENAMPILKAN SEMUA PASARAN PREDIKSI</div>
+
             <button id="btn-master" class="btn-copy-all" onclick="copyAllPrediksi()"><i class="fas fa-copy"></i> COPY ALL PREDIKSI</button>
         </div>
 
@@ -181,24 +187,44 @@
         if(u === "admin" && p === "1234") {
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-dashboard').style.display = 'block';
+            showWelcome();
         } else {
             document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
         }
     }
 
     function showWelcome() {
+        // Atur Tampilan Header untuk Dashboard
+        document.getElementById('header-container').classList.add('glow-active');
+        document.getElementById('txt-jalan').style.display = 'block';
+        document.getElementById('txt-tanggal').style.display = 'none';
+        document.getElementById('sub-txt-tanggal').style.display = 'none';
         document.getElementById('btn-master').style.display = 'none';
-        document.getElementById('main-grid').innerHTML = ""; // Menghapus isi tengah agar bersih
+        
+        document.getElementById('menu-dash').classList.add('active-menu');
+        document.getElementById('menu-pred').classList.remove('active-menu');
+        document.getElementById('main-grid').innerHTML = ""; 
     }
 
     function loadAllPasaran() {
+        // Atur Tampilan Header untuk Menu Prediksi
+        document.getElementById('header-container').classList.remove('glow-active');
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('btn-master').style.display = 'block';
+        
+        document.getElementById('menu-pred').classList.add('active-menu');
+        document.getElementById('menu-dash').classList.remove('active-menu');
+
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
         masterData = [];
-        document.getElementById('btn-master').style.display = 'block';
         
         const d = new Date();
-        const tglCard = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const tglHariIni = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('txt-tanggal').innerText = tglHariIni;
+
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
 
         pasarans.forEach((name, i) => {
@@ -209,18 +235,18 @@
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shioUtama = shios[seed % shios.length];
 
-            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed, tglCard });
+            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed, tglHariIni });
 
             grid.innerHTML += `
                 <div class="card">
                     <div class="card-header">${name}</div>
-                    <div class="card-date">${tglCard}</div>
+                    <div class="card-date">${tglHariIni}</div>
                     <div class="card-body">
                         <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
                         <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
                         <div class="row-data"><span class="label">SHIO</span><span class="val">${shioUtama}</span></div>
-                        <div class="ups-text">Selalu Utamakan Prediksi Sendiri</div>
+                        <div class="ups-text">SELALU UTAMAKAN PREDIKSI SENDIRI</div>
                         <button class="btn-copy" onclick="copyAction(${i})">SALIN PREDIKSI</button>
                     </div>
                 </div>`;
@@ -230,12 +256,12 @@
     function formatTeksCopy(index) {
         const d = masterData[index];
         const b = d.bbfs.split('');
-        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
-        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
-        const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
-        const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]} / ${shios[(d.seed+2)%12]}`;
+        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
+        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
+        const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]}`;
+        const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]}`;
 
-        return `PREDIKSI ${d.name}\n${d.tglCard}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D : ${d.cb1}${b[0]} / ${d.cb2}${b[1]} / ${b[2]}${b[3]}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSelalu Utamakan Prediksi Sendiri`;
+        return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSELALU UTAMAKAN PREDIKSI SENDIRI (UPS)`;
     }
 
     function copyAction(index) {
