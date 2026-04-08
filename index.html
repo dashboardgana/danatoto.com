@@ -50,18 +50,11 @@
         /* Content Area */
         .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; }
         
-        /* Box Header Utama */
         .header-box { 
             width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; 
             border: 1px solid #00d4ff; margin-bottom: 30px; text-align: center;
             position: relative; 
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-        }
-
-        .glow-active { animation: glow-pulse 2s infinite alternate; }
-        @keyframes glow-pulse {
-            from { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); border-color: #00d4ff; }
-            to { box-shadow: 0 0 25px rgba(0, 212, 255, 0.7); border-color: #fff; }
         }
 
         .running-text { color: #00d4ff; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px rgba(0, 212, 255, 0.8); }
@@ -74,80 +67,68 @@
             border-radius: 8px; cursor: pointer; font-weight: bold; display: none;
         }
 
-        /* GRID PREDIKSI */
         #main-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             gap: 20px; 
         }
 
-        /* Card Style */
+        /* Card Style Prediksi */
         .card { 
             background: #161b22; border-radius: 12px; border: 1px solid #30363d;
             overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .card:hover { border-color: #00d4ff; transform: translateY(-5px); }
         .card-header { 
             background: linear-gradient(90deg, #00d4ff, #008fb3); padding: 10px; 
             font-weight: bold; color: #000; text-align: center; text-transform: uppercase; font-size: 13px;
         }
-        .card-date { background: rgba(0, 212, 255, 0.05); color: #00d4ff; font-size: 10px; padding: 5px; text-align: center; border-bottom: 1px solid #21262d; }
         .card-body { padding: 15px; flex-grow: 1; font-size: 13px; color: #f0f6fc; }
         .row-data { display: flex; justify-content: space-between; border-bottom: 1px solid #21262d; padding: 6px 0; }
-        .label { color: #8b949e; font-size: 11px; }
-        .val { color: #f0f6fc; font-weight: bold; }
-        .val-bbfs { color: #ffeb3b; font-size: 15px; letter-spacing: 1px; }
-        
-        /* HURUF KECIL DIKUNCI DI SINI */
-        .ups-text { 
-            color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; 
-            margin-top: 12px; text-transform: lowercase; 
-        }
-        
-        .btn-copy { width: 100%; margin-top: 10px; padding: 8px; background: transparent; border: 1px solid #00d4ff; color: #00d4ff; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-copy:hover { background: #00d4ff; color: #000; }
+        .val-bbfs { color: #ffeb3b; font-size: 15px; letter-spacing: 1px; font-weight: bold; }
+        .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 12px; text-transform: lowercase; }
 
-        /* JADWAL BANK STYLE (BIRU & HORIZONTAL) */
+        /* JADWAL BANK STYLE (HORIZONTAL) */
         .bank-container { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 10px; 
+            gap: 15px; 
             width: 100%; 
+            justify-content: flex-start;
         }
         .bank-card { 
             background: #0d1117; 
-            border-radius: 8px; 
-            padding: 10px; 
+            border-radius: 12px; 
+            padding: 15px; 
             border: 1px solid #00d4ff;
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            justify-content: center;
-            flex: 1;
-            min-width: 160px;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            width: 280px; /* Ukuran kotak bank tetap agar rapi ke samping */
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
         }
         .bank-logo { 
-            width: 80px; 
-            height: 35px; 
+            width: 120px; 
+            height: 50px; 
             object-fit: contain; 
             background: #fff; 
-            border-radius: 4px; 
-            padding: 3px; 
-            margin-bottom: 8px;
+            border-radius: 6px; 
+            padding: 5px; 
+            margin-bottom: 10px;
         }
-        .bank-name { font-weight: bold; font-size: 12px; color: #fff; margin-bottom: 4px; }
-        .bank-status-row { display: flex; align-items: center; gap: 5px; }
-        .lamp { width: 8px; height: 8px; border-radius: 50%; background: #00c853; box-shadow: 0 0 8px #00c853; }
-        .status-text { color: #00c853; font-size: 11px; font-weight: bold; }
+        .bank-info { width: 100%; text-align: center; border-top: 1px solid #1a237e; pt: 10px; margin-top: 10px; }
+        .bank-name { font-weight: bold; font-size: 14px; color: #00d4ff; margin: 5px 0; }
+        .bank-schedule { font-size: 11px; color: #fff; line-height: 1.5; }
+        .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; justify-content: center; }
+        .lamp { width: 10px; height: 10px; border-radius: 50%; background: #00c853; box-shadow: 0 0 10px #00c853; }
+        .status-text { color: #00c853; font-size: 12px; font-weight: bold; }
+        .gangguan-note { color: #ffeb3b; font-size: 10px; font-style: italic; margin-top: 5px; }
 
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
-            .btn-copy-all { position: static; transform: none; margin-top: 15px; display: block; width: 100%; }
-            #main-grid { grid-template-columns: 1fr; }
-            .bank-container { display: grid; grid-template-columns: 1fr 1fr; }
+            .bank-container { justify-content: center; }
+            .bank-card { width: 100%; }
         }
     </style>
 </head>
@@ -179,17 +160,14 @@
     </div>
 
     <div class="content">
-        <div id="header-container" class="header-box glow-active">
+        <div id="header-container" class="header-box">
             <marquee id="txt-jalan" class="running-text" direction="left" scrollamount="7">
                 SELAMAT DATANG DI VIP DANATOTO SYSTEM - SILAHKAN PILIH MENU DI SIDEBAR ✨
             </marquee>
-
             <div id="txt-tanggal" class="date-display" style="display: none;"></div>
-            <div id="sub-txt-tanggal" class="sub-date" style="display: none;">MENAMPILKAN SEMUA PASARAN PREDIKSI</div>
-
+            <div id="sub-txt-tanggal" class="sub-date" style="display: none;"></div>
             <button id="btn-master" class="btn-copy-all" onclick="copyAllPrediksi()"><i class="fas fa-copy"></i> COPY ALL PREDIKSI</button>
         </div>
-
         <div id="main-grid"></div>
     </div>
 </div>
@@ -197,7 +175,6 @@
 <script>
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
-    
     let masterData = [];
 
     function doLogin() {
@@ -215,11 +192,11 @@
     function resetMenu() {
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
         document.getElementById('main-grid').innerHTML = "";
+        document.getElementById('main-grid').style.display = "grid"; 
     }
 
     function showWelcome() {
         resetMenu();
-        document.getElementById('header-container').classList.add('glow-active');
         document.getElementById('txt-jalan').style.display = 'block';
         document.getElementById('txt-tanggal').style.display = 'none';
         document.getElementById('sub-txt-tanggal').style.display = 'none';
@@ -229,7 +206,6 @@
 
     function loadAllPasaran() {
         resetMenu();
-        document.getElementById('header-container').classList.remove('glow-active');
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
         document.getElementById('sub-txt-tanggal').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
@@ -238,12 +214,12 @@
         document.getElementById('menu-pred').classList.add('active-menu');
 
         const grid = document.getElementById('main-grid');
-        masterData = [];
         const d = new Date();
         const tglHariIni = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('txt-tanggal').innerText = tglHariIni;
 
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
+        masterData = [];
 
         pasarans.forEach((name, i) => {
             const seed = seedDay + i;
@@ -252,19 +228,17 @@
             const cb1 = Math.floor(Math.abs(Math.sin(seed + 8) * 10)) % 10;
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shioUtama = shios[seed % shios.length];
-
             masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed, tglHariIni });
 
             grid.innerHTML += `
                 <div class="card">
                     <div class="card-header">${name}</div>
-                    <div class="card-date">${tglHariIni}</div>
                     <div class="card-body">
-                        <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
+                        <div class="row-data"><span class="label">BBFS</span><span class="val-bbfs">${bbfs}</span></div>
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
                         <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
                         <div class="row-data"><span class="label">SHIO</span><span class="val">${shioUtama}</span></div>
-                        <div class="ups-text">selalu utamakan prediksi sendiri</div>
+                        <div class="-text">Selalu utamakan prediksi sendiri</div>
                         <button class="btn-copy" onclick="copyAction(${i})">SALIN PREDIKSI</button>
                     </div>
                 </div>`;
@@ -273,64 +247,66 @@
 
     function loadJadwalBank() {
         resetMenu();
-        document.getElementById('header-container').classList.remove('glow-active');
+        document.getElementById('main-grid').style.display = "block"; // Change grid to block for flex container
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
         document.getElementById('txt-tanggal').innerText = "STATUS BANK";
         document.getElementById('sub-txt-tanggal').innerText = "SISTEM MONITORING BANK REALTIME";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
-        document.getElementById('btn-master').style.display = 'none';
         document.getElementById('menu-bank').classList.add('active-menu');
 
         const banks = [
-            { name: "BCA", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
-            { name: "BNI", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
-            { name: "BRI", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
-            { name: "MANDIRI", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
-            { name: "DANAMON", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
-            { name: "CIMB NIAGA", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
-            { name: "DANA", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
-            { name: "OVO", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" }
+            { name: "BCA", schedule: "Senin-Jumat : 21.00 - 00.20 WIB<br>Sabtu-Minggu : 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
+            { name: "BNI", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
+            { name: "BRI", schedule: "Senin-Minggu : 22.00 - 03.30 WIB", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
+            { name: "MANDIRI", schedule: "Senin-Minggu : 22.45 - 03.30 WIB", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "DANAMON", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
+            { name: "CIMB NIAGA", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
+            { name: "DANA", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
+            { name: "OVO", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" }
         ];
 
         let bankHtml = `<div class="bank-container">`;
         banks.forEach(bank => {
             bankHtml += `
                 <div class="bank-card">
-                    <img src="${bank.logo}" class="bank-logo" alt="${bank.name}">
-                    <div class="bank-name">${bank.name}</div>
+                    <img src="${bank.logo}" class="bank-logo">
+                    <div class="bank-info">
+                        <div class="bank-name">${bank.name}</div>
+                        <div class="bank-schedule">${bank.schedule}</div>
+                        <div class="gangguan-note">(Terkecuali Gangguan)</div>
+                    </div>
                     <div class="bank-status-row">
                         <div class="lamp"></div>
                         <div class="status-text">ONLINE</div>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
         bankHtml += `</div>`;
         document.getElementById('main-grid').innerHTML = bankHtml;
     }
 
-    function formatTeksCopy(index) {
+    function copyAction(index) {
         const d = masterData[index];
         const b = d.bbfs.split('');
         const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
         const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
-        const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]}`;
-        const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]}`;
-
-        return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nselalu utamakan prediksi sendiri`;
-    }
-
-    function copyAction(index) {
-        const teks = formatTeksCopy(index);
+        const teks = `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nSHIO : ${d.shioUtama}\n\nselalu utamakan prediksi sendiri`;
+        
         navigator.clipboard.writeText(teks).then(() => {
-            alert("BERHASIL DI COPY!\n\n" + masterData[index].name);
+            alert("BERHASIL DI COPY!\n\n" + d.name);
         });
     }
 
     function copyAllPrediksi() {
         if(masterData.length === 0) return;
-        const semuaTeks = masterData.map((_, i) => formatTeksCopy(i)).join('\n\n====================\n\n');
+        const semuaTeks = masterData.map((d, i) => {
+            const b = d.bbfs.split('');
+            const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
+            const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
+            return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nSHIO : ${d.shioUtama}\n\nselalu utamakan prediksi sendiri`;
+        }).join('\n\n====================\n\n');
+        
         navigator.clipboard.writeText(semuaTeks).then(() => {
             alert("SEMUA PREDIKSI BERHASIL DI COPY!");
         });
