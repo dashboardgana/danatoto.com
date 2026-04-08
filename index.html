@@ -124,8 +124,15 @@
         .bank-info { width: 100%; text-align: center; }
         .bank-schedule { font-size: 13px; color: #fff; line-height: 1.6; font-weight: 500; }
         .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 15px; justify-content: center; }
-        .lamp { width: 12px; height: 12px; border-radius: 50%; background: #00c853; box-shadow: 0 0 10px #00c853; }
-        .status-text { color: #00c853; font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+        
+        /* CSS Lampu Dinamis */
+        .lamp { width: 12px; height: 12px; border-radius: 50%; }
+        .lamp-online { background: #00c853; box-shadow: 0 0 10px #00c853; }
+        .lamp-offline { background: #ff5252; box-shadow: 0 0 10px #ff5252; }
+        .text-online { color: #00c853; }
+        .text-offline { color: #ff5252; }
+
+        .status-text { font-size: 13px; font-weight: bold; letter-spacing: 1px; }
         .gangguan-note { color: #ffeb3b; font-size: 11px; font-weight: bold; margin-top: 8px; }
 
         @media (max-width: 768px) { 
@@ -177,7 +184,8 @@
 <script>
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
-    
+    let masterData = [];
+
     function doLogin() {
         const u = document.getElementById('user').value;
         const p = document.getElementById('pass').value;
@@ -194,7 +202,6 @@
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
         document.getElementById('main-grid').innerHTML = "";
         document.getElementById('main-grid').style.display = "grid"; 
-        // Sembunyikan tombol Copy All secara default setiap ganti menu
         document.getElementById('btn-master').style.display = 'none';
     }
 
@@ -213,8 +220,6 @@
         document.getElementById('sub-txt-tanggal').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-pred').classList.add('active-menu');
-        
-        // Tampilkan tombol Copy All hanya di sini
         document.getElementById('btn-master').style.display = 'block';
 
         const grid = document.getElementById('main-grid');
@@ -250,7 +255,7 @@
     }
 
     function loadJadwalBank() {
-        resetMenu(); // Tombol Copy All otomatis hilang karena fungsi resetMenu
+        resetMenu();
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
         document.getElementById('txt-tanggal').innerText = "STATUS OPERASIONAL BANK";
@@ -258,11 +263,17 @@
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-bank').classList.add('active-menu');
 
+        const now = new Date();
+        const hr = now.getHours();
+        const mn = now.getMinutes();
+        const time = (hr * 100) + mn;
+        const day = now.getDay(); // 0=Minggu, 1=Senin...
+
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 21.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
             { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
-            { name: "BRI", schedule: "Setiap Hari : 22.00-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 22.45-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
             { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
             { name: "CIMB NIAGA", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
             { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
@@ -275,6 +286,21 @@
 
         let bankHtml = `<div class="bank-container">`;
         banks.forEach(bank => {
+            let isOnline = true;
+            
+            // Logika BCA (Senin-Jumat 22:00 - 00:20)
+            if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
+                if (time >= 2200 || time <= 20) isOnline = false;
+            }
+            // Logika MANDIRI (Setiap Hari 23:00 - 03:30)
+            if (bank.name === "MANDIRI") {
+                if (time >= 2300 || time <= 330) isOnline = false;
+            }
+
+            const lampClass = isOnline ? "lamp-online" : "lamp-offline";
+            const textClass = isOnline ? "text-online" : "text-offline";
+            const statusLabel = isOnline ? "ONLINE" : "OFFLINE";
+
             bankHtml += `
                 <div class="bank-card">
                     <img src="${bank.logo}" class="bank-logo" alt="${bank.name}">
@@ -284,8 +310,8 @@
                         <div class="gangguan-note">(Terkecuali Gangguan Sistem)</div>
                     </div>
                     <div class="bank-status-row">
-                        <div class="lamp"></div>
-                        <div class="status-text">ONLINE</div>
+                        <div class="lamp ${lampClass}"></div>
+                        <div class="status-text ${textClass}">${statusLabel}</div>
                     </div>
                 </div>`;
         });
