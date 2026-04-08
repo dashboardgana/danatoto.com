@@ -3,110 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Dashboard Prediksi Togel</title>
+    <title>VIP Dashboard Danatoto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         
-        /* --- BACKGROUND HALAMAN LOGIN (BEDA DENGAN DALAM) --- */
+        /* --- HALAMAN LOGIN (Background Berbeda) --- */
         #login-page {
             display: flex; justify-content: center; align-items: center;
             height: 100vh;
-            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e); /* Nanti bisa ganti dengan gambar */
-            background-size: cover;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            position: fixed; width: 100%; z-index: 9999;
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
             padding: 40px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            width: 100%; max-width: 380px; text-align: center;
-            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 90%; max-width: 400px; text-align: center; color: white;
         }
 
-        .login-card h2 { margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; }
+        .login-card h2 { margin-bottom: 25px; letter-spacing: 3px; color: #00d4ff; text-shadow: 0 0 10px #00d4ff; }
         .login-card input {
             width: 100%; padding: 12px; margin: 10px 0;
-            background: rgba(255,255,255,0.1); border: 1px solid #444;
+            background: rgba(255,255,255,0.1); border: 1px solid #333;
             border-radius: 8px; color: white; outline: none;
         }
         .login-card button {
             width: 100%; padding: 12px; margin-top: 20px;
             background: #00d4ff; border: none; border-radius: 8px;
-            color: black; font-weight: bold; cursor: pointer; transition: 0.3s;
+            color: #000; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
         .login-card button:hover { background: #fff; box-shadow: 0 0 20px #00d4ff; }
 
-        /* --- BACKGROUND HALAMAN DALAM --- */
+        /* --- HALAMAN DASHBOARD (Background Hitam Pekat) --- */
         #main-dashboard { 
             display: none; 
-            background-color: #0b0e14; /* Background halaman dalam hitam pekat */
+            background-color: #0b0e14; 
             min-height: 100vh;
+            width: 100%;
         }
 
-        /* Sidebar */
+        /* Sidebar Update */
         .sidebar { 
-            width: 250px; background: #000; border-right: 2px solid #1a237e; 
+            width: 260px; background: #000; border-right: 2px solid #1a237e; 
             height: 100vh; position: fixed; padding: 20px; overflow-y: auto; 
+            transition: 0.3s;
         }
-        .sidebar h2 { color: #00d4ff; text-shadow: 0 0 10px #00d4ff; text-align: center; margin-bottom: 30px; }
-        .sidebar a { 
-            display: block; color: #888; padding: 12px; text-decoration: none; 
-            border-radius: 8px; margin-bottom: 8px; transition: 0.3s; 
+        .sidebar h2 { color: #fff; font-size: 20px; margin-bottom: 30px; text-align: center; border-bottom: 1px solid #1a237e; padding-bottom: 10px; }
+        
+        .menu-item {
+            display: block; color: #aaa; padding: 12px; text-decoration: none; 
+            border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.2s;
+            font-size: 14px;
         }
-        .sidebar a:hover, .sidebar a.active { color: #fff; background: #1a237e; box-shadow: 0 0 10px #1a237e; }
+        .menu-item i { width: 25px; }
+        .menu-item:hover, .menu-item.active { color: #fff; background: #1a237e; box-shadow: 0 0 10px #1a237e; }
 
-        /* Content Area */
-        .content { margin-left: 250px; padding: 30px; width: calc(100% - 250px); }
+        /* Style Dropdown Pasaran */
+        .dropdown-btn { display: flex; justify-content: space-between; align-items: center; }
+        .dropdown-container { 
+            display: none; 
+            background: #050505; 
+            margin-bottom: 10px; 
+            border-radius: 0 0 8px 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .dropdown-container a { 
+            display: block; color: #666; padding: 8px 15px; text-decoration: none; 
+            font-size: 11px; border-left: 2px solid #222; transition: 0.2s;
+        }
+        .dropdown-container a:hover { color: #00d4ff; border-left: 2px solid #00d4ff; background: #111; }
+
+        /* Main Content Area */
+        .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); }
         .header-box { 
-            background: #161b22; padding: 25px; border-radius: 15px; 
+            background: #161b22; padding: 30px; border-radius: 15px; 
             border: 1px solid #30363d; margin-bottom: 30px; text-align: center;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.05);
         }
+        .header-box h1 { color: #fff; font-size: 28px; margin-bottom: 5px; }
 
-        /* Grid Prediksi */
+        /* Grid System */
         .prediction-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; 
         }
 
+        /* Card Dengan Efek Lampu */
         .card { 
             background: #1c2128; border-radius: 15px; border: 2px solid #30363d;
-            transition: 0.3s; position: relative; overflow: hidden;
+            transition: 0.3s; overflow: hidden; position: relative;
         }
         .card:hover { 
-            border-color: #00d4ff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); 
+            border-color: #00d4ff; box-shadow: 0 0 25px rgba(0, 212, 255, 0.3); 
             transform: translateY(-5px);
         }
 
         .card-header { 
             background: #2d333b; padding: 15px; font-weight: bold; color: #00d4ff; 
-            text-align: center; border-bottom: 1px solid #444;
-            animation: neonBlink 2s infinite;
+            text-align: center; border-bottom: 1px solid #444; text-transform: uppercase;
+            letter-spacing: 1px; animation: neonPulse 2s infinite;
         }
 
-        @keyframes neonBlink {
+        @keyframes neonPulse {
             0%, 100% { text-shadow: 0 0 5px #00d4ff; }
             50% { text-shadow: 0 0 15px #00d4ff, 0 0 25px #00d4ff; }
         }
 
         .card-body { padding: 20px; }
         .row-data { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .label { color: #888; font-size: 12px; }
+        .label { color: #888; font-size: 11px; text-transform: uppercase; }
         .val { color: #fff; font-weight: bold; }
-        .val-bbfs { color: #ffeb3b; text-shadow: 0 0 5px rgba(255,235,59,0.3); }
+        .val-bbfs { color: #ffeb3b; font-size: 18px; letter-spacing: 2px; }
 
         .btn-copy {
-            width: 100%; margin-top: 15px; padding: 10px;
+            width: 100%; margin-top: 15px; padding: 12px;
             background: transparent; border: 1px solid #00d4ff;
             color: #00d4ff; border-radius: 8px; cursor: pointer; transition: 0.3s;
+            font-weight: bold; font-size: 12px;
         }
         .btn-copy:hover { background: #00d4ff; color: #000; box-shadow: 0 0 15px #00d4ff; }
 
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .content { margin-left: 0; width: 100%; padding: 15px; }
+            .header-box h1 { font-size: 20px; }
         }
     </style>
 </head>
@@ -114,11 +139,12 @@
 
 <div id="login-page">
     <div class="login-card">
-        <i class="fas fa-user-shield fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
-        <h2>VIP LOGIN</h2>
+        <i class="fas fa-shield-alt fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
+        <h2>VIP ACCESS</h2>
+        <p style="font-size: 12px; color: #888; margin-bottom: 20px;">Silakan Login untuk Melihat Prediksi</p>
         <input type="text" id="user" placeholder="Username">
         <input type="password" id="pass" placeholder="Password">
-        <button onclick="doLogin()">MASUK DASHBOARD</button>
+        <button onclick="doLogin()">LOGIN SYSTEM</button>
         <p id="err" style="color: #ff5252; margin-top: 15px; font-size: 13px;"></p>
     </div>
 </div>
@@ -126,37 +152,36 @@
 <div id="main-dashboard">
     <div class="sidebar">
         <h2>VIP PANEL</h2>
-        <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="#"><i class="fas fa-university"></i> Jadwal Bank</a>
-        <a href="#"><i class="fas fa-calculator"></i> Hitung SGP</a>
-        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
-        <div id="side-list" style="font-size: 11px;"></div>
-        <a href="#" onclick="location.reload()" style="color: #ff5252; margin-top: 30px;"><i class="fas fa-power-off"></i> Logout</a>
+        <div class="menu-item active"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+        
+        <div class="menu-item dropdown-btn" onclick="toggleDropdown()">
+            <span><i class="fas fa- list-ol"></i> PREDIKSI TOGEL</span>
+            <i class="fas fa-chevron-down" id="drop-icon"></i>
+        </div>
+        <div id="dropdown-togel" class="dropdown-container">
+            </div>
+
+        <div class="menu-item"><i class="fas fa-university"></i> Jadwal Bank</div>
+        <div class="menu-item"><i class="fas fa-history"></i> History Nomor</div>
+        <hr style="border:0; border-top:1px solid #222; margin:20px 0;">
+        <div class="menu-item" onclick="location.reload()" style="color: #ff5252;"><i class="fas fa-sign-out-alt"></i> Logout</div>
     </div>
 
     <div class="content">
         <div class="header-box">
-            <h1 id="date-text">--</h1>
-            <p style="color: #00d4ff; letter-spacing: 2px;">PREDIKSI OTOMATIS BERDASARKAN RUMUS HARIAN</p>
+            <h1 id="live-date">--</h1>
+            <p style="color: #00d4ff; letter-spacing: 2px; font-size: 12px;">SELALU UTAMAKAN PREDIKSI SENDIRI (UPS)</p>
         </div>
-        <div class="prediction-grid" id="main-grid"></div>
+
+        <div class="prediction-grid" id="main-grid">
+            </div>
+        
+        <p style="text-align:center; color:#444; margin-top:50px; font-size:12px;">© 2026 DANATOTO VIP SYSTEM</p>
     </div>
 </div>
 
 <script>
-    // DATA LOGIN
-    function doLogin() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        if(u === "admin" && p === "1234") {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('main-dashboard').style.display = 'flex';
-            initDashboard();
-        } else {
-            document.getElementById('err').innerText = "Akses Ditolak! Cek Username/Password.";
-        }
-    }
-
+    // LIST SEMUA 52 PASARAN
     const pasarans = [
         "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", 
         "NEW YORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", 
@@ -173,45 +198,77 @@
 
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
 
-    function initDashboard() {
+    // FUNGSI LOGIN
+    function doLogin() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        if(u === "admin" && p === "1234") {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-dashboard').style.display = 'block';
+            renderAll();
+        } else {
+            document.getElementById('err').innerText = "Username atau Password Salah!";
+        }
+    }
+
+    // FUNGSI DROPDOWN SIDEBAR
+    function toggleDropdown() {
+        const dd = document.getElementById('dropdown-togel');
+        const icon = document.getElementById('drop-icon');
+        if(dd.style.display === "block") {
+            dd.style.display = "none";
+            icon.style.transform = "rotate(0deg)";
+        } else {
+            dd.style.display = "block";
+            icon.style.transform = "rotate(180deg)";
+        }
+    }
+
+    // RENDER SEMUA DATA
+    function renderAll() {
         const d = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date-text').innerText = d.toLocaleDateString('id-ID', options);
+        document.getElementById('live-date').innerText = d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         
         const grid = document.getElementById('main-grid');
-        const side = document.getElementById('side-list');
+        const dropContainer = document.getElementById('dropdown-togel');
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
 
         pasarans.forEach((name, i) => {
             const seed = seedDay + i;
+            
+            // Rumus Acak Harian
             const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
-            const am = Array.from({length: 5}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
-            const cb = (seed % 10) + " / " + ((seed + 3) % 10);
+            const am = Array.from({length: 4}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
+            const cb = (seed % 10) + " / " + ((seed + 7) % 10);
             const shio = shios[seed % shios.length];
 
-            const textCopy = `PREDIKSI ${name}\nTanggal: ${d.toLocaleDateString('id-ID')}\nBBFS: ${bbfs}\nAM: ${am}\nCB: ${cb}\nSHIO: ${shio}\nUPS!`;
+            const textCopy = `*PREDIKSI ${name}*\nTanggal: ${d.toLocaleDateString('id-ID')}\nBBFS: ${bbfs}\nAM: ${am}\nCB: ${cb}\nSHIO: ${shio}\nUPS!`;
 
+            // Buat Kartu di Grid
             grid.innerHTML += `
-                <div class="card">
+                <div class="card" id="pasaran-${i}">
                     <div class="card-header">${name}</div>
                     <div class="card-body">
                         <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
-                        <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
-                        <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb}</span></div>
-                        <div class="row-data"><span class="label">SHIO</span><span class="val">${shio}</span></div>
-                        <button class="btn-copy" onclick="copyMe('${textCopy}')"><i class="far fa-copy"></i> SALIN PREDIKSI</button>
+                        <div class="row-data"><span class="label">Angka Main</span><span class="val">${am}</span></div>
+                        <div class="row-data"><span class="label">Colok Bebas</span><span class="val">${cb}</span></div>
+                        <div class="row-data"><span class="label">Shio</span><span class="val">${shio}</span></div>
+                        <button class="btn-copy" onclick="copyAction('${textCopy}')"><i class="far fa-copy"></i> COPY PREDIKSI</button>
                     </div>
                 </div>
             `;
-            side.innerHTML += `<a href="#" style="padding:5px 10px;">${name}</a>`;
+
+            // Buat Link di Sidebar Dropdown
+            dropContainer.innerHTML += `<a href="#pasaran-${i}">${name}</a>`;
         });
     }
 
-    function copyMe(txt) {
+    function copyAction(txt) {
         navigator.clipboard.writeText(txt).then(() => {
-            alert("Prediksi disalin!");
+            alert("Prediksi Berhasil Disalin!");
         });
     }
 </script>
+
 </body>
 </html>
