@@ -67,11 +67,11 @@
             display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; 
         }
 
-        /* Card Style - Dengan Efek Lampu */
+        /* Card Style - Dengan Efek Lampu Glow */
         .card { 
             background: #161b22; border-radius: 15px; border: 1px solid #30363d;
             overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Shadow dasar */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
         /* Efek Lampu Saat Hover */
         .card:hover { 
@@ -86,6 +86,17 @@
             text-align: center; text-transform: uppercase; font-size: 14px;
             text-shadow: 0 1px 2px rgba(255,255,255,0.3);
         }
+
+        /* Label Tanggal di dalam Kotak */
+        .card-date {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            font-size: 11px;
+            padding: 5px;
+            text-align: center;
+            border-bottom: 1px solid #21262d;
+            font-weight: bold;
+        }
         
         .card-body { padding: 20px; flex-grow: 1; font-size: 13px; color: #f0f6fc; line-height: 1.8; }
         .row-data { display: flex; justify-content: space-between; border-bottom: 1px solid #21262d; padding: 5px 0; }
@@ -93,7 +104,7 @@
         .val { color: #f0f6fc; font-weight: bold; }
         .val-bbfs { color: #ffeb3b; font-size: 16px; text-shadow: 0 0 5px rgba(255, 235, 59, 0.3); }
 
-        /* Perbaikan Teks UPS: Tidak memaksa huruf besar semua */
+        /* Teks UPS: Huruf normal (tidak paksa besar) */
         .ups-text {
             color: #ff5252; font-size: 11px; font-weight: bold; text-align: center;
             margin-top: 15px; text-transform: none; letter-spacing: 0.5px;
@@ -195,6 +206,7 @@
         document.getElementById('btn-master').style.display = 'block';
         
         const d = new Date();
+        const tglCard = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
 
         pasarans.forEach((name, i) => {
@@ -205,11 +217,12 @@
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shioUtama = shios[seed % shios.length];
 
-            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed });
+            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed, tglCard });
 
             grid.innerHTML += `
                 <div class="card">
                     <div class="card-header">${name}</div>
+                    <div class="card-date">${tglCard}</div>
                     <div class="card-body">
                         <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
@@ -224,15 +237,16 @@
 
     function formatTeksCopy(index) {
         const d = masterData[index];
-        const tgl = document.getElementById('date-now').innerText;
         const b = d.bbfs.split('');
         
+        // Rumus data rapi untuk copy
         const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
         const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
         const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]} / ${shios[(d.seed+2)%12]}`;
 
-        return `PREDIKSI ${d.name}\n${tgl}\n\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D : ${d.cb1}${b[0]} / ${d.cb2}${b[1]} / ${b[2]}${b[3]}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSelalu Utamakan Prediksi Sendiri`;
+        // RETURN FORMAT RAPI (Langsung tersusun ke bawah)
+        return `PREDIKSI ${d.name}\n${d.tglCard}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D : ${d.cb1}${b[0]} / ${d.cb2}${b[1]} / ${b[2]}${b[3]}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSelalu Utamakan Prediksi Sendiri`;
     }
 
     function copyAction(index) {
