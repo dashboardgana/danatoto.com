@@ -51,7 +51,7 @@
         .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; }
         .header-box { width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 30px; text-align: center; }
 
-        /* Grid Utama - Awalnya Kosong */
+        /* Grid Utama */
         #main-grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; 
         }
@@ -147,17 +147,12 @@
 
     function showWelcome() {
         document.getElementById('status-text').innerText = "SILAKAN PILIH MENU UNTUK MEMULAI";
-        document.getElementById('main-grid').innerHTML = `
-            <div class="welcome-msg">
-                <i class="fas fa-dice"></i>
-                <h2>SELAMAT DATANG DI PANEL VIP</h2>
-                <p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p>
-            </div>`;
+        document.getElementById('main-grid').innerHTML = `<div class="welcome-msg"><i class="fas fa-dice"></i><h2>SELAMAT DATANG DI PANEL VIP</h2><p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p></div>`;
     }
 
     function loadAllPasaran() {
         const grid = document.getElementById('main-grid');
-        grid.innerHTML = ""; 
+        grid.innerHTML = "";
         document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         
         const d = new Date();
@@ -167,7 +162,8 @@
             const seed = seedDay + i;
             const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
             const am = Array.from({length: 5}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
-            const cb = (seed % 10) + " / " + ((seed + 5) % 10);
+            const cb1 = Math.floor(Math.abs(Math.sin(seed + 8) * 10)) % 10;
+            const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shio = shios[seed % shios.length];
 
             grid.innerHTML += `
@@ -176,36 +172,38 @@
                     <div class="card-body">
                         <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
-                        <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb}</span></div>
+                        <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
                         <div class="row-data"><span class="label">SHIO</span><span class="val">${shio}</span></div>
-                        <button class="btn-copy" onclick="copyAction('${name}','${bbfs}','${am}','${cb}','${shio}')">COPY PREDIKSI</button>
+                        <button class="btn-copy" onclick="copyAction('${name}','${bbfs}','${am}','${cb1}','${cb2}','${shio}')">SALIN PREDIKSI</button>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
     }
 
-    function copyAction(n, bbfs, am, cb, shio) {
+    function copyAction(name, bbfs, am, cb1, cb2, shio) {
         const tgl = document.getElementById('date-now').innerText;
+        const b = bbfs.split('');
         
-        // Generate angka tambahan otomatis biar terlihat lengkap
-        const bbfsArr = bbfs.split('');
-        const p4d = `${bbfsArr[0]}${bbfsArr[1]}${bbfsArr[2]}${bbfsArr[3]} ${bbfsArr[4]}${bbfsArr[5]}${bbfsArr[6]}0 ${bbfsArr[1]}${bbfsArr[3]}${bbfsArr[5]}${bbfsArr[0]}`;
-        const p2d = `${bbfsArr[0]}${bbfsArr[2]} ${bbfsArr[1]}${bbfsArr[4]} ${bbfsArr[3]}${bbfsArr[5]} ${bbfsArr[6]}${bbfsArr[0]} ${bbfsArr[2]}${bbfsArr[1]}`;
-        const twin = `${bbfsArr[0]}${bbfsArr[0]} / ${bbfsArr[1]}${bbfsArr[1]} / ${bbfsArr[2]}${bbfsArr[2]}`;
+        // Format 4D, 2D, Twin sesuai BBFS biar sinkron
+        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
+        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
+        const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
 
-        const teks = `PREDIKSI ${n}
+        const teks = `PREDIKSI ${name}
 ${tgl}
 BBFS ${bbfs}
 ANGKA MAIN ${am}
 4D ${p4d}
 2D (BB) ${p2d}
-COLOK BEBAS ${cb}
+COLOK BEBAS ${cb1} / ${cb2}
+COLOK BEBAS 2D ${cb1}${b[0]} / ${cb2}${b[1]} / ${b[2]}${b[3]}
 TWIN ${twin}
-SHIO ${shio}
+SHIO ${shio} / ${shios[(shios.indexOf(shio)+1)%12]} / ${shios[(shios.indexOf(shio)+2)%12]}
 Selalu Utamakan Prediksi Sendiri`;
 
-        navigator.clipboard.writeText(teks).then(() => alert("BERHASIL DISALIN SESUAI FORMAT!"));
+        navigator.clipboard.writeText(teks).then(() => {
+            alert("BERHASIL DI COPY!\n\n" + name);
+        });
     }
 </script>
 </body>
