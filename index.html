@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Dashboard Danatoto</title>
+    <title>VIP DANATOTO SYSTEM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -11,82 +11,77 @@
         /* LOGIN PAGE */
         #login-page {
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            position: fixed; width: 100%; z-index: 9999;
+            height: 100vh; background: #000 url('https://w0.peakpx.com/wallpaper/598/432/wallpaper-dark-background-abstract-background-black-background-abstract-digital-art.jpg') no-repeat center center;
+            background-size: cover; position: fixed; width: 100%; z-index: 9999;
         }
         .login-card {
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
-            padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px);
+            padding: 40px; border-radius: 20px; border: 1px solid #00d4ff;
             width: 90%; max-width: 400px; text-align: center; color: white;
+            box-shadow: 0 0 30px #00d4ff55;
         }
+        .login-card h2 { margin-bottom: 25px; letter-spacing: 3px; color: #00d4ff; }
         .login-card input {
             width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.1);
             border: 1px solid #333; border-radius: 8px; color: white; outline: none;
         }
         .login-card button {
             width: 100%; padding: 12px; margin-top: 20px; background: #00d4ff;
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
         }
 
         /* DASHBOARD PAGE */
-        #main-dashboard { display: none; background-color: #0b0e14; min-height: 100vh; }
+        #main-dashboard { display: none; background-color: #05070a; min-height: 100vh; color: #fff; }
 
         /* Sidebar */
         .sidebar { 
-            width: 260px; background: #000; border-right: 2px solid #1a237e; 
+            width: 260px; background: #000; border-right: 1px solid #1a237e; 
             height: 100vh; position: fixed; padding: 20px; overflow-y: auto; 
         }
-        .sidebar h2 { color: #fff; font-size: 20px; margin-bottom: 30px; text-align: center; border-bottom: 1px solid #1a237e; padding-bottom: 10px; }
+        .sidebar h2 { color: #00d4ff; font-size: 20px; margin-bottom: 30px; text-align: center; border-bottom: 2px solid #00d4ff; padding-bottom: 10px; }
         
         .menu-item {
             display: block; color: #aaa; padding: 12px; text-decoration: none; 
             border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.2s; font-size: 14px;
         }
-        .menu-item:hover, .menu-item.active { color: #fff; background: #1a237e; }
-
-        /* Dropdown Pasaran */
-        .dropdown-btn { display: flex; justify-content: space-between; align-items: center; }
-        .dropdown-container { display: none; background: #050505; border-radius: 8px; max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
-        .dropdown-container a { 
-            display: block; color: #666; padding: 8px 15px; text-decoration: none; 
-            font-size: 11px; border-left: 2px solid #222; 
-        }
-        .dropdown-container a:hover { color: #00d4ff; border-left: 2px solid #00d4ff; background: #111; }
+        .menu-item:hover { color: #fff; background: #1a237e; }
+        .active-menu { color: #fff; background: #00d4ff; color: #000; font-weight: bold; }
 
         /* Content Area */
-        .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); display: flex; flex-direction: column; align-items: center; }
-        .header-box { width: 100%; max-width: 800px; background: #161b22; padding: 30px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 30px; text-align: center; }
+        .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; }
+        .header-box { width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 30px; text-align: center; }
 
-        /* Area kartu prediksi tunggal */
-        #display-area { width: 100%; max-width: 500px; }
+        /* Grid Utama - Awalnya Kosong */
+        #main-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; 
+        }
 
+        /* Card Style */
         .card { 
-            background: #1c2128; border-radius: 15px; border: 2px solid #00d4ff;
-            overflow: hidden; box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-            animation: fadeIn 0.5s ease-in;
+            background: #161b22; border-radius: 15px; border: 1px solid #30363d;
+            overflow: hidden; transition: 0.3s;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
+        .card:hover { border-color: #00d4ff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }
         .card-header { 
-            background: #2d333b; padding: 20px; font-weight: bold; color: #00d4ff; 
-            text-align: center; border-bottom: 1px solid #444; text-transform: uppercase;
-            font-size: 20px; letter-spacing: 2px; text-shadow: 0 0 10px #00d4ff;
+            background: #00d4ff; padding: 12px; font-weight: bold; color: #000; 
+            text-align: center; text-transform: uppercase; font-size: 15px;
         }
-        .card-body { padding: 25px; }
-        .row-data { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 8px; }
-        .label { color: #888; font-size: 12px; }
-        .val { color: #fff; font-weight: bold; font-size: 16px; }
-        .val-bbfs { color: #ffeb3b; font-size: 22px; }
+        .card-body { padding: 20px; }
+        .row-data { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #21262d; padding-bottom: 5px; }
+        .label { color: #8b949e; font-size: 11px; }
+        .val { color: #f0f6fc; font-weight: bold; }
+        .val-bbfs { color: #ffeb3b; font-size: 18px; }
 
         .btn-copy {
-            width: 100%; margin-top: 20px; padding: 15px; background: transparent; 
+            width: 100%; margin-top: 15px; padding: 10px; background: transparent; 
             border: 1px solid #00d4ff; color: #00d4ff; border-radius: 8px; 
-            cursor: pointer; font-weight: bold; transition: 0.3s;
+            cursor: pointer; font-weight: bold; font-size: 11px;
         }
         .btn-copy:hover { background: #00d4ff; color: #000; }
 
-        .empty-state { color: #444; text-align: center; margin-top: 100px; }
-        .empty-state i { font-size: 50px; margin-bottom: 15px; display: block; }
+        /* Welcome Screen */
+        .welcome-msg { text-align: center; margin-top: 100px; color: #30363d; }
+        .welcome-msg i { font-size: 80px; margin-bottom: 20px; }
 
         @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; width: 100%; } }
     </style>
@@ -95,11 +90,11 @@
 
 <div id="login-page">
     <div class="login-card">
-        <i class="fas fa-shield-alt fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
-        <h2>VIP DANATOTO</h2>
+        <i class="fas fa-lock fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
+        <h2>VIP LOGIN</h2>
         <input type="text" id="user" placeholder="Username">
         <input type="password" id="pass" placeholder="Password">
-        <button onclick="doLogin()">LOGIN SYSTEM</button>
+        <button onclick="doLogin()">MASUK KE SISTEM</button>
         <p id="err" style="color: #ff5252; margin-top: 15px;"></p>
     </div>
 </div>
@@ -107,28 +102,28 @@
 <div id="main-dashboard">
     <div class="sidebar">
         <h2>VIP PANEL</h2>
-        <div class="menu-item active" onclick="showHome()"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+        <div class="menu-item active-menu" onclick="showWelcome()"><i class="fas fa-home"></i> DASHBOARD</div>
         
-        <div class="menu-item dropdown-btn" onclick="toggleDropdown()">
-            <span><i class="fas fa-list-ol"></i> PREDIKSI TOGEL</span>
-            <i class="fas fa-chevron-down" id="drop-icon"></i>
+        <div class="menu-item" style="background: #1a237e; color: #fff; margin-top: 20px;" onclick="loadAllPasaran()">
+            <i class="fas fa-fire"></i> <b>PREDIKSI TOGEL</b>
         </div>
-        <div id="dropdown-togel" class="dropdown-container"></div>
 
-        <div class="menu-item"><i class="fas fa-university"></i> Jadwal Bank</div>
-        <div class="menu-item" onclick="location.reload()" style="color: #ff5252;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        <div class="menu-item"><i class="fas fa-university"></i> JADWAL BANK</div>
+        <div class="menu-item"><i class="fas fa-book"></i> BUKU MIMPI</div>
+        <div class="menu-item" onclick="location.reload()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
 
     <div class="content">
         <div class="header-box">
-            <h1 id="live-date">--</h1>
-            <p id="sub-title" style="color: #00d4ff; font-size: 12px;">SELAMAT DATANG DI PANEL VIP</p>
+            <h1 id="date-now">--</h1>
+            <p id="status-text" style="color: #8b949e; font-size: 12px; margin-top: 5px;">SILAKAN PILIH MENU UNTUK MEMULAI</p>
         </div>
 
-        <div id="display-area">
-            <div class="empty-state">
-                <i class="fas fa-arrow-left"></i>
-                <p>Silakan pilih pasaran di menu <b>PREDIKSI TOGEL</b> untuk melihat angka.</p>
+        <div id="main-grid">
+            <div class="welcome-msg">
+                <i class="fas fa- dice"></i>
+                <h2>SELAMAT DATANG DI PANEL VIP</h2>
+                <p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p>
             </div>
         </div>
     </div>
@@ -139,58 +134,60 @@
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
 
     function doLogin() {
-        if(document.getElementById('user').value === "admin" && document.getElementById('pass').value === "1234") {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        if(u === "admin" && p === "1234") {
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-dashboard').style.display = 'block';
-            initSidebar();
-        } else { document.getElementById('err').innerText = "Salah!"; }
+            document.getElementById('date-now').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        } else {
+            document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
+        }
     }
 
-    function toggleDropdown() {
-        const dd = document.getElementById('dropdown-togel');
-        dd.style.display = (dd.style.display === "block") ? "none" : "block";
+    function showWelcome() {
+        document.getElementById('status-text').innerText = "SILAKAN PILIH MENU UNTUK MEMULAI";
+        document.getElementById('main-grid').innerHTML = `
+            <div class="welcome-msg">
+                <i class="fas fa-dice"></i>
+                <h2>SELAMAT DATANG DI PANEL VIP</h2>
+                <p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p>
+            </div>`;
     }
 
-    function initSidebar() {
+    // FUNGSI INI HANYA JALAN KALAU DIKLIK
+    function loadAllPasaran() {
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = ""; // Bersihkan layar dulu
+        document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
+        
         const d = new Date();
-        document.getElementById('live-date').innerText = d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const drop = document.getElementById('dropdown-togel');
+        const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
+
         pasarans.forEach((name, i) => {
-            drop.innerHTML += `<a href="javascript:void(0)" onclick="showPrediksi('${name}', ${i})">${name}</a>`;
+            const seed = seedDay + i;
+            const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
+            const am = Array.from({length: 4}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
+            const cb = (seed % 10) + " / " + ((seed + 5) % 10);
+            const shio = shios[seed % shios.length];
+
+            grid.innerHTML += `
+                <div class="card">
+                    <div class="card-header">${name}</div>
+                    <div class="card-body">
+                        <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
+                        <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
+                        <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb}</span></div>
+                        <div class="row-data"><span class="label">SHIO</span><span class="val">${shio}</span></div>
+                        <button class="btn-copy" onclick="copyAction('${name}','${bbfs}')">COPY PREDIKSI</button>
+                    </div>
+                </div>
+            `;
         });
     }
 
-    function showPrediksi(name, index) {
-        const d = new Date();
-        const seed = d.getFullYear() + d.getMonth() + d.getDate() + index;
-        const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
-        const am = Array.from({length: 4}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
-        const cb = (seed % 10) + " / " + ((seed + 7) % 10);
-        const shio = shios[seed % shios.length];
-
-        const display = document.getElementById('display-area');
-        display.innerHTML = `
-            <div class="card">
-                <div class="card-header">${name}</div>
-                <div class="card-body">
-                    <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
-                    <div class="row-data"><span class="label">Angka Main</span><span class="val">${am}</span></div>
-                    <div class="row-data"><span class="label">Colok Bebas</span><span class="val">${cb}</span></div>
-                    <div class="row-data"><span class="label">Shio</span><span class="val">${shio}</span></div>
-                    <button class="btn-copy" onclick="copyAction('${name}', '${bbfs}', '${am}')">COPY PREDIKSI</button>
-                </div>
-            </div>
-        `;
-        document.getElementById('sub-title').innerText = "MENAMPILKAN PREDIKSI: " + name;
-    }
-
-    function showHome() {
-        document.getElementById('display-area').innerHTML = `<div class="empty-state"><i class="fas fa-arrow-left"></i><p>Silakan pilih pasaran di menu <b>PREDIKSI TOGEL</b>.</p></div>`;
-        document.getElementById('sub-title').innerText = "SELAMAT DATANG DI PANEL VIP";
-    }
-
-    function copyAction(n, b, a) {
-        navigator.clipboard.writeText(`PREDIKSI ${n}\nBBFS: ${b}\nAM: ${a}\nUPS!`).then(() => alert("Disalin!"));
+    function copyAction(n, b) {
+        navigator.clipboard.writeText(`PREDIKSI ${n}\nBBFS: ${b}\nUPS!`).then(() => alert("BERHASIL DISALIN!"));
     }
 </script>
 </body>
