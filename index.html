@@ -69,7 +69,7 @@
 
         #main-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
             gap: 20px; 
         }
 
@@ -94,46 +94,51 @@
             cursor: pointer; font-weight: bold; font-size: 11px;
         }
 
-        /* JADWAL BANK STYLE */
+        /* JADWAL BANK STYLE - FIXED */
         .bank-container { 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px; 
             width: 100%; 
         }
         .bank-card { 
             background: linear-gradient(180deg, #001f3f 0%, #000b1a 100%); 
             border-radius: 15px; 
-            padding: 20px; 
+            padding: 15px; 
             border: 2px solid #00d4ff;
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+        .logo-wrapper {
+            width: 100%;
+            height: 60px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 5px;
         }
         .bank-logo { 
-            width: 100%;
-            height: 70px; 
-            object-fit: contain; 
-            background: #fff; 
-            border-radius: 10px; 
-            padding: 10px; 
-            margin-bottom: 15px;
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
         }
-        .divider { width: 100%; height: 2px; background: #00d4ff; margin-bottom: 15px; }
+        .divider { width: 100%; height: 2px; background: #00d4ff; margin-bottom: 12px; }
         .bank-info { width: 100%; text-align: center; }
-        .bank-schedule { font-size: 13px; color: #fff; line-height: 1.6; font-weight: 500; }
-        .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 15px; justify-content: center; }
+        .bank-schedule { font-size: 12px; color: #fff; line-height: 1.4; font-weight: 500; }
+        .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; justify-content: center; }
         
-        /* CSS Lampu Dinamis */
-        .lamp { width: 12px; height: 12px; border-radius: 50%; }
+        .lamp { width: 10px; height: 10px; border-radius: 50%; }
         .lamp-online { background: #00c853; box-shadow: 0 0 10px #00c853; }
         .lamp-offline { background: #ff5252; box-shadow: 0 0 10px #ff5252; }
         .text-online { color: #00c853; }
         .text-offline { color: #ff5252; }
-
-        .status-text { font-size: 13px; font-weight: bold; letter-spacing: 1px; }
-        .gangguan-note { color: #ffeb3b; font-size: 11px; font-weight: bold; margin-top: 8px; }
+        .status-text { font-size: 12px; font-weight: bold; }
+        .gangguan-note { color: #ffeb3b; font-size: 10px; font-weight: bold; margin-top: 5px; }
 
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
@@ -223,6 +228,8 @@
         document.getElementById('btn-master').style.display = 'block';
 
         const grid = document.getElementById('main-grid');
+        grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(300px, 1fr))";
+
         const d = new Date();
         const tglHariIni = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('txt-tanggal').innerText = tglHariIni;
@@ -263,11 +270,14 @@
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-bank').classList.add('active-menu');
 
+        const grid = document.getElementById('main-grid');
+        grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(250px, 1fr))";
+
         const now = new Date();
         const hr = now.getHours();
         const mn = now.getMinutes();
         const time = (hr * 100) + mn;
-        const day = now.getDay(); // 0=Minggu, 1=Senin...
+        const day = now.getDay();
 
         const banks = [
             { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
@@ -284,15 +294,12 @@
             { name: "USDT", schedule: "Online 24 Jam (Crypto)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Tether_Logo.svg/1200px-Tether_Logo.svg.png" }
         ];
 
-        let bankHtml = `<div class="bank-container">`;
+        let bankHtml = "";
         banks.forEach(bank => {
             let isOnline = true;
-            
-            // Logika BCA (Senin-Jumat 22:00 - 00:20)
             if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
                 if (time >= 2200 || time <= 20) isOnline = false;
             }
-            // Logika MANDIRI (Setiap Hari 23:00 - 03:30)
             if (bank.name === "MANDIRI") {
                 if (time >= 2300 || time <= 330) isOnline = false;
             }
@@ -303,7 +310,9 @@
 
             bankHtml += `
                 <div class="bank-card">
-                    <img src="${bank.logo}" class="bank-logo" alt="${bank.name}">
+                    <div class="logo-wrapper">
+                        <img src="${bank.logo}" class="bank-logo">
+                    </div>
                     <div class="divider"></div>
                     <div class="bank-info">
                         <div class="bank-schedule">${bank.schedule}</div>
@@ -315,7 +324,6 @@
                     </div>
                 </div>`;
         });
-        bankHtml += `</div>`;
         document.getElementById('main-grid').innerHTML = bankHtml;
     }
 
