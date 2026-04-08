@@ -88,20 +88,18 @@
         .val-bbfs { color: #ffeb3b; font-size: 15px; letter-spacing: 1px; font-weight: bold; }
         .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 12px; text-transform: lowercase; }
         
-        /* Tombol Copy per pasaran */
         .btn-copy {
             width: 100%; padding: 8px; margin-top: 10px; background: #30363d;
             border: 1px solid #00d4ff; border-radius: 6px; color: #00d4ff;
             cursor: pointer; font-weight: bold; font-size: 11px;
         }
 
-        /* JADWAL BANK STYLE (BIRU - RAPI KEK UNGU) */
+        /* JADWAL BANK STYLE */
         .bank-container { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 15px; 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px; 
             width: 100%; 
-            justify-content: flex-start;
         }
         .bank-card { 
             background: linear-gradient(180deg, #001f3f 0%, #000b1a 100%); 
@@ -111,23 +109,20 @@
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            width: 300px;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-            position: relative;
-            overflow: hidden;
         }
         .bank-logo { 
-            width: 140px; 
-            height: 60px; 
+            width: 100%;
+            height: 70px; 
             object-fit: contain; 
-            background: rgba(255,255,255,0.9); 
-            border-radius: 8px; 
-            padding: 8px; 
+            background: #fff; 
+            border-radius: 10px; 
+            padding: 10px; 
             margin-bottom: 15px;
         }
         .divider { width: 100%; height: 2px; background: #00d4ff; margin-bottom: 15px; }
         .bank-info { width: 100%; text-align: center; }
-        .bank-schedule { font-size: 12px; color: #fff; line-height: 1.6; font-weight: 500; }
+        .bank-schedule { font-size: 13px; color: #fff; line-height: 1.6; font-weight: 500; }
         .bank-status-row { display: flex; align-items: center; gap: 8px; margin-top: 15px; justify-content: center; }
         .lamp { width: 12px; height: 12px; border-radius: 50%; background: #00c853; box-shadow: 0 0 10px #00c853; }
         .status-text { color: #00c853; font-size: 13px; font-weight: bold; letter-spacing: 1px; }
@@ -136,8 +131,6 @@
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
-            .bank-container { justify-content: center; }
-            .bank-card { width: 100%; }
         }
     </style>
 </head>
@@ -185,11 +178,6 @@
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
     
-    // Daftar Tanggal Merah 2026 (Contoh beberapa hari besar)
-    const tanggalMerah2026 = ["2026-01-01", "2026-01-29", "2026-02-15", "2026-03-20", "2026-03-25", "2026-04-03", "2026-05-01", "2026-05-14", "2026-05-27", "2026-08-17", "2026-12-25"];
-
-    let masterData = [];
-
     function doLogin() {
         const u = document.getElementById('user').value;
         const p = document.getElementById('pass').value;
@@ -206,6 +194,8 @@
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
         document.getElementById('main-grid').innerHTML = "";
         document.getElementById('main-grid').style.display = "grid"; 
+        // Sembunyikan tombol Copy All secara default setiap ganti menu
+        document.getElementById('btn-master').style.display = 'none';
     }
 
     function showWelcome() {
@@ -213,7 +203,6 @@
         document.getElementById('txt-jalan').style.display = 'block';
         document.getElementById('txt-tanggal').style.display = 'none';
         document.getElementById('sub-txt-tanggal').style.display = 'none';
-        document.getElementById('btn-master').style.display = 'none';
         document.getElementById('menu-dash').classList.add('active-menu');
     }
 
@@ -223,8 +212,10 @@
         document.getElementById('txt-tanggal').style.display = 'block';
         document.getElementById('sub-txt-tanggal').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
-        document.getElementById('btn-master').style.display = 'block';
         document.getElementById('menu-pred').classList.add('active-menu');
+        
+        // Tampilkan tombol Copy All hanya di sini
+        document.getElementById('btn-master').style.display = 'block';
 
         const grid = document.getElementById('main-grid');
         const d = new Date();
@@ -241,7 +232,7 @@
             const cb1 = Math.floor(Math.abs(Math.sin(seed + 8) * 10)) % 10;
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shioUtama = shios[seed % shios.length];
-            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed, tglHariIni });
+            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, tglHariIni });
 
             grid.innerHTML += `
                 <div class="card">
@@ -259,46 +250,38 @@
     }
 
     function loadJadwalBank() {
-        resetMenu();
-        document.getElementById('main-grid').style.display = "block";
+        resetMenu(); // Tombol Copy All otomatis hilang karena fungsi resetMenu
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
-        document.getElementById('txt-tanggal').innerText = "STATUS BANK";
-        document.getElementById('sub-txt-tanggal').innerText = "SISTEM MONITORING BANK REALTIME";
+        document.getElementById('txt-tanggal').innerText = "STATUS OPERASIONAL BANK";
+        document.getElementById('sub-txt-tanggal').innerText = "SISTEM MONITORING BANK & E-WALLET REALTIME";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-bank').classList.add('active-menu');
 
-        const d = new Date();
-        const hariIndo = d.getDay(); // 0=Minggu, 6=Sabtu
-        const formatTgl = d.toISOString().split('T')[0];
-        const isTanggalMerah = tanggalMerah2026.includes(formatTgl);
-        
-        // Logika Khusus BCA Online 24 Jam
-        let bcaSchedule = "Senin-Jumat : 21.00 - 00.20 WIB<br>Sabtu-Minggu : 24 Jam";
-        if(hariIndo === 0 || hariIndo === 6 || isTanggalMerah) {
-            bcaSchedule = "<span style='color:#00ff00; font-weight:bold;'>BANK BCA ONLINE 24 JAM</span><br>(Hari Libur/Tanggal Merah)";
-        }
-
         const banks = [
-            { name: "BCA", schedule: bcaSchedule, logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
-            { name: "BNI", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
-            { name: "BRI", schedule: "Senin-Minggu : 22.00 - 03.30 WIB", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
-            { name: "MANDIRI", schedule: "Senin-Minggu : 22.45 - 03.30 WIB", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
-            { name: "DANAMON", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
-            { name: "CIMB NIAGA", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
-            { name: "DANA", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
-            { name: "OVO", schedule: "Senin-Minggu : 24 Jam Online", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" }
+            { name: "BCA", schedule: "Senin-Jumat : 21.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
+            { name: "BRI", schedule: "Setiap Hari : 22.00-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 22.45-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
+            { name: "CIMB NIAGA", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gojek_logo_2019.svg/1200px-Gojek_logo_2019.svg.png" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/1200px-LinkAja.svg.png" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" },
+            { name: "USDT", schedule: "Online 24 Jam (Crypto)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Tether_Logo.svg/1200px-Tether_Logo.svg.png" }
         ];
 
         let bankHtml = `<div class="bank-container">`;
         banks.forEach(bank => {
             bankHtml += `
                 <div class="bank-card">
-                    <img src="${bank.logo}" class="bank-logo">
+                    <img src="${bank.logo}" class="bank-logo" alt="${bank.name}">
                     <div class="divider"></div>
                     <div class="bank-info">
                         <div class="bank-schedule">${bank.schedule}</div>
-                        <div class="gangguan-note">(Terkecuali Gangguan)</div>
+                        <div class="gangguan-note">(Terkecuali Gangguan Sistem)</div>
                     </div>
                     <div class="bank-status-row">
                         <div class="lamp"></div>
@@ -318,13 +301,13 @@
         const teks = `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nSHIO : ${d.shioUtama}\n\nselalu utamakan prediksi sendiri`;
         
         navigator.clipboard.writeText(teks).then(() => {
-            alert("BERHASIL DI COPY!\n\n" + d.name);
+            alert("BERHASIL DI COPY!\n" + d.name);
         });
     }
 
     function copyAllPrediksi() {
-        if(masterData.length === 0) return;
-        const semuaTeks = masterData.map((d, i) => {
+        if(!masterData || masterData.length === 0) return;
+        const semuaTeks = masterData.map((d) => {
             const b = d.bbfs.split('');
             const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
             const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
