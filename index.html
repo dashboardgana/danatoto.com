@@ -78,19 +78,21 @@
             text-align: center; text-transform: uppercase; font-size: 14px;
         }
         
-        /* Card Body Content */
-        .card-body { padding: 15px; flex-grow: 1; font-size: 13px; color: #f0f6fc; line-height: 1.6; }
-        .data-text { display: block; margin-bottom: 2px; }
-        
+        .card-body { padding: 20px; flex-grow: 1; font-size: 13px; color: #f0f6fc; line-height: 1.8; }
+        .row-data { display: flex; justify-content: space-between; border-bottom: 1px solid #21262d; padding: 5px 0; }
+        .label { color: #8b949e; font-size: 11px; text-transform: uppercase; }
+        .val { color: #f0f6fc; font-weight: bold; }
+        .val-bbfs { color: #ffeb3b; font-size: 16px; }
+
         .ups-text {
-            color: #ff5252; font-size: 11px; font-weight: bold; text-align: center;
-            margin-top: 15px; border-top: 1px solid #30363d; padding-top: 10px;
+            color: #ff5252; font-size: 10px; font-weight: bold; text-align: center;
+            margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;
         }
 
         .btn-copy {
-            width: 100%; margin-top: 10px; padding: 10px; background: transparent; 
+            width: 100%; margin-top: 15px; padding: 10px; background: transparent; 
             border: 1px solid #00d4ff; color: #00d4ff; border-radius: 8px; 
-            cursor: pointer; font-weight: bold; font-size: 11px;
+            cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase;
         }
         .btn-copy:hover { background: #00d4ff; color: #000; }
 
@@ -180,41 +182,29 @@
         document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         document.getElementById('btn-master').style.display = 'block';
         
-        const tglHeader = document.getElementById('date-now').innerText;
         const d = new Date();
+        const tglHeader = document.getElementById('date-now').innerText;
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
 
         pasarans.forEach((name, i) => {
             const seed = seedDay + i;
-            
-            // Logika generate angka unik tiap pasaran
             const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
             const am = Array.from({length: 5}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
             const b = bbfs.split('');
-            const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
-            const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
             const cb1 = Math.floor(Math.abs(Math.sin(seed + 8) * 10)) % 10;
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
-            const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
             const shioUtama = shios[seed % shios.length];
-            const shioLengkap = `${shioUtama} / ${shios[(seed+1)%12]} / ${shios[(seed+2)%12]}`;
 
-            // Simpan data untuk fungsi copy
-            masterData.push({ name, tgl: tglHeader, bbfs, am, p4d, p2d, cb1, cb2, twin, shioLengkap });
+            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, seed });
 
             grid.innerHTML += `
                 <div class="card">
                     <div class="card-header">${name}</div>
                     <div class="card-body">
-                        <span class="data-text">${tglHeader}</span>
-                        <span class="data-text">BBFS ${bbfs}</span>
-                        <span class="data-text">ANGKA MAIN ${am}</span>
-                        <span class="data-text">4D ${p4d}</span>
-                        <span class="data-text">2D (BB) ${p2d}</span>
-                        <span class="data-text">COLOK BEBAS ${cb1} / ${cb2}</span>
-                        <span class="data-text">COLOK BEBAS 2D ${cb1}${b[0]} / ${cb2}${b[1]} / ${b[2]}${b[3]}</span>
-                        <span class="data-text">TWIN ${twin}</span>
-                        <span class="data-text">SHIO ${shioLengkap}</span>
+                        <div class="row-data"><span class="label">BBFS</span><span class="val val-bbfs">${bbfs}</span></div>
+                        <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
+                        <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
+                        <div class="row-data"><span class="label">SHIO</span><span class="val">${shioUtama}</span></div>
                         <div class="ups-text">SELALU UTAMAKAN PREDIKSI SENDIRI</div>
                         <button class="btn-copy" onclick="copyAction(${i})">SALIN PREDIKSI</button>
                     </div>
@@ -222,21 +212,30 @@
         });
     }
 
-    function copyAction(index) {
+    function formatTeksCopy(index) {
         const d = masterData[index];
-        const teks = `PREDIKSI ${d.name}\n${d.tgl}\nBBFS ${d.bbfs}\nANGKA MAIN ${d.am}\n4D ${d.p4d}\n2D (BB) ${d.p2d}\nCOLOK BEBAS ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D ${d.cb1}${d.bbfs[0]} / ${d.cb2}${d.bbfs[1]} / ${d.bbfs[2]}${d.bbfs[3]}\nTWIN ${d.twin}\nSHIO ${d.shioLengkap}\nSELALU UTAMAKAN PREDIKSI SENDIRI`;
+        const tgl = document.getElementById('date-now').innerText;
+        const b = d.bbfs.split('');
         
+        // Rumus 4D, 2D, Twin, Shio Lengkap
+        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
+        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
+        const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
+        const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]} / ${shios[(d.seed+2)%12]}`;
+
+        return `PREDIKSI ${d.name}\n${tgl}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D : ${d.cb1}${b[0]} / ${d.cb2}${b[1]} / ${b[2]}${b[3]}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\nSelalu Utamakan Prediksi Sendiri`;
+    }
+
+    function copyAction(index) {
+        const teks = formatTeksCopy(index);
         navigator.clipboard.writeText(teks).then(() => {
-            alert("BERHASIL DI COPY!\n\n" + d.name);
+            alert("BERHASIL DI COPY!\n\n" + masterData[index].name);
         });
     }
 
     function copyAllPrediksi() {
         if(masterData.length === 0) return;
-        const semuaTeks = masterData.map(d => {
-            return `PREDIKSI ${d.name}\n${d.tgl}\nBBFS ${d.bbfs}\nANGKA MAIN ${d.am}\n4D ${d.p4d}\n2D (BB) ${d.p2d}\nCOLOK BEBAS ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D ${d.cb1}${d.bbfs[0]} / ${d.cb2}${d.bbfs[1]} / ${d.bbfs[2]}${d.bbfs[3]}\nTWIN ${d.twin}\nSHIO ${d.shioLengkap}\nSELALU UTAMAKAN PREDIKSI SENDIRI`;
-        }).join('\n\n====================\n\n');
-        
+        const semuaTeks = masterData.map((_, i) => formatTeksCopy(i)).join('\n\n====================\n\n');
         navigator.clipboard.writeText(semuaTeks).then(() => {
             alert("SEMUA PREDIKSI BERHASIL DI COPY!");
         });
