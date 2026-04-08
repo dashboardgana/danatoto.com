@@ -52,7 +52,7 @@
         .header-box { 
             width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; 
             border: 1px solid #30363d; margin-bottom: 30px; text-align: center;
-            position: relative;
+            position: relative; box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
         }
 
         .btn-copy-all {
@@ -67,38 +67,50 @@
             display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; 
         }
 
-        /* Card Style */
+        /* Card Style - Dengan Efek Lampu */
         .card { 
             background: #161b22; border-radius: 15px; border: 1px solid #30363d;
             overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Shadow dasar */
         }
-        .card:hover { border-color: #00d4ff; box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }
+        /* Efek Lampu Saat Hover */
+        .card:hover { 
+            border-color: #00d4ff; 
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), inset 0 0 10px rgba(0, 212, 255, 0.1); 
+            transform: translateY(-5px);
+        }
+        
         .card-header { 
-            background: #00d4ff; padding: 12px; font-weight: bold; color: #000; 
+            background: linear-gradient(90deg, #00d4ff, #008fb3); padding: 12px; 
+            font-weight: bold; color: #000; 
             text-align: center; text-transform: uppercase; font-size: 14px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
         }
         
         .card-body { padding: 20px; flex-grow: 1; font-size: 13px; color: #f0f6fc; line-height: 1.8; }
         .row-data { display: flex; justify-content: space-between; border-bottom: 1px solid #21262d; padding: 5px 0; }
         .label { color: #8b949e; font-size: 11px; text-transform: uppercase; }
         .val { color: #f0f6fc; font-weight: bold; }
-        .val-bbfs { color: #ffeb3b; font-size: 16px; }
+        .val-bbfs { color: #ffeb3b; font-size: 16px; text-shadow: 0 0 5px rgba(255, 235, 59, 0.3); }
 
+        /* Perbaikan Teks UPS: Tidak memaksa huruf besar semua */
         .ups-text {
-            color: #ff5252; font-size: 10px; font-weight: bold; text-align: center;
-            margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;
+            color: #ff5252; font-size: 11px; font-weight: bold; text-align: center;
+            margin-top: 15px; text-transform: none; letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(255, 82, 82, 0.2);
         }
 
         .btn-copy {
             width: 100%; margin-top: 15px; padding: 10px; background: transparent; 
             border: 1px solid #00d4ff; color: #00d4ff; border-radius: 8px; 
             cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase;
+            transition: 0.3s;
         }
-        .btn-copy:hover { background: #00d4ff; color: #000; }
+        .btn-copy:hover { background: #00d4ff; color: #000; box-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
 
         /* Welcome Screen */
         .welcome-msg { text-align: center; margin-top: 100px; color: #30363d; width: 100%; grid-column: 1 / -1; }
-        .welcome-msg i { font-size: 80px; margin-bottom: 20px; }
+        .welcome-msg i { font-size: 80px; margin-bottom: 20px; color: #161b22; }
 
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
@@ -183,7 +195,6 @@
         document.getElementById('btn-master').style.display = 'block';
         
         const d = new Date();
-        const tglHeader = document.getElementById('date-now').innerText;
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
 
         pasarans.forEach((name, i) => {
@@ -216,13 +227,11 @@
         const tgl = document.getElementById('date-now').innerText;
         const b = d.bbfs.split('');
         
-        // Rumus 4D, 2D, Twin, Shio Lengkap sesuai permintaan bos
         const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
         const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
         const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]} / ${shios[(d.seed+2)%12]}`;
 
-        // Return teks dengan format rapi (Pakai titik dua, spasi, dan penutup huruf kecil)
         return `PREDIKSI ${d.name}\n${tgl}\n\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D : ${d.cb1}${b[0]} / ${d.cb2}${b[1]} / ${b[2]}${b[3]}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSelalu Utamakan Prediksi Sendiri`;
     }
 
