@@ -104,7 +104,7 @@
         .val { color: #f0f6fc; font-weight: bold; }
         .val-bbfs { color: #ffeb3b; font-size: 16px; text-shadow: 0 0 5px rgba(255, 235, 59, 0.3); }
 
-        /* Teks UPS: Huruf normal (tidak paksa besar) */
+        /* Teks UPS */
         .ups-text {
             color: #ff5252; font-size: 11px; font-weight: bold; text-align: center;
             margin-top: 15px; text-transform: none; letter-spacing: 0.5px;
@@ -159,8 +159,10 @@
 
     <div class="content">
         <div class="header-box">
-            <h1 id="date-now">--</h1>
-            <p id="status-text" style="color: #8b949e; font-size: 12px; margin-top: 5px;">SILAKAN PILIH MENU UNTUK MEMULAI</p>
+            <h1 id="welcome-title">SELAMAT DATANG DI PANEL VIP</h1>
+            <p id="status-text" style="color: #00d4ff; font-size: 14px; margin-top: 5px; font-weight: bold;">
+                SELAMAT DATANG SILAHKAN PILIH MENU YANG INGIN ANDA CARI 🔍✨
+            </p>
             <button id="btn-master" class="btn-copy-all" onclick="copyAllPrediksi()"><i class="fas fa-copy"></i> COPY ALL PREDIKSI</button>
         </div>
 
@@ -186,7 +188,6 @@
         if(u === "admin" && p === "1234") {
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-dashboard').style.display = 'block';
-            document.getElementById('date-now').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         } else {
             document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
         }
@@ -194,7 +195,8 @@
 
     function showWelcome() {
         document.getElementById('btn-master').style.display = 'none';
-        document.getElementById('status-text').innerText = "SILAKAN PILIH MENU UNTUK MEMULAI";
+        document.getElementById('welcome-title').innerText = "SELAMAT DATANG DI PANEL VIP";
+        document.getElementById('status-text').innerText = "SELAMAT DATANG SILAHKAN PILIH MENU YANG INGIN ANDA CARI 🔍✨";
         document.getElementById('main-grid').innerHTML = `<div class="welcome-msg"><i class="fas fa-dice"></i><h2>SELAMAT DATANG DI PANEL VIP</h2><p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p></div>`;
     }
 
@@ -202,6 +204,9 @@
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
         masterData = [];
+        
+        // Ganti header saat menu Prediksi dipilih
+        document.getElementById('welcome-title').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         document.getElementById('btn-master').style.display = 'block';
         
@@ -238,14 +243,11 @@
     function formatTeksCopy(index) {
         const d = masterData[index];
         const b = d.bbfs.split('');
-        
-        // Rumus data rapi untuk copy
         const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
         const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
         const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]} / ${shios[(d.seed+2)%12]}`;
 
-        // RETURN FORMAT RAPI (Langsung tersusun ke bawah)
         return `PREDIKSI ${d.name}\n${d.tglCard}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nCOLOK BEBAS 2D : ${d.cb1}${b[0]} / ${d.cb2}${b[1]} / ${b[2]}${b[3]}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSelalu Utamakan Prediksi Sendiri`;
     }
 
