@@ -58,27 +58,20 @@
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         }
 
-        /* Efek Lampu Glowing (Hanya muncul di Dashboard) */
-        .glow-active {
-            animation: glow-pulse 2s infinite alternate;
-        }
+        .glow-active { animation: glow-pulse 2s infinite alternate; }
 
         @keyframes glow-pulse {
             from { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); border-color: #00d4ff; }
             to { box-shadow: 0 0 25px rgba(0, 212, 255, 0.7); border-color: #fff; }
         }
 
-        /* Running Text Style */
         .running-text {
             color: #00d4ff; font-size: 22px; font-weight: bold;
             text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
-            display: none; /* Default sembunyi */
+            display: none;
         }
 
-        /* Judul Tanggal Style */
-        .date-display {
-            font-size: 28px; font-weight: bold; color: #fff;
-        }
+        .date-display { font-size: 28px; font-weight: bold; color: #fff; }
         .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; }
 
         .btn-copy-all {
@@ -116,16 +109,22 @@
         .val { color: #f0f6fc; font-weight: bold; }
         .val-bbfs { color: #ffeb3b; font-size: 16px; }
 
-        .ups-text {
-            color: #ff5252; font-size: 11px; font-weight: bold; text-align: center;
-            margin-top: 15px;
-        }
+        .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 15px; }
 
         .btn-copy {
             width: 100%; margin-top: 15px; padding: 10px; background: transparent; 
             border: 1px solid #00d4ff; color: #00d4ff; border-radius: 8px; cursor: pointer; font-weight: bold;
         }
         .btn-copy:hover { background: #00d4ff; color: #000; }
+
+        /* JADWAL BANK TABLE STYLE */
+        .bank-table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 10px; overflow: hidden; margin-top: 20px; }
+        .bank-table th { background: #1a237e; color: #00d4ff; padding: 15px; text-align: left; font-size: 14px; }
+        .bank-table td { padding: 15px; border-bottom: 1px solid #30363d; vertical-align: middle; }
+        .bank-logo { width: 80px; height: auto; display: block; filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); }
+        .status-online { color: #00ff00; font-weight: bold; animation: blink 1.5s infinite; }
+        .status-offline { color: #ff5252; font-weight: bold; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
@@ -149,12 +148,12 @@
 
 <div id="main-dashboard">
     <div class="sidebar">
-        <h2>VIP PANEL</h2>
+        <h2>👑GANES PRAKAS👑</h2>
         <div id="menu-dash" class="menu-item active-menu" onclick="showWelcome()"><i class="fas fa-home"></i> DASHBOARD</div>
         <div id="menu-pred" class="menu-item" style="background: #1a237e; color: #fff; margin-top: 20px;" onclick="loadAllPasaran()">
             <i class="fas fa-fire"></i> <b>PREDIKSI TOGEL</b>
         </div>
-        <div class="menu-item"><i class="fas fa-university"></i> JADWAL BANK</div>
+        <div id="menu-bank" class="menu-item" onclick="loadJadwalBank()"><i class="fas fa-university"></i> JADWAL BANK</div>
         <div class="menu-item"><i class="fas fa-book"></i> BUKU MIMPI</div>
         <div class="menu-item" onclick="location.reload()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
@@ -176,6 +175,13 @@
 </div>
 
 <script>
+    // --- DATABASE TANGGAL MERAH 2026 (SESUAIKAN TIAP TAHUN) ---
+    const liburNasional = [
+        "2026-01-01", "2026-01-29", "2026-02-16", "2026-03-20", "2026-03-21", 
+        "2026-04-03", "2026-05-01", "2026-05-13", "2026-05-14", "2026-05-21", 
+        "2026-06-01", "2026-08-17", "2026-12-25"
+    ];
+
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
     
@@ -193,29 +199,30 @@
         }
     }
 
-    function showWelcome() {
-        // Atur Tampilan Header untuk Dashboard
-        document.getElementById('header-container').classList.add('glow-active');
-        document.getElementById('txt-jalan').style.display = 'block';
+    function resetHeader() {
+        document.getElementById('header-container').classList.remove('glow-active');
+        document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'none';
         document.getElementById('sub-txt-tanggal').style.display = 'none';
         document.getElementById('btn-master').style.display = 'none';
-        
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
+    }
+
+    function showWelcome() {
+        resetHeader();
+        document.getElementById('header-container').classList.add('glow-active');
+        document.getElementById('txt-jalan').style.display = 'block';
         document.getElementById('menu-dash').classList.add('active-menu');
-        document.getElementById('menu-pred').classList.remove('active-menu');
         document.getElementById('main-grid').innerHTML = ""; 
     }
 
     function loadAllPasaran() {
-        // Atur Tampilan Header untuk Menu Prediksi
-        document.getElementById('header-container').classList.remove('glow-active');
-        document.getElementById('txt-jalan').style.display = 'none';
+        resetHeader();
         document.getElementById('txt-tanggal').style.display = 'block';
         document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('sub-txt-tanggal').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         document.getElementById('btn-master').style.display = 'block';
-        
         document.getElementById('menu-pred').classList.add('active-menu');
-        document.getElementById('menu-dash').classList.remove('active-menu');
 
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
@@ -253,6 +260,77 @@
         });
     }
 
+    function loadJadwalBank() {
+        resetHeader();
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('txt-tanggal').innerText = "JADWAL OPERASIONAL BANK";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('sub-txt-tanggal').innerText = "STATUS BANK SAAT INI (REALTIME)";
+        document.getElementById('menu-bank').classList.add('active-menu');
+
+        const grid = document.getElementById('main-grid');
+        grid.style.display = 'block'; // Paksa mode satu kolom untuk tabel
+        
+        const d = new Date();
+        const hari = d.getDay(); // 0: Minggu, 6: Sabtu
+        const jam = d.getHours();
+        const tglISO = d.toISOString().split('T')[0];
+
+        // LOGIKA BCA: Online 24 Jam di Sabtu(6), Minggu(0), atau Tanggal Merah. 
+        // Selain itu Offline jam 21:00 - 01:00.
+        let isBcaOnline = true;
+        const isHariLibur = hari === 0 || hari === 6 || liburNasional.includes(tglISO);
+        
+        if (!isHariLibur) {
+            if (jam >= 21 || jam < 1) isBcaOnline = false;
+        }
+
+        grid.innerHTML = `
+            <table class="bank-table">
+                <thead>
+                    <tr>
+                        <th>LOGO BANK</th>
+                        <th>JADWAL OFFLINE</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" class="bank-logo"></td>
+                        <td>Senin - Jumat (21:00 - 01:00)<br><b>Sabtu, Minggu & Tgl Merah ONLINE 24 JAM</b></td>
+                        <td class="${isBcaOnline ? 'status-online' : 'status-offline'}">${isBcaOnline ? '● ONLINE' : '● OFFLINE'}</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" class="bank-logo"></td>
+                        <td>Setiap Hari (23:00 - 04:00)</td>
+                        <td class="${(jam >= 23 || jam < 4) ? 'status-offline' : 'status-online'}">${(jam >= 23 || jam < 4) ? '● OFFLINE' : '● ONLINE'}</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/BRI_2020.svg" class="bank-logo"></td>
+                        <td>Setiap Hari (22:00 - 05:00)</td>
+                        <td class="${(jam >= 22 || jam < 5) ? 'status-offline' : 'status-online'}">${(jam >= 22 || jam < 5) ? '● OFFLINE' : '● ONLINE'}</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://upload.wikimedia.org/wikipedia/id/5/55/BNI_logo.svg" class="bank-logo"></td>
+                        <td>ONLINE 24 JAM</td>
+                        <td class="status-online">● ONLINE</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://upload.wikimedia.org/wikipedia/id/f/fa/Bank_Danamon_Logo.svg" class="bank-logo"></td>
+                        <td>ONLINE 24 JAM</td>
+                        <td class="status-online">● ONLINE</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://upload.wikimedia.org/wikipedia/id/c/c5/CIMB_Niaga_logo.svg" class="bank-logo"></td>
+                        <td>ONLINE 24 JAM</td>
+                        <td class="status-online">● ONLINE</td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+    }
+
+    // Fungsi Copy & Prediksi Tetap Sama
     function formatTeksCopy(index) {
         const d = masterData[index];
         const b = d.bbfs.split('');
@@ -260,23 +338,18 @@
         const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]}`;
         const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]}`;
-
         return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSELALU UTAMAKAN PREDIKSI SENDIRI (UPS)`;
     }
 
     function copyAction(index) {
         const teks = formatTeksCopy(index);
-        navigator.clipboard.writeText(teks).then(() => {
-            alert("BERHASIL DI COPY!\n\n" + masterData[index].name);
-        });
+        navigator.clipboard.writeText(teks).then(() => { alert("BERHASIL DI COPY!\n\n" + masterData[index].name); });
     }
 
     function copyAllPrediksi() {
         if(masterData.length === 0) return;
         const semuaTeks = masterData.map((_, i) => formatTeksCopy(i)).join('\n\n====================\n\n');
-        navigator.clipboard.writeText(semuaTeks).then(() => {
-            alert("SEMUA PREDIKSI BERHASIL DI COPY!");
-        });
+        navigator.clipboard.writeText(semuaTeks).then(() => { alert("SEMUA PREDIKSI BERHASIL DI COPY!"); });
     }
 </script>
 </body>
