@@ -98,7 +98,13 @@
         .label { color: #8b949e; font-size: 11px; }
         .val { color: #f0f6fc; font-weight: bold; }
         .val-bbfs { color: #ffeb3b; font-size: 15px; letter-spacing: 1px; }
-        .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 12px; }
+        
+        /* HURUF KECIL DIKUNCI DI SINI */
+        .ups-text { 
+            color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; 
+            margin-top: 12px; text-transform: lowercase; 
+        }
+        
         .btn-copy { width: 100%; margin-top: 10px; padding: 8px; background: transparent; border: 1px solid #00d4ff; color: #00d4ff; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-copy:hover { background: #00d4ff; color: #000; }
 
@@ -106,43 +112,42 @@
         .bank-container { 
             display: flex; 
             flex-wrap: wrap; 
-            gap: 15px; 
+            gap: 10px; 
             width: 100%; 
         }
         .bank-card { 
             background: #0d1117; 
-            border-radius: 10px; 
-            padding: 15px; 
+            border-radius: 8px; 
+            padding: 10px; 
             border: 1px solid #00d4ff;
             display: flex; 
             flex-direction: column;
             align-items: center; 
             justify-content: center;
-            min-width: 200px;
             flex: 1;
-            position: relative;
+            min-width: 160px;
             box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
         }
         .bank-logo { 
-            width: 100px; 
-            height: 40px; 
+            width: 80px; 
+            height: 35px; 
             object-fit: contain; 
-            background: white; 
-            border-radius: 5px; 
-            padding: 5px; 
-            margin-bottom: 10px;
+            background: #fff; 
+            border-radius: 4px; 
+            padding: 3px; 
+            margin-bottom: 8px;
         }
-        .bank-name { font-weight: bold; font-size: 14px; color: #fff; margin-bottom: 5px; }
-        .bank-status-row { display: flex; align-items: center; gap: 8px; }
-        .lamp { width: 10px; height: 10px; border-radius: 50%; background: #00c853; box-shadow: 0 0 10px #00c853; }
-        .status-text { color: #00c853; font-size: 12px; font-weight: bold; }
+        .bank-name { font-weight: bold; font-size: 12px; color: #fff; margin-bottom: 4px; }
+        .bank-status-row { display: flex; align-items: center; gap: 5px; }
+        .lamp { width: 8px; height: 8px; border-radius: 50%; background: #00c853; box-shadow: 0 0 8px #00c853; }
+        .status-text { color: #00c853; font-size: 11px; font-weight: bold; }
 
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
             .btn-copy-all { position: static; transform: none; margin-top: 15px; display: block; width: 100%; }
             #main-grid { grid-template-columns: 1fr; }
-            .bank-container { flex-direction: column; }
+            .bank-container { display: grid; grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -220,7 +225,6 @@
         document.getElementById('sub-txt-tanggal').style.display = 'none';
         document.getElementById('btn-master').style.display = 'none';
         document.getElementById('menu-dash').classList.add('active-menu');
-        // Keterangan selamat datang di dalam grid dihapus sesuai permintaan
     }
 
     function loadAllPasaran() {
@@ -260,7 +264,7 @@
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
                         <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
                         <div class="row-data"><span class="label">SHIO</span><span class="val">${shioUtama}</span></div>
-                        <div class="ups-text">SELALU UTAMAKAN PREDIKSI SENDIRI</div>
+                        <div class="ups-text">selalu utamakan prediksi sendiri</div>
                         <button class="btn-copy" onclick="copyAction(${i})">SALIN PREDIKSI</button>
                     </div>
                 </div>`;
@@ -279,14 +283,14 @@
         document.getElementById('menu-bank').classList.add('active-menu');
 
         const banks = [
-            { name: "BCA", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" },
-            { name: "BNI", logo: "https://upload.wikimedia.org/wikipedia/id/5/51/BNI_logo.svg" },
-            { name: "BRI", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2e/BRI_Logo.svg" },
-            { name: "MANDIRI", logo: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" },
-            { name: "DANAMON", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d4/Logo_Danamon.svg" },
-            { name: "CIMB NIAGA", logo: "https://upload.wikimedia.org/wikipedia/commons/d/db/CIMB_Niaga_logo.svg" },
-            { name: "DANA", logo: "https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" },
-            { name: "OVO", logo: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" }
+            { name: "BCA", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1280px-Bank_Central_Asia.svg.png" },
+            { name: "BNI", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/1200px-BNI_logo.svg.png" },
+            { name: "BRI", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
+            { name: "MANDIRI", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "DANAMON", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/1200px-Logo_Danamon.svg.png" },
+            { name: "CIMB NIAGA", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
+            { name: "DANA", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
+            { name: "OVO", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" }
         ];
 
         let bankHtml = `<div class="bank-container">`;
@@ -314,7 +318,7 @@
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]}`;
         const shioLengkap = `${d.shioUtama} / ${shios[(d.seed+1)%12]}`;
 
-        return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nSELALU UTAMAKAN PREDIKSI SENDIRI (UPS)`;
+        return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nTWIN : ${twin}\nSHIO : ${shioLengkap}\n\nselalu utamakan prediksi sendiri`;
     }
 
     function copyAction(index) {
