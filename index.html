@@ -55,7 +55,7 @@
             position: relative;
         }
 
-        /* Tombol Copy All (Tanda Merah) */
+        /* Tombol Copy All */
         .btn-copy-all {
             position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
             padding: 10px 15px; background: #ff5252; color: white; border: none;
@@ -147,10 +147,9 @@
 </div>
 
 <script>
-    const pasarans = ["TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEW YORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEW YORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTO CAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET 12", "TOTO MACAU SIANG", "BULLSEYE", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTO MACAU 5D SORE", "POIPET 15", "TOTO MALI 1530", "TOTO MACAU SORE", "HUAHIN 1630", "SINGAPORE", "MAGNUM", "TOTO MACAU MALAM I", "CHELSEA 19", "POIPET 19", "PCSO", "TOTO MALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTO MACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTO MACAU MALAM II", "POIPET 22", "HONGKONG", "TOTO MACAU MALAM III", "TOTO MALI 2330", "JAKARTA 2330", "KING KONG 4D", "HOKIDRAW"];
+    const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
     
-    // Array untuk simpan data sementara buat fitur Copy All
     let masterData = [];
 
     function doLogin() {
@@ -174,9 +173,9 @@
     function loadAllPasaran() {
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
-        masterData = []; // Reset data
+        masterData = [];
         document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
-        document.getElementById('btn-master').style.display = 'block'; // Munculkan tombol Copy All
+        document.getElementById('btn-master').style.display = 'block';
         
         const d = new Date();
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
@@ -189,7 +188,6 @@
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shio = shios[seed % shios.length];
 
-            // Simpan data untuk Copy All
             masterData.push({ name, bbfs, am, cb1, cb2, shio });
 
             grid.innerHTML += `
@@ -206,12 +204,9 @@
         });
     }
 
-    // Fungsi Utama untuk memformat teks (Supaya Seragam)
     function formatTeksPrediksi(name, bbfs, am, cb1, cb2, shio) {
         const tgl = document.getElementById('date-now').innerText;
         const b = bbfs.split('');
-        
-        // Logika generate set 4D & 2D (Biar terlihat banyak seperti contoh bos)
         const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
         const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
@@ -227,25 +222,18 @@ COLOK BEBAS ${cb1} / ${cb2}
 COLOK BEBAS 2D ${cb1}${b[0]} / ${cb2}${b[1]} / ${b[2]}${b[3]}
 TWIN ${twin}
 SHIO ${shioLengkap}
-Selalu Utamakan Prediksi Sendiri`;
+SELALU UTAMAKAN PREDIKSI SENDIRI (UPS)`;
     }
 
     function copyAction(name, bbfs, am, cb1, cb2, shio) {
         const teks = formatTeksPrediksi(name, bbfs, am, cb1, cb2, shio);
-        navigator.clipboard.writeText(teks).then(() => {
-            alert("BERHASIL DI COPY!\n\n" + name);
-        });
+        navigator.clipboard.writeText(teks).then(() => { alert("BERHASIL DI COPY!\n\n" + name); });
     }
 
     function copyAllPrediksi() {
         if(masterData.length === 0) return;
-        
-        // Gabungkan semua prediksi dengan pemisah baris kosong
         const semuaTeks = masterData.map(d => formatTeksPrediksi(d.name, d.bbfs, d.am, d.cb1, d.cb2, d.shio)).join('\n\n');
-        
-        navigator.clipboard.writeText(semuaTeks).then(() => {
-            alert("MANTAP BOS! SEMUA PREDIKSI BERHASIL DI COPY SEKALIGUS.");
-        });
+        navigator.clipboard.writeText(semuaTeks).then(() => { alert("SEMUA PREDIKSI BERHASIL DI COPY!"); });
     }
 </script>
 </body>
