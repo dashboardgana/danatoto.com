@@ -94,7 +94,7 @@
             cursor: pointer; font-weight: bold; font-size: 11px;
         }
 
-        /* JADWAL BANK STYLE - FIX KE SAMPING */
+        /* JADWAL BANK STYLE */
         .bank-container { 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -113,19 +113,20 @@
         }
         .logo-wrapper {
             width: 100%;
-            height: 60px;
+            height: 70px;
             background: #fff;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 12px;
-            padding: 8px;
+            padding: 10px;
         }
         .bank-logo { 
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+            display: block;
         }
         .divider { width: 100%; height: 2px; background: #00d4ff; margin-bottom: 12px; }
         .bank-info { width: 100%; text-align: center; }
@@ -280,10 +281,10 @@
         const day = now.getDay();
 
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 WIB Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/512px-Bank_Central_Asia.svg.png" },
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/512px-Bank_Central_Asia.svg.png" },
             { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/512px-BNI_logo.svg.png" },
             { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/512px-BRI_Logo.svg.png" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 WIB Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/512px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/512px-Bank_Mandiri_logo_2016.svg.png" },
             { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/512px-Logo_Danamon.svg.png" },
             { name: "CIMB NIAGA", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/512px-CIMB_Niaga_logo.svg.png" },
             { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/512px-Logo_dana_blue.svg.png" },
@@ -311,7 +312,7 @@
             bankHtml += `
                 <div class="bank-card">
                     <div class="logo-wrapper">
-                        <img src="${bank.logo}" class="bank-logo" alt="${bank.name}" onerror="this.src='https://via.placeholder.com/150?text=${bank.name}'">
+                        <img src="${bank.logo}" class="bank-logo" alt="${bank.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=${bank.name}'">
                     </div>
                     <div class="divider"></div>
                     <div class="bank-info">
