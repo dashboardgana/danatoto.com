@@ -49,7 +49,19 @@
 
         /* Content Area */
         .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; }
-        .header-box { width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; border: 1px solid #30363d; margin-bottom: 30px; text-align: center; }
+        .header-box { 
+            width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; 
+            border: 1px solid #30363d; margin-bottom: 30px; text-align: center;
+            position: relative;
+        }
+
+        /* Tombol Copy All (Tanda Merah) */
+        .btn-copy-all {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            padding: 10px 15px; background: #ff5252; color: white; border: none;
+            border-radius: 8px; cursor: pointer; font-weight: bold; display: none;
+        }
+        .btn-copy-all:hover { background: #ff1744; }
 
         /* Grid Utama */
         #main-grid { 
@@ -80,10 +92,14 @@
         .btn-copy:hover { background: #00d4ff; color: #000; }
 
         /* Welcome Screen */
-        .welcome-msg { text-align: center; margin-top: 100px; color: #30363d; }
+        .welcome-msg { text-align: center; margin-top: 100px; color: #30363d; width: 100%; grid-column: 1 / -1; }
         .welcome-msg i { font-size: 80px; margin-bottom: 20px; }
 
-        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; width: 100%; } }
+        @media (max-width: 768px) { 
+            .sidebar { display: none; } 
+            .content { margin-left: 0; width: 100%; } 
+            .btn-copy-all { position: static; transform: none; margin-top: 15px; display: block; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -117,6 +133,7 @@
         <div class="header-box">
             <h1 id="date-now">--</h1>
             <p id="status-text" style="color: #8b949e; font-size: 12px; margin-top: 5px;">SILAKAN PILIH MENU UNTUK MEMULAI</p>
+            <button id="btn-master" class="btn-copy-all" onclick="copyAllPrediksi()"><i class="fas fa-copy"></i> COPY ALL PREDIKSI</button>
         </div>
 
         <div id="main-grid">
@@ -132,6 +149,9 @@
 <script>
     const pasarans = ["TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEW YORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEW YORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTO CAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET 12", "TOTO MACAU SIANG", "BULLSEYE", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTO MACAU 5D SORE", "POIPET 15", "TOTO MALI 1530", "TOTO MACAU SORE", "HUAHIN 1630", "SINGAPORE", "MAGNUM", "TOTO MACAU MALAM I", "CHELSEA 19", "POIPET 19", "PCSO", "TOTO MALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTO MACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTO MACAU MALAM II", "POIPET 22", "HONGKONG", "TOTO MACAU MALAM III", "TOTO MALI 2330", "JAKARTA 2330", "KING KONG 4D", "HOKIDRAW"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
+    
+    // Array untuk simpan data sementara buat fitur Copy All
+    let masterData = [];
 
     function doLogin() {
         const u = document.getElementById('user').value;
@@ -146,6 +166,7 @@
     }
 
     function showWelcome() {
+        document.getElementById('btn-master').style.display = 'none';
         document.getElementById('status-text').innerText = "SILAKAN PILIH MENU UNTUK MEMULAI";
         document.getElementById('main-grid').innerHTML = `<div class="welcome-msg"><i class="fas fa-dice"></i><h2>SELAMAT DATANG DI PANEL VIP</h2><p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p></div>`;
     }
@@ -153,7 +174,9 @@
     function loadAllPasaran() {
         const grid = document.getElementById('main-grid');
         grid.innerHTML = "";
+        masterData = []; // Reset data
         document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
+        document.getElementById('btn-master').style.display = 'block'; // Munculkan tombol Copy All
         
         const d = new Date();
         const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
@@ -165,6 +188,9 @@
             const cb1 = Math.floor(Math.abs(Math.sin(seed + 8) * 10)) % 10;
             const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
             const shio = shios[seed % shios.length];
+
+            // Simpan data untuk Copy All
+            masterData.push({ name, bbfs, am, cb1, cb2, shio });
 
             grid.innerHTML += `
                 <div class="card">
@@ -180,16 +206,18 @@
         });
     }
 
-    function copyAction(name, bbfs, am, cb1, cb2, shio) {
+    // Fungsi Utama untuk memformat teks (Supaya Seragam)
+    function formatTeksPrediksi(name, bbfs, am, cb1, cb2, shio) {
         const tgl = document.getElementById('date-now').innerText;
         const b = bbfs.split('');
         
-        // Format 4D, 2D, Twin sesuai BBFS biar sinkron
-        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
-        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
+        // Logika generate set 4D & 2D (Biar terlihat banyak seperti contoh bos)
+        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]} ${b[4]}${b[5]}${b[0]}${b[1]} ${b[6]}${b[4]}${b[3]}${b[2]}`;
+        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]} ${b[2]}${b[5]} ${b[3]}${b[6]} ${b[0]}${b[3]} ${b[4]}${b[1]} ${b[5]}${b[2]}`;
         const twin = `${b[0]}${b[0]} / ${b[1]}${b[1]} / ${b[2]}${b[2]}`;
+        const shioLengkap = `${shio} / ${shios[(shios.indexOf(shio)+1)%12]} / ${shios[(shios.indexOf(shio)+2)%12]}`;
 
-        const teks = `PREDIKSI ${name}
+        return `PREDIKSI ${name}
 ${tgl}
 BBFS ${bbfs}
 ANGKA MAIN ${am}
@@ -198,11 +226,25 @@ ANGKA MAIN ${am}
 COLOK BEBAS ${cb1} / ${cb2}
 COLOK BEBAS 2D ${cb1}${b[0]} / ${cb2}${b[1]} / ${b[2]}${b[3]}
 TWIN ${twin}
-SHIO ${shio} / ${shios[(shios.indexOf(shio)+1)%12]} / ${shios[(shios.indexOf(shio)+2)%12]}
+SHIO ${shioLengkap}
 Selalu Utamakan Prediksi Sendiri`;
+    }
 
+    function copyAction(name, bbfs, am, cb1, cb2, shio) {
+        const teks = formatTeksPrediksi(name, bbfs, am, cb1, cb2, shio);
         navigator.clipboard.writeText(teks).then(() => {
             alert("BERHASIL DI COPY!\n\n" + name);
+        });
+    }
+
+    function copyAllPrediksi() {
+        if(masterData.length === 0) return;
+        
+        // Gabungkan semua prediksi dengan pemisah baris kosong
+        const semuaTeks = masterData.map(d => formatTeksPrediksi(d.name, d.bbfs, d.am, d.cb1, d.cb2, d.shio)).join('\n\n');
+        
+        navigator.clipboard.writeText(semuaTeks).then(() => {
+            alert("MANTAP BOS! SEMUA PREDIKSI BERHASIL DI COPY SEKALIGUS.");
         });
     }
 </script>
