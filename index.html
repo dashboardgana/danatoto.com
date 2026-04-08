@@ -121,7 +121,7 @@
 
         <div id="main-grid">
             <div class="welcome-msg">
-                <i class="fas fa- dice"></i>
+                <i class="fas fa-dice"></i>
                 <h2>SELAMAT DATANG DI PANEL VIP</h2>
                 <p>Klik menu <b>PREDIKSI TOGEL</b> di samping untuk melihat semua pasaran.</p>
             </div>
@@ -155,10 +155,9 @@
             </div>`;
     }
 
-    // FUNGSI INI HANYA JALAN KALAU DIKLIK
     function loadAllPasaran() {
         const grid = document.getElementById('main-grid');
-        grid.innerHTML = ""; // Bersihkan layar dulu
+        grid.innerHTML = ""; 
         document.getElementById('status-text').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
         
         const d = new Date();
@@ -167,7 +166,7 @@
         pasarans.forEach((name, i) => {
             const seed = seedDay + i;
             const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
-            const am = Array.from({length: 4}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
+            const am = Array.from({length: 5}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
             const cb = (seed % 10) + " / " + ((seed + 5) % 10);
             const shio = shios[seed % shios.length];
 
@@ -179,15 +178,34 @@
                         <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
                         <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb}</span></div>
                         <div class="row-data"><span class="label">SHIO</span><span class="val">${shio}</span></div>
-                        <button class="btn-copy" onclick="copyAction('${name}','${bbfs}')">COPY PREDIKSI</button>
+                        <button class="btn-copy" onclick="copyAction('${name}','${bbfs}','${am}','${cb}','${shio}')">COPY PREDIKSI</button>
                     </div>
                 </div>
             `;
         });
     }
 
-    function copyAction(n, b) {
-        navigator.clipboard.writeText(`PREDIKSI ${n}\nBBFS: ${b}\nUPS!`).then(() => alert("BERHASIL DISALIN!"));
+    function copyAction(n, bbfs, am, cb, shio) {
+        const tgl = document.getElementById('date-now').innerText;
+        
+        // Generate angka tambahan otomatis biar terlihat lengkap
+        const bbfsArr = bbfs.split('');
+        const p4d = `${bbfsArr[0]}${bbfsArr[1]}${bbfsArr[2]}${bbfsArr[3]} ${bbfsArr[4]}${bbfsArr[5]}${bbfsArr[6]}0 ${bbfsArr[1]}${bbfsArr[3]}${bbfsArr[5]}${bbfsArr[0]}`;
+        const p2d = `${bbfsArr[0]}${bbfsArr[2]} ${bbfsArr[1]}${bbfsArr[4]} ${bbfsArr[3]}${bbfsArr[5]} ${bbfsArr[6]}${bbfsArr[0]} ${bbfsArr[2]}${bbfsArr[1]}`;
+        const twin = `${bbfsArr[0]}${bbfsArr[0]} / ${bbfsArr[1]}${bbfsArr[1]} / ${bbfsArr[2]}${bbfsArr[2]}`;
+
+        const teks = `PREDIKSI ${n}
+${tgl}
+BBFS ${bbfs}
+ANGKA MAIN ${am}
+4D ${p4d}
+2D (BB) ${p2d}
+COLOK BEBAS ${cb}
+TWIN ${twin}
+SHIO ${shio}
+Selalu Utamakan Prediksi Sendiri`;
+
+        navigator.clipboard.writeText(teks).then(() => alert("BERHASIL DISALIN SESUAI FORMAT!"));
     }
 </script>
 </body>
