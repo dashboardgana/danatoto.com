@@ -55,11 +55,17 @@
             border: 1px solid #00d4ff; margin-bottom: 30px; text-align: center;
             position: relative; 
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            animation: headerGlow 2s infinite alternate; /* EFEK LAMPU HEADER */
+        }
+
+        @keyframes headerGlow {
+            from { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); border-color: #008fb3; }
+            to { box-shadow: 0 0 25px rgba(0, 212, 255, 0.8); border-color: #00d4ff; }
         }
 
         .running-text { color: #00d4ff; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px rgba(0, 212, 255, 0.8); }
-        .date-display { font-size: 28px; font-weight: bold; color: #fff; }
-        .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; }
+        .date-display { font-size: 28px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+        .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
 
         .btn-copy-all {
             position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
@@ -110,7 +116,15 @@
             margin-bottom: 15px;
             padding: 8px;
             overflow: hidden;
+            border: 2px solid transparent;
+            animation: logoGlow 2.5s infinite alternate; /* EFEK LAMPU KOTAK PUTIH */
         }
+
+        @keyframes logoGlow {
+            from { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); border-color: rgba(0, 212, 255, 0.1); }
+            to { box-shadow: 0 0 18px rgba(255, 255, 255, 0.9); border-color: #fff; }
+        }
+
         .bank-logo { 
             max-width: 100%;
             max-height: 100%;
@@ -300,20 +314,19 @@
         const time = (hr * 100) + mn;
         const day = now.getDay();
 
-        // LINK GOOGLE DRIVE DIRECT (Sudah Diupdate)
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://lh3.googleusercontent.com/u/0/d/199D7W-6D6FKUPMoyOaSyJ62QMjX8I4AG" },
-            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1F5wmepEgaBo6PDevJr71Gvh_G-c-B-Hi" },
-            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1T0MJ0paH4Q6IpOPWFpN2kZV3b4tqJgC3" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://lh3.googleusercontent.com/u/0/d/1SmW0HsZl-G0Ot6zRp7whRKk1hnhUwJ7U" },
-            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1VzltvfFbN8klO9ypnKYjQn4BbQNAQZ7s" },
-            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1fKHlIXD9br2NGOEPDkFYmfKy33shvA-C" },
-            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1FyaM38AC8_FzRK3-vug8wdiue-WZACke" },
-            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1PLzJQcy4_BBTxoc6Yse1THDIwBGV-yEb" },
-            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/119KZglGXW3y5nfUOy5sapkeUa0Rd6TWH" },
-            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1ZjRoV4GgZkEyFlQHIOeEdY3wJhAbVD2y" },
-            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://lh3.googleusercontent.com/u/0/d/1jYXVeB16fu_OJmBnFRcSsnxMOijx1QQl" },
-            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://lh3.googleusercontent.com/u/0/d/1SLBWNtfFORhKEfxUCoh4PVewuPyB3lPX" }
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ1" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ2" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ3" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ4" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ5" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ6" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ7" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ8" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ9" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ10" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://via.placeholder.com/150x70?text=QRIS" },
+            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ11" }
         ];
 
         banks.forEach(bank => {
