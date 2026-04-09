@@ -527,7 +527,7 @@
         const grid = document.getElementById('main-grid');
         grid.innerHTML = `
             <div class="syair-wrapper">
-                <canvas id="canvasSyair" width="500" height="650"></canvas>
+                <canvas id="canvasSyair" width="700" height="800"></canvas>
                 <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
             </div>
         `;
@@ -547,7 +547,7 @@
 
         // 1. Background
         ctx.fillStyle = "#0a0f1e";
-        ctx.fillRect(0, 0, 500, 650);
+        ctx.fillRect(0, 0, 700, 800);
 
         // 2. Load Logo Danatoto
         const imgLogo = new Image();
@@ -562,7 +562,7 @@
 
             ctx.strokeStyle = "#00d4ff";
             ctx.lineWidth = 5;
-            ctx.strokeRect(15, 15, 470, 620);
+            ctx.strokeRect(15, 15, 670, 770);
 
             ctx.fillStyle = "#ffffff";
             ctx.font = "bold 22px Arial";
