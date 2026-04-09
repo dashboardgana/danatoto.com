@@ -96,7 +96,6 @@
         }
         .toto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .toto-input-group { text-align: left; }
-        /* BAGIAN INI SUDAH DIPERBESAR TULISANNYA */
         .toto-input-group label { display: block; font-size: 16px; color: #00d4ff; margin-bottom: 5px; font-weight: bold; }
         .toto-input-group input { 
             width: 100%; padding: 12px; background: #0d1117; border: 1px solid #30363d; 
@@ -410,7 +409,7 @@
         });
     }
 
-    // FUNGSI PERHITUNGAN SGP TOTO YANG SUDAH DIPERBAIKI LOGIKANYA
+    // FUNGSI PERHITUNGAN SGP TOTO
     function loadSgpToto() {
         resetMenu();
         document.getElementById('main-grid').style.display = "block";
@@ -445,7 +444,6 @@
     }
 
     function hitungToto() {
-        // Ambil Nilai
         const b1 = parseInt(document.getElementById('b1').value) || 0;
         const b2 = parseInt(document.getElementById('b2').value) || 0;
         const b3 = parseInt(document.getElementById('b3').value) || 0;
@@ -454,26 +452,19 @@
         const b6 = parseInt(document.getElementById('b6').value) || 0;
         const add = parseInt(document.getElementById('addNum').value) || 0;
 
-        // LOGIKA PERHITUNGAN BARU SESUAI CONTOH GAMBAR (UNTUK HASIL 8395)
-        // 1. Jumlahkan ke-6 bola
+        // Logika Rumus SGP Toto:
         const totalBola = b1 + b2 + b3 + b4 + b5 + b6;
-        
-        // 2. Total Bola dikalikan 2 lalu ditambah Additional Number
         const step2 = (totalBola * 2) + add;
-        
-        // 3. Hasil tadi dikurangi bola 1 dan bola 6
         const step3 = step2 - b1 - b6;
         
-        // 4. Ambil 2 angka belakang sebagai angka 2D Belakang
+        // 2D Belakang
         const angka2D = (step3 % 100).toString().padStart(2, '0');
         
-        // 5. Ribuan dan Ratusan didapat dari total bola itu sendiri
+        // Ribuan & Ratusan
         const ribuan = Math.floor(totalBola / 10);
         const ratusan = totalBola % 10;
 
-        // Gabungkan: [Ribuan][Ratusan][2D Belakang]
         const hasilFinal = `${ribuan}${ratusan}${angka2D}`;
-        
         document.getElementById('finalRes').innerText = hasilFinal;
     }
 
