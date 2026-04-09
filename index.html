@@ -193,6 +193,19 @@
             cursor: pointer; font-weight: bold;
         }
 
+        /* GENERATOR SYAIR STYLE */
+        .syair-wrapper {
+            max-width: 500px; margin: 0 auto; text-align: center;
+            background: #1a1a1a; padding: 20px; border-radius: 15px; border: 2px solid #00d4ff;
+        }
+        #canvasSyair {
+            width: 100%; border-radius: 10px; border: 1px solid #fff; margin-bottom: 20px;
+        }
+        .btn-export {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #00d4ff, #00ff88); color: #000;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px;
+        }
+
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
@@ -229,7 +242,7 @@
         <div id="menu-sgp" class="menu-item" onclick="loadSgpToto()">
             <i class="fas fa-calculator"></i> PERHITUNGAN SGP TOTO
         </div>
-        <div id="menu-syair" class="menu-item" onclick="alert('Menu Syair Harian Segera Hadir')">
+        <div id="menu-syair" class="menu-item" onclick="loadSyairGenerator()">
             <i class="fas fa-book-open"></i> SYAIR HARIAN
         </div>
         <div id="menu-win" class="menu-item" onclick="alert('Menu Postingan Kemenangan Segera Hadir')">
@@ -256,6 +269,22 @@
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
     let masterData = [];
+
+    // DATA PAKET SYAIR UNTUK GENERATOR (AUTO)
+    const paketSyair = [
+        { tema: "POHON PISANG", shio: "MONYET", bbfs: "12458", am: "1248", cb: "2 / 8", twin: "22/88", kodal: "MONYET MANJAT POHON PISANG AMBIL BUAH" },
+        { tema: "SAWAH BERLUMPUR", shio: "KERBAU", bbfs: "03467", am: "0347", cb: "3 / 7", twin: "33/77", kodal: "KERBAU NARIK BAJAK DI SAWAH LUAS" },
+        { tema: "HUTAN RIMBA", shio: "HARIMAU", bbfs: "45679", am: "4579", cb: "5 / 9", twin: "55/99", kodal: "PEMBURU KAGET LIHAT HARIMAU TIDUR" },
+        { tema: "LOBANG TANAH", shio: "ULAR", bbfs: "13568", am: "1368", cb: "1 / 6", twin: "11/66", kodal: "ULAR SANCA MASUK LOBANG PERSEMBUNYIAN" },
+        { tema: "PADANG RUMPUT", shio: "KUDA", bbfs: "24578", am: "2478", cb: "4 / 8", twin: "44/88", kodal: "KUDA BALAP LARI KENCANG KE GARIS FINISH" },
+        { tema: "KANDANG BAMBU", shio: "AYAM", bbfs: "02359", am: "0259", cb: "0 / 5", twin: "00/55", kodal: "AYAM JAGO BERKOKOK DI PAGI HARI" },
+        { tema: "RUMAH TUA", shio: "TIKUS", bbfs: "12367", am: "1267", cb: "2 / 7", twin: "22/77", kodal: "TIKUS DAPUR LAGI ASYIK NYOLONG ROTI" },
+        { tema: "TAMAN BUNGA", shio: "KELINCI", bbfs: "45689", am: "4689", cb: "6 / 9", twin: "66/99", kodal: "KELINCI PUTIH MAKAN WORTEL DI TAMAN" },
+        { tema: "AWAN MENDUNG", shio: "NAGA", bbfs: "01347", am: "0137", cb: "1 / 7", twin: "11/77", kodal: "NAGA TERBANG DI BALIK AWAN HITAM" },
+        { tema: "TEBING GUNUNG", shio: "KAMBING", bbfs: "23569", am: "2356", cb: "3 / 5", twin: "33/55", kodal: "KAMBING GUNUNG MANJAT TEBING CURAM" },
+        { tema: "PINTU PAGAR", shio: "ANJING", bbfs: "14578", am: "1458", cb: "4 / 5", twin: "44/55", kodal: "ANJING PENJAGA GONGGONG ORANG ASING" },
+        { tema: "KUBANGAN LUMPUR", shio: "BABI", bbfs: "02469", am: "0269", cb: "2 / 6", twin: "22/66", kodal: "BABI HUTAN CARI MAKAN DI LUMPUR" }
+    ];
 
     // CEK STATUS LOGIN SECEPAT MUNGKIN
     (function checkAuth() {
@@ -457,7 +486,6 @@
 
     // FUNGSI CLEAR NOMOR (BARU)
     function clearNomor() {
-        // Mengosongkan semua input bola
         document.getElementById('b1').value = "";
         document.getElementById('b2').value = "";
         document.getElementById('b3').value = "";
@@ -465,7 +493,6 @@
         document.getElementById('b5').value = "";
         document.getElementById('b6').value = "";
         document.getElementById('addNum').value = "";
-        // Reset tampilan hasil
         document.getElementById('finalRes').innerText = "----";
     }
 
@@ -477,23 +504,110 @@
         const b5 = parseInt(document.getElementById('b5').value) || 0;
         const b6 = parseInt(document.getElementById('b6').value) || 0;
         const add = parseInt(document.getElementById('addNum').value) || 0;
-
-        // TOTAL BOLA
         const totalBola = b1 + b2 + b3 + b4 + b5 + b6;
-
-        // 1. CARI ANGKA DEPAN (RIBUAN & RATUSAN)
-        // Rumus: (Total * 76) + Additional + 5
         const rumusDepan = (totalBola * 76) + add + 5;
         const angkaDepan = rumusDepan.toString().substring(0, 2);
-
-        // 2. CARI ANGKA BELAKANG (PULUHAN & SATUAN)
-        // Rumus: (Total * 2) - (Bola1 + Bola6) + Additional
         const rumusBelakang = (totalBola * 2) - (b1 + b6) + add;
         const angkaBelakang = (rumusBelakang % 100).toString().padStart(2, '0');
-
-        // GABUNGKAN
         const hasilFinal = angkaDepan + angkaBelakang;
         document.getElementById('finalRes').innerText = hasilFinal;
+    }
+
+    // FUNGSI GENERATOR SYAIR (BARU & AUTO)
+    function loadSyairGenerator() {
+        resetMenu();
+        document.getElementById('main-grid').style.display = "block";
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('txt-tanggal').innerText = "GENERATOR SYAIR DANATOTO";
+        document.getElementById('sub-txt-tanggal').innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('menu-syair').classList.add('active-menu');
+
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = `
+            <div class="syair-wrapper">
+                <canvas id="canvasSyair" width="500" height="650"></canvas>
+                <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
+            </div>
+        `;
+        renderSyair();
+    }
+
+    function renderSyair() {
+        const canvas = document.getElementById('canvasSyair');
+        const ctx = canvas.getContext('2d');
+        const d = new Date();
+        const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        
+        const index = d.getDate() % paketSyair.length;
+        const item = paketSyair[index];
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Background
+        ctx.fillStyle = "#0a0f1e";
+        ctx.fillRect(0, 0, 500, 650);
+
+        // 2. Load Logo Danatoto
+        const imgLogo = new Image();
+        imgLogo.crossOrigin = "anonymous"; 
+        imgLogo.src = 'https://i.ibb.co/LhbL7T1/image-ad8680.png'; 
+        
+        imgLogo.onload = function() {
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#00d4ff";
+            ctx.drawImage(imgLogo, 150, 30, 200, 65);
+            ctx.shadowBlur = 0;
+
+            ctx.strokeStyle = "#00d4ff";
+            ctx.lineWidth = 5;
+            ctx.strokeRect(15, 15, 470, 620);
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 22px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("SYAIR PREDIKSI - " + tglStr, 250, 135);
+
+            ctx.fillStyle = "#00ff88";
+            ctx.font = "18px Arial";
+            ctx.fillText("TEMA: " + item.tema, 250, 185);
+            
+            ctx.fillStyle = "#ffeb3b";
+            ctx.font = "bold 50px Arial";
+            ctx.fillText(item.shio, 250, 245);
+
+            ctx.fillStyle = "rgba(255,255,255,0.05)";
+            ctx.fillRect(50, 280, 400, 200);
+            ctx.strokeStyle = "#ffffff22";
+            ctx.strokeRect(50, 280, 400, 200);
+
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 24px Courier New";
+            ctx.fillText("BBFS : " + item.bbfs, 80, 325);
+            ctx.fillText("A.M  : " + item.am, 80, 365);
+            ctx.fillText("C.B  : " + item.cb, 80, 405);
+            ctx.fillText("TWIN : " + item.twin, 80, 445);
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#00d4ff";
+            ctx.font = "italic 20px Times New Roman";
+            ctx.fillText('"' + item.kodal + '"', 250, 540);
+
+            ctx.fillStyle = "#888";
+            ctx.font = "bold 16px Arial";
+            ctx.fillText("WWW.DANATOTO.VIP", 250, 610);
+        };
+    }
+
+    function exportSyair() {
+        const canvas = document.getElementById('canvasSyair');
+        const link = document.createElement('a');
+        const d = new Date();
+        link.download = `SYAIR_DANATOTO_${d.getDate()}_${d.getMonth()+1}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
     }
 
     function copyAction(index) {
