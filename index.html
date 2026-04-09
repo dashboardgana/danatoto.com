@@ -57,7 +57,6 @@
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         }
 
-        /* EFEK LAMPU JUDUL (GLOW) */
         .date-display { 
             font-size: 28px; 
             font-weight: bold; 
@@ -104,9 +103,9 @@
             position: relative;
         }
 
-        /* EFEK LAMPU CARD (GLOWING BERDASARKAN STATUS) */
-        .card-online { box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); border-color: #00ff88; }
-        .card-offline { box-shadow: 0 0 15px rgba(255, 82, 82, 0.4); border-color: #ff5252; }
+        /* EFEK LAMPU CARD (GLOWING) */
+        .card-online { box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); border-color: #00ff88 !important; }
+        .card-offline { box-shadow: 0 0 15px rgba(255, 82, 82, 0.4); border-color: #ff5252 !important; }
 
         .bank-card:hover { transform: translateY(-5px); }
 
@@ -302,7 +301,7 @@
         const time = (hr * 100) + mn;
         const day = now.getDay();
 
-        // LOGO BANK FIXED
+        // LOGO BANK FIXED - Menggunakan URL publik agar pasti muncul
         const banks = [
             { name: "BCA", schedule: "Senin-Jumat : 21.00-00.30 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1200px-Bank_Central_Asia.svg.png" },
             { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-BNI_logo.svg.png" },
@@ -320,9 +319,11 @@
 
         banks.forEach(bank => {
             let isOnline = true;
+            // Logika Offline BCA
             if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
                 if (time >= 2100 || time <= 30) isOnline = false;
             }
+            // Logika Offline Mandiri
             if (bank.name === "MANDIRI") {
                 if (time >= 2245 || time <= 330) isOnline = false;
             }
