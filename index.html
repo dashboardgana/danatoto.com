@@ -81,7 +81,7 @@
             width: 100%;
         }
 
-        /* JADWAL BANK STYLE DENGAN LAMPU */
+        /* JADWAL BANK STYLE */
         .bank-container { 
             display: flex; 
             flex-wrap: wrap; 
@@ -103,7 +103,6 @@
             position: relative;
         }
 
-        /* EFEK LAMPU CARD (GLOWING) */
         .card-online { box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); border-color: #00ff88 !important; }
         .card-offline { box-shadow: 0 0 15px rgba(255, 82, 82, 0.4); border-color: #ff5252 !important; }
 
@@ -189,7 +188,6 @@
         <div id="menu-bank" class="menu-item" onclick="loadJadwalBank()">
             <i class="fas fa-university"></i> JADWAL BANK
         </div>
-        <div class="menu-item"><i class="fas fa-book"></i> BUKU MIMPI</div>
         <div class="menu-item" onclick="location.reload()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
 
@@ -301,14 +299,14 @@
         const time = (hr * 100) + mn;
         const day = now.getDay();
 
-        // LOGO BANK FIXED - Menggunakan URL publik agar pasti muncul
+        // FIX LOGO MENGGUNAKAN DIRECT LINK GOOGLE DRIVE
         const banks = [
             { name: "BCA", schedule: "Senin-Jumat : 21.00-00.30 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1200px-Bank_Central_Asia.svg.png" },
-            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-BNI_logo.svg.png" },
-            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/1200px-BRI_Logo.svg.png" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1F5wmepEgaBo6PDevJr71Gvh_G-c-B-Hi" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1T0MJ0paH4Q6IpOPWFpN2kZV3b4tqJgC3" },
             { name: "MANDIRI", schedule: "Setiap Hari : 22.45-03.30 Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
-            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/e/e0/Bank_Danamon_logo.svg/1280px-Bank_Danamon_logo.svg.png" },
-            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/CIMB_Niaga_logo.svg/1200px-CIMB_Niaga_logo.svg.png" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1VzltvfFbN8klO9ypnKYjQn4BbQNAQZ7s" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1fKHlIXD9br2NGOEPDkFYmfKy33shvA-C" },
             { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
             { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" },
             { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/1200px-Gopay_logo.svg.png" },
@@ -319,11 +317,9 @@
 
         banks.forEach(bank => {
             let isOnline = true;
-            // Logika Offline BCA
             if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
                 if (time >= 2100 || time <= 30) isOnline = false;
             }
-            // Logika Offline Mandiri
             if (bank.name === "MANDIRI") {
                 if (time >= 2245 || time <= 330) isOnline = false;
             }
