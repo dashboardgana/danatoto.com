@@ -300,24 +300,21 @@
         const time = (hr * 100) + mn;
         const day = now.getDay();
 
-        // LINK SAKTI: Menggunakan Export PNG agar gambar benar-benar muncul
-        const slideID = "1IVQ_nfkEkjeV_F39HW_VFF_espN87Ncv87pYyWR4T-jXovAUGEJtrS_j5HFvO39ZY7iZPMkl7d-";
-        const linkExport = `https://docs.google.com/presentation/d/${slideID}/export/png?id=${slideID}&pageid=`;
-
-       const bankData = [
-  { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://lh3.googleusercontent.com/u/0/d/199D7W-6D6FKUPMoyOaSyJ62QMjX8I4AG" },
-  { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1F5wmepEgaBo6PDevJr71Gvh_G-c-B-Hi" },
-  { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1T0MJ0paH4Q6IpOPWFpN2kZV3b4tqJgC3" },
-  { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://lh3.googleusercontent.com/u/0/d/1SmW0HsZl-G0Ot6zRp7whRKk1hnhUwJ7U" },
-  { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1VzltvfFbN8klO9ypnKYjQn4BbQNAQZ7s" },
-  { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1fKHlIXD9br2NGOEPDkFYmfKy33shvA-C" },
-  { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1FyaM38AC8_FzRK3-vug8wdiue-WZACke" },
-  { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1PLzJQcy4_BBTxoc6Yse1THDIwBGV-yEb" },
-  { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/119KZglGXW3y5nfUOy5sapkeUa0Rd6TWH" },
-  { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1ZjRoV4GgZkEyFlQHIOeEdY3wJhAbVD2y" },
-  { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://lh3.googleusercontent.com/u/0/d/1jYXVeB16fu_OJmBnFRcSsnxMOijx1QQl" },
-  { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://lh3.googleusercontent.com/u/0/d/1SLBWNtfFORhKEfxUCoh4PVewuPyB3lPX" }
-];
+        // LINK GOOGLE DRIVE DIRECT (Sudah Diupdate)
+        const banks = [
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://lh3.googleusercontent.com/u/0/d/199D7W-6D6FKUPMoyOaSyJ62QMjX8I4AG" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1F5wmepEgaBo6PDevJr71Gvh_G-c-B-Hi" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1T0MJ0paH4Q6IpOPWFpN2kZV3b4tqJgC3" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://lh3.googleusercontent.com/u/0/d/1SmW0HsZl-G0Ot6zRp7whRKk1hnhUwJ7U" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1VzltvfFbN8klO9ypnKYjQn4BbQNAQZ7s" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1fKHlIXD9br2NGOEPDkFYmfKy33shvA-C" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1FyaM38AC8_FzRK3-vug8wdiue-WZACke" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1PLzJQcy4_BBTxoc6Yse1THDIwBGV-yEb" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/119KZglGXW3y5nfUOy5sapkeUa0Rd6TWH" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1ZjRoV4GgZkEyFlQHIOeEdY3wJhAbVD2y" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://lh3.googleusercontent.com/u/0/d/1jYXVeB16fu_OJmBnFRcSsnxMOijx1QQl" },
+            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://lh3.googleusercontent.com/u/0/d/1SLBWNtfFORhKEfxUCoh4PVewuPyB3lPX" }
+        ];
 
         banks.forEach(bank => {
             let isOnline = true;
