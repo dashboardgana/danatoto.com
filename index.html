@@ -55,17 +55,18 @@
             border: 1px solid #00d4ff; margin-bottom: 30px; text-align: center;
             position: relative; 
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-            animation: headerGlow 2s infinite alternate; /* EFEK LAMPU HEADER */
         }
 
-        @keyframes headerGlow {
-            from { box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); border-color: #008fb3; }
-            to { box-shadow: 0 0 25px rgba(0, 212, 255, 0.8); border-color: #00d4ff; }
+        /* EFEK LAMPU JUDUL (GLOW) */
+        .date-display { 
+            font-size: 28px; 
+            font-weight: bold; 
+            color: #fff; 
+            text-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff; 
         }
 
         .running-text { color: #00d4ff; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px rgba(0, 212, 255, 0.8); }
-        .date-display { font-size: 28px; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-        .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
+        .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; }
 
         .btn-copy-all {
             position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
@@ -81,7 +82,7 @@
             width: 100%;
         }
 
-        /* JADWAL BANK STYLE */
+        /* JADWAL BANK STYLE DENGAN LAMPU */
         .bank-container { 
             display: flex; 
             flex-wrap: wrap; 
@@ -98,59 +99,45 @@
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-            transition: transform 0.3s;
+            transition: all 0.3s;
             width: 240px;
+            position: relative;
         }
+
+        /* EFEK LAMPU CARD (GLOWING BERDASARKAN STATUS) */
+        .card-online { box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); border-color: #00ff88; }
+        .card-offline { box-shadow: 0 0 15px rgba(255, 82, 82, 0.4); border-color: #ff5252; }
 
         .bank-card:hover { transform: translateY(-5px); }
 
         .logo-wrapper {
-            width: 100%;
-            height: 70px;
-            background: #fff;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 8px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            animation: logoGlow 2.5s infinite alternate; /* EFEK LAMPU KOTAK PUTIH */
+            width: 100%; height: 70px; background: #fff; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px; padding: 8px; overflow: hidden;
         }
-
-        @keyframes logoGlow {
-            from { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); border-color: rgba(0, 212, 255, 0.1); }
-            to { box-shadow: 0 0 18px rgba(255, 255, 255, 0.9); border-color: #fff; }
-        }
-
-        .bank-logo { 
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
+        .bank-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
         .divider { width: 100%; height: 1px; background: rgba(0, 212, 255, 0.3); margin-bottom: 15px; }
         .bank-info { width: 100%; text-align: center; flex-grow: 1; }
         .bank-schedule { font-size: 11px; color: #ccc; line-height: 1.5; margin-bottom: 10px; }
         
         .bank-status-row { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            justify-content: center;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 15px;
-            border-radius: 20px;
-            width: fit-content;
+            display: flex; align-items: center; gap: 10px; justify-content: center;
+            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 20px; width: fit-content;
         }
         
-        .lamp { width: 12px; height: 12px; border-radius: 50%; }
-        .lamp-online { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
-        .lamp-offline { background: #ff5252; box-shadow: 0 0 10px #ff5252; }
-        .text-online { color: #00ff88; }
-        .text-offline { color: #ff5252; }
-        .status-text { font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+        .lamp { width: 12px; height: 12px; border-radius: 50%; animation: pulse 1.5s infinite; }
+        .lamp-online { background: #00ff88; box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88; }
+        .lamp-offline { background: #ff5252; box-shadow: 0 0 10px #ff5252, 0 0 20px #ff5252; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .text-online { color: #00ff88; font-weight: bold; text-shadow: 0 0 5px #00ff88; }
+        .text-offline { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px #ff5252; }
+        .status-text { font-size: 13px; letter-spacing: 1px; }
 
         /* Card Style Prediksi */
         .card { 
@@ -299,6 +286,8 @@
         document.getElementById('main-grid').style.display = "block";
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
+        
+        // JUDUL STATUS DENGAN EFEK NYALA
         document.getElementById('txt-tanggal').innerText = "STATUS OPERASIONAL BANK";
         document.getElementById('sub-txt-tanggal').innerText = "SISTEM MONITORING BANK & E-WALLET REALTIME";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
@@ -315,18 +304,18 @@
         const day = now.getDay();
 
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ1" },
-            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ2" },
-            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ3" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ4" },
-            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ5" },
-            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ6" },
-            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ7" },
-            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ8" },
-            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ9lQ9" },
-            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ10" },
-            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://via.placeholder.com/150x70?text=QRIS" },
-            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://lh3.googleusercontent.com/u/0/d/1X5l8f2v8JpX9O-k9_M1ZlQ6lQ9lQ11" }
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://i.ibb.co/S7m47fF/bca.png" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://i.ibb.co/vYm6m1V/bni.png" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://i.ibb.co/vYF8v8L/bri.png" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://i.ibb.co/vYm6m1V/mandiri.png" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://i.ibb.co/vYm6m1V/danamon.png" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://i.ibb.co/vYm6m1V/cimb.png" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://i.ibb.co/vYm6m1V/dana.png" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://i.ibb.co/vYm6m1V/ovo.png" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://i.ibb.co/vYm6m1V/gopay.png" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://i.ibb.co/vYm6m1V/linkaja.png" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://i.ibb.co/vYm6m1V/qris.png" },
+            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://i.ibb.co/vYm6m1V/usdt.png" }
         ];
 
         banks.forEach(bank => {
@@ -340,10 +329,11 @@
 
             const lampClass = isOnline ? "lamp-online" : "lamp-offline";
             const textClass = isOnline ? "text-online" : "text-offline";
+            const cardGlowClass = isOnline ? "card-online" : "card-offline";
             const statusLabel = isOnline ? "ONLINE" : "OFFLINE";
 
             container.innerHTML += `
-                <div class="bank-card">
+                <div class="bank-card ${cardGlowClass}">
                     <div class="logo-wrapper">
                         <img src="${bank.logo}" class="bank-logo" alt="${bank.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x70?text=${bank.name}';">
                     </div>
