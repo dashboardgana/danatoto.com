@@ -67,6 +67,14 @@
             border-radius: 8px; cursor: pointer; font-weight: bold; display: none;
         }
 
+        /* GRID UTAMA */
+        #main-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            width: 100%;
+        }
+
         /* JADWAL BANK STYLE */
         .bank-container { 
             display: flex; 
@@ -292,22 +300,23 @@
         const time = (hr * 100) + mn;
         const day = now.getDay();
 
-        // LINK LOGO DIAMBIL DARI GOOGLE SLIDES (Trik Export Link)
-        const slideBase = "https://docs.google.com/presentation/d/e/2PACX-1vQY1IVQ_nfkEkjeV_F39HW_VFF_espN87Ncv87pYyWR4T-jXovAUGEJtrS_j5HFvO39ZY7iZPMkl7d-";
+        // LINK SAKTI: Menggunakan Export PNG agar gambar benar-benar muncul
+        const slideID = "1IVQ_nfkEkjeV_F39HW_VFF_espN87Ncv87pYyWR4T-jXovAUGEJtrS_j5HFvO39ZY7iZPMkl7d-";
+        const linkExport = `https://docs.google.com/presentation/d/${slideID}/export/png?id=${slideID}&pageid=`;
 
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", slideId: "p1" },
-            { name: "BNI", schedule: "Online 24 Jam Nonstop", slideId: "p2" },
-            { name: "BRI", schedule: "Online 24 Jam Nonstop", slideId: "p3" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", slideId: "p4" },
-            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", slideId: "p5" },
-            { name: "CIMB", schedule: "Online 24 Jam Nonstop", slideId: "p6" },
-            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", slideId: "p7" },
-            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", slideId: "p8" },
-            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", slideId: "p9" },
-            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", slideId: "p10" },
-            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", slideId: "p11" },
-            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", slideId: "p12" }
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: linkExport + "id.p1" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: linkExport + "id.p2" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: linkExport + "id.p3" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: linkExport + "id.p4" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: linkExport + "id.p5" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: linkExport + "id.p6" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: linkExport + "id.p7" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: linkExport + "id.p8" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: linkExport + "id.p9" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: linkExport + "id.p10" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: linkExport + "id.p11" },
+            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: linkExport + "id.p12" }
         ];
 
         banks.forEach(bank => {
@@ -322,14 +331,11 @@
             const lampClass = isOnline ? "lamp-online" : "lamp-offline";
             const textClass = isOnline ? "text-online" : "text-offline";
             const statusLabel = isOnline ? "ONLINE" : "OFFLINE";
-            
-            // Rumus Link Export Gambar Per Slide
-            const finalLogoUrl = `${slideBase}/export/png?id=1IVQ_nfkEkjeV_F39HW_VFF_espN87Ncv87pYyWR4T-jXovAUGEJtrS_j5HFvO39ZY7iZPMkl7d-&pageid=${bank.slideId}`;
 
             container.innerHTML += `
                 <div class="bank-card">
                     <div class="logo-wrapper">
-                        <img src="${finalLogoUrl}" class="bank-logo" alt="${bank.name}" onerror="this.src='https://via.placeholder.com/150?text=${bank.name}'">
+                        <img src="${bank.logo}" class="bank-logo" alt="${bank.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x70?text=${bank.name}';">
                     </div>
                     <div class="divider"></div>
                     <div class="bank-info">
