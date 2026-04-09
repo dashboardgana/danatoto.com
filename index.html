@@ -75,13 +75,13 @@
             width: 100%;
         }
 
-        /* JADWAL BANK STYLE - PERBAIKAN TAMPILAN KE SAMPING */
+        /* JADWAL BANK STYLE */
         .bank-container { 
-            display: flex;          /* Ubah ke Flex agar lebih fleksibel ke samping */
-            flex-wrap: wrap;        /* Supaya tetap turun jika layar sempit */
+            display: flex; 
+            flex-wrap: wrap; 
             gap: 20px; 
             width: 100%; 
-            justify-content: flex-start; /* Kartu mulai dari kiri ke samping */
+            justify-content: flex-start;
         }
 
         .bank-card { 
@@ -94,14 +94,14 @@
             align-items: center; 
             box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
             transition: transform 0.3s;
-            width: 240px;           /* Lebar kartu tetap agar berjejer rapi */
+            width: 240px;
         }
 
         .bank-card:hover { transform: translateY(-5px); }
 
         .logo-wrapper {
             width: 100%;
-            height: 60px;
+            height: 70px;
             background: #fff;
             border-radius: 10px;
             display: flex;
@@ -161,8 +161,8 @@
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
-            .bank-container { justify-content: center; } /* Di mobile jadi ke tengah */
-            .bank-card { width: 45%; min-width: 150px; } /* Di mobile kartu mengecil tapi tetap berjejer */
+            .bank-container { justify-content: center; }
+            .bank-card { width: 45%; min-width: 150px; }
         }
     </style>
 </head>
@@ -282,7 +282,6 @@
 
     function loadJadwalBank() {
         resetMenu();
-        // Sembunyikan grid default supaya tidak bentrok
         document.getElementById('main-grid').style.display = "block";
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
@@ -301,18 +300,22 @@
         const time = (hr * 100) + mn;
         const day = now.getDay();
 
+        // LINK UTAMA SLIDES
+        const linkSlides = "https://docs.google.com/presentation/d/e/2PACX-1vQY1IVQ_nfkEkjeV_F39HW_VFF_espN87Ncv87pYyWR4T-jXovAUGEJtrS_j5HFvO39ZY7iZPMkl7d-/pub?start=false&loop=false&delayms=1000";
+
         const banks = [
-            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/512px-Bank_Central_Asia.svg.png" },
-            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/id/thumb/5/51/BNI_logo.svg/512px-BNI_logo.svg.png" },
-            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_Logo.svg/512px-BRI_Logo.svg.png" },
-            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/512px-Bank_Mandiri_logo_2016.svg.png" },
-            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Logo_Danamon.svg/512px-Logo_Danamon.svg.png" },
-            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/CIMB_Niaga_logo.svg/512px-CIMB_Niaga_logo.svg.png" },
-            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/512px-Logo_dana_blue.svg.png" },
-            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/512px-Logo_ovo_purple.svg.png" },
-            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gojek_logo_2019.svg/512px-Gojek_logo_2019.svg.png" },
-            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/512px-LinkAja.svg.png" },
-            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/512px-Logo_QRIS.svg.png" }
+            { name: "BCA", schedule: "Senin-Jumat : 22.00-00.20 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: linkSlides + "&slide=id.p1" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: linkSlides + "&slide=id.p2" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: linkSlides + "&slide=id.p3" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 23.00-03.30 Offline", logo: linkSlides + "&slide=id.p4" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: linkSlides + "&slide=id.p5" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: linkSlides + "&slide=id.p6" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: linkSlides + "&slide=id.p7" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: linkSlides + "&slide=id.p8" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: linkSlides + "&slide=id.p9" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: linkSlides + "&slide=id.p10" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: linkSlides + "&slide=id.p11" },
+            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: linkSlides + "&slide=id.p12" }
         ];
 
         banks.forEach(bank => {
