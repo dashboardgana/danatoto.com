@@ -104,8 +104,17 @@
         .toto-input-group input:focus { border-color: #00d4ff; }
         .btn-hitung { 
             width: 100%; padding: 15px; background: #00d4ff; border: none; border-radius: 10px; 
-            color: #000; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 20px;
+            color: #000; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px;
         }
+        
+        /* STYLE TOMBOL CLEAR (BARU) */
+        .btn-clear {
+            width: 100%; padding: 12px; background: #ff5252; border: none; border-radius: 10px; 
+            color: #fff; font-weight: bold; cursor: pointer; font-size: 15px; margin-bottom: 20px;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-clear:hover { background: #ff1a1a; box-shadow: 0 0 10px rgba(255, 82, 82, 0.5); }
+
         .result-box { 
             background: #0d1117; border: 2px dashed #00d4ff; padding: 20px; 
             border-radius: 10px; text-align: center;
@@ -436,11 +445,28 @@
                     <input type="number" id="addNum" value="24">
                 </div>
                 <button class="btn-hitung" onclick="hitungToto()">HITUNG RESULT</button>
+                
+                <button class="btn-clear" onclick="clearNomor()">CLEAR NOMOR</button>
+
                 <div class="result-box">
                     <h4>HASIL 4D RESULT:</h4>
                     <div id="finalRes" class="final-number">----</div>
                 </div>
             </div>`;
+    }
+
+    // FUNGSI CLEAR NOMOR (BARU)
+    function clearNomor() {
+        // Mengosongkan semua input bola
+        document.getElementById('b1').value = "";
+        document.getElementById('b2').value = "";
+        document.getElementById('b3').value = "";
+        document.getElementById('b4').value = "";
+        document.getElementById('b5').value = "";
+        document.getElementById('b6').value = "";
+        document.getElementById('addNum').value = "";
+        // Reset tampilan hasil
+        document.getElementById('finalRes').innerText = "----";
     }
 
     function hitungToto() {
