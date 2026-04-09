@@ -424,16 +424,16 @@
         grid.innerHTML = `
             <div class="toto-container">
                 <div class="toto-grid">
-                    <div class="toto-input-group"><label>Bola 1</label><input type="number" id="b1" placeholder="0"></div>
-                    <div class="toto-input-group"><label>Bola 2</label><input type="number" id="b2" placeholder="0"></div>
-                    <div class="toto-input-group"><label>Bola 3</label><input type="number" id="b3" placeholder="0"></div>
-                    <div class="toto-input-group"><label>Bola 4</label><input type="number" id="b4" placeholder="0"></div>
-                    <div class="toto-input-group"><label>Bola 5</label><input type="number" id="b5" placeholder="0"></div>
-                    <div class="toto-input-group"><label>Bola 6</label><input type="number" id="b6" placeholder="0"></div>
+                    <div class="toto-input-group"><label>Bola 1</label><input type="number" id="b1" value="1"></div>
+                    <div class="toto-input-group"><label>Bola 2</label><input type="number" id="b2" value="2"></div>
+                    <div class="toto-input-group"><label>Bola 3</label><input type="number" id="b3" value="6"></div>
+                    <div class="toto-input-group"><label>Bola 4</label><input type="number" id="b4" value="9"></div>
+                    <div class="toto-input-group"><label>Bola 5</label><input type="number" id="b5" value="44"></div>
+                    <div class="toto-input-group"><label>Bola 6</label><input type="number" id="b6" value="48"></div>
                 </div>
                 <div class="toto-input-group" style="margin-bottom:20px;">
                     <label>Additional Number</label>
-                    <input type="number" id="addNum" placeholder="0">
+                    <input type="number" id="addNum" value="24">
                 </div>
                 <button class="btn-hitung" onclick="hitungToto()">HITUNG RESULT</button>
                 <div class="result-box">
@@ -452,19 +452,21 @@
         const b6 = parseInt(document.getElementById('b6').value) || 0;
         const add = parseInt(document.getElementById('addNum').value) || 0;
 
-        // Logika Rumus SGP Toto:
+        // TOTAL BOLA
         const totalBola = b1 + b2 + b3 + b4 + b5 + b6;
-        const step2 = (totalBola * 2) + add;
-        const step3 = step2 - b1 - b6;
-        
-        // 2D Belakang
-        const angka2D = (step3 % 100).toString().padStart(2, '0');
-        
-        // Ribuan & Ratusan
-        const ribuan = Math.floor(totalBola / 10);
-        const ratusan = totalBola % 10;
 
-        const hasilFinal = `${ribuan}${ratusan}${angka2D}`;
+        // 1. CARI ANGKA DEPAN (RIBUAN & RATUSAN)
+        // Rumus: (Total * 76) + Additional + 5
+        const rumusDepan = (totalBola * 76) + add + 5;
+        const angkaDepan = rumusDepan.toString().substring(0, 2);
+
+        // 2. CARI ANGKA BELAKANG (PULUHAN & SATUAN)
+        // Rumus: (Total * 2) - (Bola1 + Bola6) + Additional
+        const rumusBelakang = (totalBola * 2) - (b1 + b6) + add;
+        const angkaBelakang = (rumusBelakang % 100).toString().padStart(2, '0');
+
+        // GABUNGKAN
+        const hasilFinal = angkaDepan + angkaBelakang;
         document.getElementById('finalRes').innerText = hasilFinal;
     }
 
