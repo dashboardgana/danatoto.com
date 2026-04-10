@@ -536,7 +536,7 @@ async function renderSyair() {
     const canvas = document.getElementById('canvasSyair');
     const ctx = canvas.getContext('2d');
     
-    // Dimensi tetap untuk akurasi posisi
+    // Dimensi tetap 800x1100 (Ruang lega anti-berantakan)
     canvas.width = 800;
     canvas.height = 1100;
 
@@ -545,7 +545,7 @@ async function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // Link aset stabil
+    // --- LINK ASET FIX (DIRECT & STABIL) ---
     const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const directMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -566,10 +566,10 @@ async function renderSyair() {
 
     ctx.clearRect(0, 0, 800, 1100);
 
-    // 1. BACKGROUND (WAJIB ADA)
+    // 1. DRAW BACKGROUND
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER & LOGO
+    // 2. HEADER TANGGAL & LOGO
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
@@ -577,7 +577,7 @@ async function renderSyair() {
     ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 65);
     if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
 
-    // 3. KOTAK NOMOR
+    // 3. KOTAK NOMOR (POSISI TETAP)
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 10, 20, 0.95)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 12); ctx.fill();
@@ -594,7 +594,7 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG & ANGKA (DITANDAI MERAH - POSISI FIX)
+    // 4. BINTANG & ANGKA (KUNCI MATI DI UJUNG LANCIP)
     const cx = 400, cy = 575; 
     const rOuter = 85; 
     function drawStar(cx, cy, spikes, outer, inner) {
@@ -609,36 +609,36 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, rOuter, 40);
 
-    // Angka menempel tepat di ujung bintang
+    // POSISI ANGKA MENEMPEL DI UJUNG BINTANG (Sesuai Panah Merah)
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 42px Arial";
     ctx.fillText("89", cx, cy - rOuter - 15);      // Ujung Atas
     ctx.fillText("70", cx, cy + rOuter + 45);      // Ujung Bawah
     ctx.fillText("11", cx + rOuter + 50, cy + 10); // Ujung Kanan
     ctx.fillText("41", cx - rOuter - 50, cy + 10); // Ujung Kiri
 
-    // 5. ASSET (SHIO & PISANG - TIDAK TERPOTONG)
+    // 5. ASSET SHIO & POHON PISANG (POSISI AMAN - TIDAK TERPOTONG)
     if (shioImg) ctx.drawImage(shioImg, 50, 690, 260, 260); 
     if (pisangImg) ctx.drawImage(pisangImg, 520, 640, 260, 260); // Geser kanan & naik agar aman
 
-    // 6. KETERANGAN SHIO
+    // 6. KETERANGAN SHIO (PASTI BERSIH DARI BABI HUTAN)
     ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(85, 640, 200, 50, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 24px Georgia";
     ctx.fillText("SHIO MONYET", 185, 675);
 
-    // 7. PANTUN (SAYIR) - RAPI & BERSIH DARI "BABI HUTAN"
+    // 7. PANTUN (SAYIR) - RAPI & ELEGAN
     ctx.fillStyle = "#00d4ff"; ctx.font = "italic bold 42px Times New Roman";
     ctx.fillText('"' + item.kodal + '"', 400, 900);
 
-    // Kotak Pantun
+    // Kotak Pantun Mewah
     ctx.shadowBlur = 15; ctx.shadowColor = "#ffffff";
     ctx.fillStyle = "rgba(5, 15, 35, 0.98)";
     ctx.beginPath(); ctx.roundRect(60, 945, 680, 130, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Teks Pantun 2 Baris
+    // Tulisan Pantun 2 Baris Tetap (Dijamin tidak keluar kotak)
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 23px Arial";
     const line1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
     const line2 = "Angka keluar jangan sembarang, Semoga hoki datang menghampiri.";
