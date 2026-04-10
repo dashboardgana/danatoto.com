@@ -540,96 +540,90 @@ async function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // LINK JALUR KHUSUS (Direct Link agar tidak diblokir Google)
-    const urlBG = "https://drive.google.com/uc?export=view&id=1gyn4tps2H1p4j8LIpQKha-uXswhFcVB1";
+    // --- LINK ASET TERBARU (SUDAH KONVERSI KE DIRECT LINK) ---
+    const urlBG = "https://drive.google.com/uc?export=view&id=1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB";
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
 
-    const loadImg = (url) => new Promise((res) => {
+    const loadImg = (url) => new Promise((resolve) => {
         const img = new Image();
-        img.crossOrigin = "anonymous"; 
+        img.crossOrigin = "anonymous";
         img.src = url;
-        img.onload = () => res(img);
-        img.onerror = () => res(null);
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
     });
 
-    // 1. TUNGGU SEMUA GAMBAR MASUK (Background, Logo, Shio, Pisang)
-    const [bg, logo, shio, pisang] = await Promise.all([
+    // TUNGGU SEMUA GAMBAR MASUK
+    const [bgImg, logoImg, shioImg, pisangImg] = await Promise.all([
         loadImg(urlBG), 
-        loadImg(urlLogo), 
+        loadImg(logoImg ? urlLogo : ''), 
         loadImg(item.urlShio), 
         loadImg(item.urlTema)
     ]);
 
-    // Bersihkan Canvas
     ctx.clearRect(0, 0, 700, 800);
 
-    // 2. GAMBAR BACKGROUND UTAMA
-    if (bg) {
-        ctx.drawImage(bg, 0, 0, 700, 800);
+    // 1. GAMBAR BACKGROUND TERBARU
+    if (bgImg) {
+        ctx.drawImage(bgImg, 0, 0, 700, 800);
     } else {
-        ctx.fillStyle = "#0a1a2a"; // Warna cadangan kalau BG gagal load
+        ctx.fillStyle = "#0a111a"; 
         ctx.fillRect(0, 0, 700, 800);
     }
 
-    // 3. HEADER (TANGGAL & LOGO) - TULISAN DI ATAS
-    ctx.shadowBlur = 0;
+    // 2. HEADER (TANGGAL & LOGO)
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
-    ctx.font = "bold 28px Arial";
+    ctx.font = "bold 26px Arial";
     ctx.fillText(tglStr.toUpperCase(), 350, 60);
-    if (logo) ctx.drawImage(logo, 250, 80, 200, 60);
+    if (logoImg) ctx.drawImage(logoImg, 250, 85, 200, 60);
 
-    // 4. FUNGSI KOTAK ANGKA ELEGAN (Kiri & Kanan)
+    // 3. FUNGSI KOTAK ANGKA ELEGAN (ROUNDED)
     const drawBox = (x, y, label, value) => {
-        // Shadow kotak
-        ctx.shadowBlur = 10; ctx.shadowColor = "rgba(0,0,0,0.5)";
-        // Background kotak (Putih Mewah)
+        ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
         ctx.beginPath();
         ctx.roundRect(x, y, 240, 80, 15);
-        ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
         ctx.fill();
-        ctx.strokeStyle = "#00d4ff"; // Frame Biru Cyan
+        ctx.strokeStyle = "#00d4ff";
         ctx.lineWidth = 3;
         ctx.stroke();
-        ctx.shadowBlur = 0; // Reset shadow
 
-        // Label (BBFS, dll)
-        ctx.fillStyle = "#555";
+        ctx.fillStyle = "#333";
+        ctx.textAlign = "center";
         ctx.font = "italic bold 16px Times New Roman";
         ctx.fillText(label, x + 120, y + 30);
-        // Nilai Angka (Besar & Jelas)
         ctx.fillStyle = "#000";
-        ctx.font = "bold 28px Arial";
+        ctx.font = "bold 30px Arial";
         ctx.fillText(value, x + 120, y + 65);
     };
 
-    // Susun Kotak Prediksi
+    // Susun Kotak Prediksi (Posisi Tengah)
     drawBox(80, 180, "BBFS", item.bbfs);
     drawBox(380, 180, "ANGKA MAIN", item.am);
-    drawBox(80, 280, "TWIN", item.twin);
-    drawBox(380, 280, "COLOK BEBAS", item.cb);
+    drawBox(80, 275, "TWIN", item.twin);
+    drawBox(380, 275, "COLOK BEBAS", item.cb);
 
-    // 5. SHIO (TENGAH BESAR)
+    // 4. SHIO (TENGAH BESAR)
     ctx.fillStyle = "#ffeb3b";
-    ctx.font = "bold 50px Georgia";
-    ctx.shadowBlur = 15; ctx.shadowColor = "black";
+    ctx.font = "bold 45px Georgia";
+    ctx.textAlign = "center";
+    ctx.shadowBlur = 10; ctx.shadowColor = "black";
     ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 410);
     ctx.shadowBlur = 0;
 
-    // 6. ASSET UTAMA (SHIO KIRI, PISANG KANAN)
-    if (shio) ctx.drawImage(shio, 70, 430, 250, 250); 
-    if (pisang) ctx.drawImage(pisang, 380, 430, 250, 250);
+    // 5. GAMBAR ASSET (MONYET KIRI - PISANG KANAN)
+    if (shioImg) ctx.drawImage(shioImg, 70, 430, 250, 250); 
+    if (pisangImg) ctx.drawImage(pisangImg, 380, 430, 250, 250);
 
-    // 7. PANTUN & KODAL (BAWAH)
+    // 6. PANTUN & KODAL (BAWAH)
     ctx.fillStyle = "#00d4ff";
     ctx.font = "italic bold 26px Times New Roman";
     ctx.fillText('"' + item.kodal + '"', 350, 710);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 22px Arial";
-    const lines = item.pantun.split('\n');
-    lines.forEach((line, i) => {
-        ctx.fillText(line.trim(), 350, 750 + (i * 30));
+    ctx.font = "bold 20px Arial";
+    const baris = item.pantun.split('\n');
+    baris.forEach((line, i) => {
+        ctx.fillText(line.trim(), 350, 745 + (i * 28));
     });
 }
 
