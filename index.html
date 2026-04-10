@@ -3,270 +3,601 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP DANATOTO SYSTEM - FULL EDITION</title>
+    <title>VIP DANATOTO SYSTEM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { display: none; margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; background-color: #05070a; color: #fff; }
+        /* MENCEGAH EFEK MEMBAL: Sembunyikan body sampai dicek loginnya */
+        body { 
+            display: none; 
+            margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; 
+        }
+        
         * { box-sizing: border-box; }
         
-        /* LOGIN PAGE */
+        /* LOGIN PAGE - BACKGROUND DARI GOOGLE DRIVE KAMU */
         #login-page {
-            display: flex; justify-content: center; align-items: center; height: 100vh; 
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; 
             background: #000 url('https://lh3.googleusercontent.com/d/14C_qsiLDmnxIZXXu4yPvqeuLOy-ac5HA') no-repeat center center;
             background-size: cover; position: fixed; width: 100%; z-index: 9999;
         }
         .login-card {
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); padding: 40px; 
-            border-radius: 20px; border: 1px solid #00d4ff; width: 90%; max-width: 400px; 
-            text-align: center; color: white; box-shadow: 0 0 30px #00d4ff55;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px);
+            padding: 40px; border-radius: 20px; border: 1px solid #00d4ff;
+            width: 90%; max-width: 400px; text-align: center; color: white;
+            box-shadow: 0 0 30px #00d4ff55;
         }
-        .login-card input { width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid #333; border-radius: 8px; color: white; outline: none; }
-        .login-card button { width: 100%; padding: 12px; margin-top: 20px; background: #00d4ff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
+        .login-card h2 { margin-bottom: 25px; letter-spacing: 3px; color: #00d4ff; }
+        .login-card input {
+            width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.1);
+            border: 1px solid #333; border-radius: 8px; color: white; outline: none;
+        }
+        .login-card button {
+            width: 100%; padding: 12px; margin-top: 20px; background: #00d4ff;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000;
+        }
 
-        /* DASHBOARD & SIDEBAR */
-        #main-dashboard { display: none; }
-        .sidebar { width: 260px; background: #000; border-right: 1px solid #1a237e; height: 100vh; position: fixed; padding: 20px; overflow-y: auto; z-index: 100; }
+        /* DASHBOARD PAGE */
+        #main-dashboard { display: none; background-color: #05070a; min-height: 100vh; color: #fff; }
+
+        /* Sidebar */
+        .sidebar { 
+            width: 260px; background: #000; border-right: 1px solid #1a237e; 
+            height: 100vh; position: fixed; padding: 20px; overflow-y: auto; z-index: 100;
+        }
         .sidebar h2 { color: #00d4ff; font-size: 20px; margin-bottom: 30px; text-align: center; border-bottom: 2px solid #00d4ff; padding-bottom: 10px; }
-        .menu-item { display: block; color: #aaa; padding: 12px; text-decoration: none; border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        
+        .menu-item {
+            display: block; color: #aaa; padding: 12px; text-decoration: none; 
+            border-radius: 8px; margin-bottom: 5px; cursor: pointer; transition: 0.2s; font-size: 14px;
+        }
         .menu-item:hover { color: #fff; background: #1a237e; }
         .active-menu { background: #00d4ff !important; color: #000 !important; font-weight: bold; }
 
+        /* Content Area */
         .content { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; }
-        .header-box { width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; border: 1px solid #00d4ff; margin-bottom: 30px; text-align: center; position: relative; box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
-        .running-text { color: #00d4ff; font-size: 20px; font-weight: bold; }
-        .date-display { font-size: 26px; font-weight: bold; text-shadow: 0 0 10px #00d4ff; color: #fff; }
+        
+        .header-box { 
+            width: 100%; background: #0d1117; padding: 25px; border-radius: 15px; 
+            border: 1px solid #00d4ff; margin-bottom: 30px; text-align: center;
+            position: relative; 
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
 
-        /* GRID PREDIKSI */
-        #main-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; width: 100%; }
-        .card { background: #161b22; border-radius: 12px; border: 1px solid #30363d; overflow: hidden; transition: 0.3s; }
-        .card-header { background: linear-gradient(90deg, #00d4ff, #008fb3); padding: 10px; font-weight: bold; color: #000; text-align: center; text-transform: uppercase; font-size: 13px; }
-        .card-body { padding: 15px; font-size: 13px; color: #f0f6fc; }
+        .date-display { 
+            font-size: 28px; 
+            font-weight: bold; 
+            color: #fff; 
+            text-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff; 
+        }
+
+        .running-text { color: #00d4ff; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px rgba(0, 212, 255, 0.8); }
+        .sub-date { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-top: 5px; }
+
+        .btn-copy-all {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            padding: 10px 15px; background: #ff5252; color: white; border: none;
+            border-radius: 8px; cursor: pointer; font-weight: bold; display: none;
+        }
+
+        /* GRID UTAMA */
+        #main-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            width: 100%;
+        }
+
+        /* STYLE KALKULATOR SGP TOTO */
+        .toto-container {
+            max-width: 600px; margin: 0 auto; background: #161b22; 
+            border: 1px solid #00d4ff; border-radius: 15px; padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        .toto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .toto-input-group { text-align: left; }
+        .toto-input-group label { display: block; font-size: 16px; color: #00d4ff; margin-bottom: 5px; font-weight: bold; }
+        .toto-input-group input { 
+            width: 100%; padding: 12px; background: #0d1117; border: 1px solid #30363d; 
+            border-radius: 8px; color: #fff; outline: none; text-align: center; font-weight: bold; font-size: 18px;
+        }
+        .toto-input-group input:focus { border-color: #00d4ff; }
+        .btn-hitung { 
+            width: 100%; padding: 15px; background: #00d4ff; border: none; border-radius: 10px; 
+            color: #000; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px;
+        }
+        
+        /* STYLE TOMBOL CLEAR (BARU) */
+        .btn-clear {
+            width: 100%; padding: 12px; background: #ff5252; border: none; border-radius: 10px; 
+            color: #fff; font-weight: bold; cursor: pointer; font-size: 15px; margin-bottom: 20px;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-clear:hover { background: #ff1a1a; box-shadow: 0 0 10px rgba(255, 82, 82, 0.5); }
+
+        .result-box { 
+            background: #0d1117; border: 2px dashed #00d4ff; padding: 20px; 
+            border-radius: 10px; text-align: center;
+        }
+        .result-box h4 { margin: 0 0 10px 0; color: #8b949e; }
+        .final-number { font-size: 45px; font-weight: bold; color: #fff; text-shadow: 0 0 15px #00d4ff; letter-spacing: 5px; }
+
+        /* JADWAL BANK STYLE */
+        .bank-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+            width: 100%; 
+            justify-content: flex-start;
+        }
+
+        .bank-card { 
+            background: linear-gradient(180deg, #001f3f 0%, #000b1a 100%); 
+            border-radius: 15px; padding: 20px; border: 2px solid #00d4ff;
+            display: flex; flex-direction: column;
+            align-items: center; transition: all 0.3s;
+            width: 240px; position: relative;
+        }
+
+        .card-online { box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); border-color: #00ff88 !important; }
+        .card-offline { box-shadow: 0 0 15px rgba(255, 82, 82, 0.4); border-color: #ff5252 !important; }
+
+        .bank-card:hover { transform: translateY(-5px); }
+
+        .logo-wrapper {
+            width: 100%; height: 70px; background: #fff; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px; padding: 8px; overflow: hidden;
+        }
+        .bank-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .divider { width: 100%; height: 1px; background: rgba(0, 212, 255, 0.3); margin-bottom: 15px; }
+        .bank-info { width: 100%; text-align: center; flex-grow: 1; }
+        .bank-schedule { font-size: 11px; color: #ccc; line-height: 1.5; margin-bottom: 10px; }
+        
+        .bank-status-row { 
+            display: flex; align-items: center; gap: 10px; justify-content: center;
+            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 20px; width: fit-content;
+        }
+        
+        .lamp { width: 12px; height: 12px; border-radius: 50%; animation: pulse 1.5s infinite; }
+        .lamp-online { background: #00ff88; box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88; }
+        .lamp-offline { background: #ff5252; box-shadow: 0 0 10px #ff5252, 0 0 20px #ff5252; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .text-online { color: #00ff88; font-weight: bold; text-shadow: 0 0 5px #00ff88; }
+        .text-offline { color: #ff5252; font-weight: bold; text-shadow: 0 0 5px #ff5252; }
+        .status-text { font-size: 13px; letter-spacing: 1px; }
+
+        /* Card Style Prediksi */
+        .card { 
+            background: #161b22; border-radius: 12px; border: 1px solid #30363d;
+            overflow: hidden; transition: 0.3s; display: flex; flex-direction: column;
+        }
+        .card-header { 
+            background: linear-gradient(90deg, #00d4ff, #008fb3); padding: 10px; 
+            font-weight: bold; color: #000; text-align: center; text-transform: uppercase; font-size: 13px;
+        }
+        .card-body { padding: 15px; flex-grow: 1; font-size: 13px; color: #f0f6fc; }
         .row-data { display: flex; justify-content: space-between; border-bottom: 1px solid #21262d; padding: 6px 0; }
-        .val-bbfs { color: #ffeb3b; font-size: 15px; font-weight: bold; }
-        .btn-copy { width: 100%; padding: 10px; margin-top: 10px; background: #30363d; border: 1px solid #00d4ff; border-radius: 6px; color: #00d4ff; cursor: pointer; font-weight: bold; }
+        .val-bbfs { color: #ffeb3b; font-size: 15px; letter-spacing: 1px; font-weight: bold; }
+        .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 12px; }
+        
+        .btn-copy {
+            width: 100%; padding: 10px; margin-top: 10px; background: #30363d;
+            border: 1px solid #00d4ff; border-radius: 6px; color: #00d4ff;
+            cursor: pointer; font-weight: bold;
+        }
 
-        /* JADWAL BANK */
-        .bank-container { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
-        .bank-card { background: #000b1a; border-radius: 15px; padding: 15px; border: 2px solid #00d4ff; width: 220px; text-align: center; }
-        .logo-wrapper { width: 100%; height: 60px; background: #fff; border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-bottom: 10px; padding: 5px; }
-        .bank-logo { max-width: 90%; max-height: 90%; object-fit: contain; }
-        .status-online { color: #00ff88; font-weight: bold; font-size: 14px; }
+        /* GENERATOR SYAIR STYLE */
+        .syair-wrapper {
+            max-width: 600px; margin: 0 auto; text-align: center;
+            background: #1a1a1a; padding: 20px; border-radius: 15px; border: 2px solid #00d4ff;
+        }
+        #canvasSyair {
+            width: 100%; border-radius: 10px; border: 1px solid #fff; margin-bottom: 20px;
+        }
+        .btn-export {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #00d4ff, #00ff88); color: #000;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px;
+        }
 
-        /* KALKULATOR TOTO */
-        .toto-container { max-width: 500px; margin: 0 auto; background: #161b22; border: 1px solid #00d4ff; padding: 25px; border-radius: 15px; }
-        .toto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .toto-grid input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; text-align: center; font-size: 18px; border-radius: 5px; }
-        .btn-hitung { width: 100%; padding: 15px; background: #00d4ff; color: #000; font-weight: bold; margin-top: 15px; border: none; border-radius: 8px; cursor: pointer; }
-
-        /* SYAIR GENERATOR */
-        #canvasSyair { width: 100%; max-width: 600px; border: 3px solid #00d4ff; border-radius: 10px; margin-bottom: 15px; }
-
-        @media (max-width: 768px) { .sidebar { display: none; } .content { margin-left: 0; width: 100%; } .bank-card { width: 45%; } }
+        @media (max-width: 768px) { 
+            .sidebar { display: none; } 
+            .content { margin-left: 0; width: 100%; padding: 15px; } 
+            .bank-container { justify-content: center; }
+            .bank-card { width: 45%; min-width: 150px; }
+            .toto-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
 <div id="login-page">
     <div class="login-card">
-        <i class="fas fa-user-shield fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
-        <h2>VIP DANATOTO</h2>
-        <input type="text" id="user" placeholder="Username">
-        <input type="password" id="pass" placeholder="Password">
-        <button onclick="doLogin()">MASUK SISTEM</button>
+        <i class="fas fa-lock fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
+        <h2>SILAHKAN LOGIN</h2>
+        <input type="text" id="user" placeholder="👤Username">
+        <input type="password" id="pass" placeholder="🔑Password">
+        <button onclick="doLogin()">MASUK KE SISTEM</button>
+        <p id="err" style="color: #ff5252; margin-top: 15px;"></p>
     </div>
 </div>
 
 <div id="main-dashboard">
     <div class="sidebar">
         <h2>DANATOTO</h2>
-        <div onclick="showWelcome()" class="menu-item active-menu" id="m-dash"><i class="fas fa-home"></i> DASHBOARD</div>
-        <div onclick="loadAllPasaran()" class="menu-item" id="m-pred"><i class="fas fa-fire"></i> PREDIKSI TOGEL</div>
-        <div onclick="loadJadwalBank()" class="menu-item" id="m-bank"><i class="fas fa-university"></i> JADWAL BANK</div>
-        <div onclick="loadSgpToto()" class="menu-item" id="m-sgp"><i class="fas fa-calculator"></i> SGP TOTO</div>
-        <div onclick="loadSyairGenerator()" class="menu-item" id="m-syair"><i class="fas fa-book-open"></i> SYAIR HARIAN</div>
-        <div onclick="doLogout()" class="menu-item" style="color:#ff5252; margin-top:50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
+        <div id="menu-dash" class="menu-item active-menu" onclick="showWelcome()"><i class="fas fa-home"></i> DASHBOARD</div>
+        <div id="menu-pred" class="menu-item" style="margin-top: 10px;" onclick="loadAllPasaran()">
+            <i class="fas fa-fire"></i> PREDIKSI TOGEL
+        </div>
+        <div id="menu-bank" class="menu-item" onclick="loadJadwalBank()">
+            <i class="fas fa-university"></i> JADWAL BANK
+        </div>
+        
+        <div id="menu-sgp" class="menu-item" onclick="loadSgpToto()">
+            <i class="fas fa-calculator"></i> PERHITUNGAN SGP TOTO
+        </div>
+        <div id="menu-syair" class="menu-item" onclick="loadSyairGenerator()">
+            <i class="fas fa-book-open"></i> SYAIR HARIAN
+        </div>
+        <div id="menu-win" class="menu-item" onclick="alert('Menu Postingan Kemenangan Segera Hadir')">
+            <i class="fas fa-trophy"></i> POSTINGAN KEMENANGAN BESAR
+        </div>
+
+        <div class="menu-item" onclick="doLogout()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
 
     <div class="content">
-        <div class="header-box">
-            <marquee class="running-text" id="run-txt">SELAMAT DATANG DI VIP SYSTEM DANATOTO - SEMOGA JP PAUS! ✨</marquee>
-            <div id="display-tgl" class="date-display" style="display:none;"></div>
+        <div id="header-container" class="header-box">
+            <marquee id="txt-jalan" class="running-text" direction="left" scrollamount="7">
+                SELAMAT DATANG DI VIP DANATOTO SYSTEM - SILAHKAN PILIH MENU DI SIDEBAR ✨
+            </marquee>
+            <div id="txt-tanggal" class="date-display" style="display: none;"></div>
+            <div id="sub-txt-tanggal" class="sub-date" style="display: none;"></div>
+            <button id="btn-master" class="btn-copy-all" onclick="copyAllPrediksi()"><i class="fas fa-copy"></i> COPY ALL PREDIKSI</button>
         </div>
         <div id="main-grid"></div>
     </div>
 </div>
 
 <script>
-    // 1. DATA LENGKAP PASARAN (50+ PASARAN BOSKU)
-    const daftarPasaran = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
-    
-    // 2. DATA LENGKAP BANK & LOGO
-    const daftarBank = [
-        { name: "BCA", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg", schedule: "Online 24 Jam" },
-        { name: "BNI", logo: "https://upload.wikimedia.org/wikipedia/id/5/55/BNI_logo.svg", schedule: "Online 24 Jam" },
-        { name: "BRI", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2e/BRI_Logo.svg", schedule: "Online 24 Jam" },
-        { name: "MANDIRI", logo: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg", schedule: "Online 24 Jam" },
-        { name: "DANA", logo: "https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg", schedule: "E-Wallet Online" },
-        { name: "OVO", logo: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg", schedule: "E-Wallet Online" },
-        { name: "GOPAY", logo: "https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg", schedule: "E-Wallet Online" },
-        { name: "QRIS", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg", schedule: "Auto Process" }
+    const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
+    const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
+    let masterData = [];
+
+    const paketSyair = [
+        { tema: "POHON PISANG", shio: "MONYET", bbfs: "12458", am: "1248", cb: "2 / 8", twin: "22/88", kodal: "MONYET MANJAT POHON PISANG AMBIL BUAH" },
+        { tema: "SAWAH BERLUMPUR", shio: "KERBAU", bbfs: "03467", am: "0347", cb: "3 / 7", twin: "33/77", kodal: "KERBAU NARIK BAJAK DI SAWAH LUAS" },
+        { tema: "HUTAN RIMBA", shio: "HARIMAU", bbfs: "45679", am: "4579", cb: "5 / 9", twin: "55/99", kodal: "PEMBURU KAGET LIHAT HARIMAU TIDUR" },
+        { tema: "LOBANG TANAH", shio: "ULAR", bbfs: "13568", am: "1368", cb: "1 / 6", twin: "11/66", kodal: "ULAR SANCA MASUK LOBANG PERSEMBUNYIAN" },
+        { tema: "PADANG RUMPUT", shio: "KUDA", bbfs: "24578", am: "2478", cb: "4 / 8", twin: "44/88", kodal: "KUDA BALAP LARI KENCANG KE GARIS FINISH" },
+        { tema: "KANDANG BAMBU", shio: "AYAM", bbfs: "02359", am: "0259", cb: "0 / 5", twin: "00/55", kodal: "AYAM JAGO BERKOKOK DI PAGI HARI" },
+        { tema: "RUMAH TUA", shio: "TIKUS", bbfs: "12367", am: "1267", cb: "2 / 7", twin: "22/77", kodal: "TIKUS DAPUR LAGI ASYIK NYOLONG ROTI" },
+        { tema: "TAMAN BUNGA", shio: "KELINCI", bbfs: "45689", am: "4689", cb: "6 / 9", twin: "66/99", kodal: "KELINCI PUTIH MAKAN WORTEL DI TAMAN" },
+        { tema: "AWAN MENDUNG", shio: "NAGA", bbfs: "01347", am: "0137", cb: "1 / 7", twin: "11/77", kodal: "NAGA TERBANG DI BALIK AWAN HITAM" },
+        { tema: "TEBING GUNUNG", shio: "KAMBING", bbfs: "23569", am: "2356", cb: "3 / 5", twin: "33/55", kodal: "KAMBING GUNUNG MANJAT TEBING CURAM" },
+        { tema: "PINTU PAGAR", shio: "ANJING", bbfs: "14578", am: "1458", cb: "4 / 5", twin: "44/55", kodal: "ANJING PENJAGA GONGGONG ORANG ASING" },
+        { tema: "KUBANGAN LUMPUR", shio: "BABI", bbfs: "02469", am: "0269", cb: "2 / 6", twin: "22/66", kodal: "BABI HUTAN CARI MAKAN DI LUMPUR" }
     ];
 
-    const dataShio = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
+    (function checkAuth() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+            document.addEventListener("DOMContentLoaded", function() {
+                document.body.style.display = 'block';
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-dashboard').style.display = 'block';
+                showWelcome();
+            });
+        } else {
+            document.addEventListener("DOMContentLoaded", function() {
+                document.body.style.display = 'block';
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('main-dashboard').style.display = 'none';
+            });
+        }
+    })();
 
-    // FUNGSI UTAMA
     function doLogin() {
-        if(document.getElementById('user').value === "admin" && document.getElementById('pass').value === "1234") {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        if(u === "admin" && p === "1234") {
             sessionStorage.setItem('isLoggedIn', 'true');
-            location.reload();
-        } else { alert("Login Gagal!"); }
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-dashboard').style.display = 'block';
+            showWelcome();
+        } else {
+            document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
+        }
     }
-    function doLogout() { sessionStorage.removeItem('isLoggedIn'); location.reload(); }
 
-    function resetActive() {
+    function doLogout() {
+        sessionStorage.removeItem('isLoggedIn');
+        location.reload();
+    }
+
+    function resetMenu() {
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
         document.getElementById('main-grid').innerHTML = "";
-        document.getElementById('display-tgl').style.display = "none";
-        document.getElementById('run-txt').style.display = "block";
+        document.getElementById('main-grid').style.display = "grid"; 
+        document.getElementById('btn-master').style.display = 'none';
     }
 
     function showWelcome() {
-        resetActive();
-        document.getElementById('m-dash').classList.add('active-menu');
-        document.getElementById('main-grid').innerHTML = '<div style="width:100%; text-align:center; padding:50px;"><h3>SILAHKAN PILIH MENU DI SAMPING</h3></div>';
+        resetMenu();
+        document.getElementById('txt-jalan').style.display = 'block';
+        document.getElementById('txt-tanggal').style.display = 'none';
+        document.getElementById('sub-txt-tanggal').style.display = 'none';
+        document.getElementById('menu-dash').classList.add('active-menu');
+        document.getElementById('main-grid').innerHTML = '<div style="width:100%; text-align:center; padding:50px; color:#00d4ff;"><h3>SISTEM SIAP DIGUNAKAN. SILAHKAN PILIH MENU.</h3></div>';
     }
 
-    // 3. FITUR PREDIKSI (SEMUA PASARAN & BISA COPY)
     function loadAllPasaran() {
-        resetActive();
-        document.getElementById('m-pred').classList.add('active-menu');
-        document.getElementById('display-tgl').style.display = "block";
-        const tgl = new Date().toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-        document.getElementById('display-tgl').innerText = tgl;
-        
+        resetMenu();
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('sub-txt-tanggal').innerText = "MENAMPILKAN SEMUA PASARAN PREDIKSI";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('menu-pred').classList.add('active-menu');
+        document.getElementById('btn-master').style.display = 'block';
+
         const grid = document.getElementById('main-grid');
-        daftarPasaran.forEach((p, i) => {
-            const bbfs = Math.floor(Math.random() * 900000 + 100000);
-            const am = Math.floor(Math.random() * 9000 + 1000);
+        const d = new Date();
+        const tglHariIni = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('txt-tanggal').innerText = tglHariIni;
+        const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
+        masterData = [];
+        pasarans.forEach((name, i) => {
+            const seed = seedDay + i;
+            const bbfs = Array.from({length: 7}, (_, k) => Math.floor(Math.abs(Math.sin(seed + k) * 10)) % 10).join('');
+            const am = Array.from({length: 5}, (_, k) => Math.floor(Math.abs(Math.cos(seed + k) * 10)) % 10).join('');
+            const cb1 = Math.floor(Math.abs(Math.sin(seed + 8) * 10)) % 10;
+            const cb2 = Math.floor(Math.abs(Math.cos(seed + 9) * 10)) % 10;
+            const shioUtama = shios[seed % shios.length];
+            masterData.push({ name, bbfs, am, cb1, cb2, shioUtama, tglHariIni });
             grid.innerHTML += `
                 <div class="card">
-                    <div class="card-header">${p}</div>
-                    <div class="card-body" id="text-${i}">
-                        <div class="row-data"><span>BBFS</span><span class="val-bbfs">${bbfs}</span></div>
-                        <div class="row-data"><span>AM</span><span>${am}</span></div>
-                        <div class="row-data"><span>SHIO</span><span>${dataShio[i % 12]}</span></div>
-                        <button class="btn-copy" onclick="copyText('text-${i}', '${p}')">SALIN PREDIKSI</button>
+                    <div class="card-header">${name}</div>
+                    <div class="card-body">
+                        <div class="row-data"><span class="label">BBFS</span><span class="val-bbfs">${bbfs}</span></div>
+                        <div class="row-data"><span class="label">ANGKA MAIN</span><span class="val">${am}</span></div>
+                        <div class="row-data"><span class="label">COLOK BEBAS</span><span class="val">${cb1} / ${cb2}</span></div>
+                        <div class="row-data"><span class="label">SHIO</span><span class="val">${shioUtama}</span></div>
+                        <div class="ups-text">Selalu utamakan prediksi sendiri</div>
+                        <button class="btn-copy" onclick="copyAction(${i})">SALIN PREDIKSI</button>
                     </div>
                 </div>`;
         });
     }
 
-    function copyText(id, pasaran) {
-        const text = document.getElementById(id).innerText.replace('SALIN PREDIKSI', '');
-        navigator.clipboard.writeText(`PREDIKSI ${pasaran}\n${text}\nUTAMAKAN PREDIKSI SENDIRI`);
-        alert('Prediksi ' + pasaran + ' Berhasil di Copy!');
-    }
-
-    // 4. FITUR JADWAL BANK (DENGAN LOGO LENGKAP)
     function loadJadwalBank() {
-        resetActive();
-        document.getElementById('m-bank').classList.add('active-menu');
-        document.getElementById('main-grid').innerHTML = `<div class="bank-container" id="b-cont"></div>`;
-        const cont = document.getElementById('b-cont');
-        daftarBank.forEach(b => {
-            cont.innerHTML += `
-                <div class="bank-card">
-                    <div class="logo-wrapper"><img src="${b.logo}" class="bank-logo"></div>
-                    <div class="status-online">● ONLINE</div>
-                    <div style="font-size:11px; color:#aaa; margin-top:5px;">${b.schedule}</div>
+        resetMenu();
+        document.getElementById('main-grid').style.display = "block";
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('txt-tanggal').innerText = "STATUS OPERASIONAL BANK";
+        document.getElementById('sub-txt-tanggal').innerText = "SISTEM MONITORING BANK & E-WALLET REALTIME";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('menu-bank').classList.add('active-menu');
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = `<div id="bank-container" class="bank-container"></div>`;
+        const container = document.getElementById('bank-container');
+        const now = new Date();
+        const hr = now.getHours();
+        const mn = now.getMinutes();
+        const time = (hr * 100) + mn;
+        const day = now.getDay();
+        const banks = [
+            { name: "BCA", schedule: "Senin-Jumat : 21.00-00.30 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1200px-Bank_Central_Asia.svg.png" },
+            { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1F5wmepEgaBo6PDevJr71Gvh_G-c-B-Hi" },
+            { name: "BRI", schedule: "Online 24 Jam Nonstop", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/1200px-BRI_2020.svg.png" },
+            { name: "MANDIRI", schedule: "Setiap Hari : 22.45-03.30 Offline", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/1200px-Bank_Mandiri_logo_2016.svg.png" },
+            { name: "DANAMON", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1VzltvfFbN8klO9ypnKYjQn4BbQNAQZ7s" },
+            { name: "CIMB", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1fKHlIXD9br2NGOEPDkFYmfKy33shvA-C" },
+            { name: "DANA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png" },
+            { name: "OVO", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/1200px-Logo_ovo_purple.svg.png" },
+            { name: "GOPAY", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/1200px-Gopay_logo.svg.png" },
+            { name: "LINKAJA", schedule: "Online 24 Jam (E-Wallet)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/1200px-LinkAja.svg.png" },
+            { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" },
+            { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://static.crypto.com/token/icons/tether/color_icon.png" }
+        ];
+        banks.forEach(bank => {
+            let isOnline = true;
+            if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
+                if (time >= 2100 || time <= 30) isOnline = false;
+            }
+            if (bank.name === "MANDIRI") {
+                if (time >= 2245 || time <= 330) isOnline = false;
+            }
+            const lampClass = isOnline ? "lamp-online" : "lamp-offline";
+            const textClass = isOnline ? "text-online" : "text-offline";
+            const cardGlowClass = isOnline ? "card-online" : "card-offline";
+            const statusLabel = isOnline ? "ONLINE" : "OFFLINE";
+            container.innerHTML += `
+                <div class="bank-card ${cardGlowClass}">
+                    <div class="logo-wrapper">
+                        <img src="${bank.logo}" class="bank-logo" alt="${bank.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x70?text=${bank.name}';">
+                    </div>
+                    <div class="divider"></div>
+                    <div class="bank-info">
+                        <div class="bank-schedule">${bank.schedule}</div>
+                    </div>
+                    <div class="bank-status-row">
+                        <div class="lamp ${lampClass}"></div>
+                        <div class="status-text ${textClass}">${statusLabel}</div>
+                    </div>
                 </div>`;
         });
     }
 
-    // 5. FITUR KALKULATOR SGP
     function loadSgpToto() {
-        resetActive();
-        document.getElementById('m-sgp').classList.add('active-menu');
-        document.getElementById('main-grid').innerHTML = `
+        resetMenu();
+        document.getElementById('main-grid').style.display = "block";
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('txt-tanggal').innerText = "KONVERSI SGP TOTO";
+        document.getElementById('sub-txt-tanggal').innerText = "KALKULATOR RUMUS RESMI SINGAPORE TOTO";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('menu-sgp').classList.add('active-menu');
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = `
             <div class="toto-container">
-                <h3 style="text-align:center; color:#00d4ff;">KALKULATOR SGP TOTO</h3>
                 <div class="toto-grid">
-                    <input type="number" id="b1" placeholder="B1"><input type="number" id="b2" placeholder="B2">
-                    <input type="number" id="b3" placeholder="B3"><input type="number" id="b4" placeholder="B4">
-                    <input type="number" id="b5" placeholder="B5"><input type="number" id="b6" placeholder="B6">
+                    <div class="toto-input-group"><label>Bola 1</label><input type="number" id="b1" value="1"></div>
+                    <div class="toto-input-group"><label>Bola 2</label><input type="number" id="b2" value="2"></div>
+                    <div class="toto-input-group"><label>Bola 3</label><input type="number" id="b3" value="6"></div>
+                    <div class="toto-input-group"><label>Bola 4</label><input type="number" id="b4" value="9"></div>
+                    <div class="toto-input-group"><label>Bola 5</label><input type="number" id="b5" value="44"></div>
+                    <div class="toto-input-group"><label>Bola 6</label><input type="number" id="b6" value="48"></div>
                 </div>
-                <input type="number" id="add" placeholder="Additional Number" style="width:100%; margin-top:10px; padding:12px; background:#000; color:#fff; border:1px solid #333; text-align:center;">
-                <button class="btn-hitung" onclick="hitungSgp()">HITUNG RESULT</button>
-                <div id="res-sgp" style="margin-top:20px; font-size:40px; text-align:center; font-weight:bold; color:#ffeb3b;">----</div>
+                <div class="toto-input-group" style="margin-bottom:20px;">
+                    <label>Additional Number</label>
+                    <input type="number" id="addNum" value="24">
+                </div>
+                <button class="btn-hitung" onclick="hitungToto()">HITUNG RESULT</button>
+                <button class="btn-clear" onclick="clearNomor()">CLEAR NOMOR</button>
+                <div class="result-box">
+                    <h4>HASIL 4D RESULT:</h4>
+                    <div id="finalRes" class="final-number">----</div>
+                </div>
             </div>`;
     }
 
-    function hitungSgp() {
-        const total = Number(document.getElementById('b1').value) + Number(document.getElementById('b2').value) + Number(document.getElementById('b3').value) + Number(document.getElementById('b4').value) + Number(document.getElementById('b5').value) + Number(document.getElementById('b6').value);
-        const add = Number(document.getElementById('add').value);
-        if(!total) return alert('Isi Bola!');
-        const depan = ((total * 76) + add + 5).toString().substring(0,2);
-        const belakang = ((total * 2) - (Number(document.getElementById('b1').value) + Number(document.getElementById('b6').value)) + add) % 100;
-        document.getElementById('res-sgp').innerText = depan + belakang.toString().padStart(2, '0');
+    function clearNomor() {
+        document.getElementById('b1').value = "";
+        document.getElementById('b2').value = "";
+        document.getElementById('b3').value = "";
+        document.getElementById('b4').value = "";
+        document.getElementById('b5').value = "";
+        document.getElementById('b6').value = "";
+        document.getElementById('addNum').value = "";
+        document.getElementById('finalRes').innerText = "----";
     }
 
-    // 6. FITUR SYAIR GENERATOR (OTOMATIS GAMBAR)
+    function hitungToto() {
+        const b1 = parseInt(document.getElementById('b1').value) || 0;
+        const b2 = parseInt(document.getElementById('b2').value) || 0;
+        const b3 = parseInt(document.getElementById('b3').value) || 0;
+        const b4 = parseInt(document.getElementById('b4').value) || 0;
+        const b5 = parseInt(document.getElementById('b5').value) || 0;
+        const b6 = parseInt(document.getElementById('b6').value) || 0;
+        const add = parseInt(document.getElementById('addNum').value) || 0;
+        const totalBola = b1 + b2 + b3 + b4 + b5 + b6;
+        const rumusDepan = (totalBola * 76) + add + 5;
+        const angkaDepan = rumusDepan.toString().substring(0, 2);
+        const rumusBelakang = (totalBola * 2) - (b1 + b6) + add;
+        const angkaBelakang = (rumusBelakang % 100).toString().padStart(2, '0');
+        const hasilFinal = angkaDepan + angkaBelakang;
+        document.getElementById('finalRes').innerText = hasilFinal;
+    }
+
     function loadSyairGenerator() {
-        resetActive();
-        document.getElementById('m-syair').classList.add('active-menu');
-        document.getElementById('main-grid').innerHTML = `
-            <div style="text-align:center; width:100%;">
-                <canvas id="canvasSyair" width="700" height="850"></canvas>
-                <br><button class="btn-hitung" style="max-width:300px; background:#22c55e; color:#fff;" onclick="downloadSyair()">📥 DOWNLOAD SYAIR</button>
+        resetMenu();
+        document.getElementById('main-grid').style.display = "block";
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('txt-tanggal').innerText = "GENERATOR SYAIR DANATOTO";
+        document.getElementById('sub-txt-tanggal').innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('menu-syair').classList.add('active-menu');
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = `
+            <div class="syair-wrapper">
+                <canvas id="canvasSyair" width="700" height="800"></canvas>
+                <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
             </div>`;
         renderSyair();
     }
 
+    // FUNGSI RENDER SYAIR DENGAN BACKGROUND DARI LINK
     function renderSyair() {
-        const ctx = document.getElementById('canvasSyair').getContext('2d');
-        const bg = new Image(); bg.crossOrigin = "anonymous";
-        bg.src = "https://lh3.googleusercontent.com/d/1FNenJC9_cf3s9XtUV48pHte24AgzNEeb"; 
-        bg.onload = function() {
-            ctx.drawImage(bg, 0, 0, 700, 850);
-            ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(40, 40, 620, 770);
-            ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 5; ctx.strokeRect(40, 40, 620, 770);
-            
-            ctx.fillStyle = "#00d4ff"; ctx.font = "bold 45px Arial"; ctx.textAlign = "center";
-            ctx.fillText("SYAIR DANATOTO", 350, 110);
-            
-            const tgl = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
-            ctx.fillStyle = "#fff"; ctx.font = "25px Arial"; ctx.fillText(tgl, 350, 160);
+        const canvas = document.getElementById('canvasSyair');
+        const ctx = canvas.getContext('2d');
+        const d = new Date();
+        const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const index = d.getDate() % paketSyair.length;
+        const item = paketSyair[index];
 
-            ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 60px Courier New";
-            ctx.fillText("SHIO: " + dataShio[new Date().getDate() % 12], 350, 250);
-            
-            ctx.fillStyle = "#fff"; ctx.font = "italic 22px Arial";
-            ctx.fillText("Pasang angka janganlah ragu,", 350, 350);
-            ctx.fillText("Jackpot besar sudah menunggu.", 350, 390);
+        const bgImg = new Image();
+        bgImg.crossOrigin = "anonymous";
+        // LINK BACKGROUND DARI BOSKU
+        bgImg.src = "https://lh3.googleusercontent.com/d/1FNenJC9_cf3s9XtUV48pHte24AgzNEeb";
 
-            ctx.strokeStyle = "#fff"; ctx.strokeRect(100, 450, 500, 250);
-            ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 40px Courier New";
-            ctx.fillText("BBFS : " + Math.floor(Math.random()*900000), 350, 520);
-            ctx.fillText("AM   : " + Math.floor(Math.random()*9000), 350, 590);
-            ctx.fillText("CB   : " + Math.floor(Math.random()*9) + "/" + Math.floor(Math.random()*9), 350, 660);
-        }
+        bgImg.onload = function() {
+            // Gambar Background Utama
+            ctx.drawImage(bgImg, 0, 0, 700, 800);
+
+            // Overlay Gelap agar teks terbaca (Opsional, hapus jika background sudah gelap)
+            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+            ctx.fillRect(0, 0, 700, 800);
+
+            // Frame Biru
+            ctx.strokeStyle = "#00d4ff";
+            ctx.lineWidth = 10;
+            ctx.strokeRect(20, 20, 660, 760);
+
+            // Render Logo Danatoto (Menggunakan logo yang ada di script sebelumnya)
+            const imgLogo = new Image();
+            imgLogo.crossOrigin = "anonymous";
+            imgLogo.src = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
+            imgLogo.onload = function() {
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = "#00d4ff";
+                ctx.drawImage(imgLogo, 250, 40, 200, 65);
+                ctx.shadowBlur = 0;
+
+                // Judul & Tanggal
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 28px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("SYAIR PREDIKSI", 350, 150);
+                ctx.font = "20px Arial";
+                ctx.fillText(tglStr, 350, 185);
+
+                // Konten Syair
+                ctx.fillStyle = "#ffeb3b";
+                ctx.font = "bold 60px Arial";
+                ctx.fillText(item.shio, 350, 280);
+
+                ctx.fillStyle = "rgba(255,255,255,0.1)";
+                ctx.fillRect(100, 320, 500, 250);
+                ctx.strokeStyle = "#00d4ff";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(100, 320, 500, 250);
+
+                ctx.textAlign = "left";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 30px Courier New";
+                ctx.fillText("BBFS : " + item.bbfs, 150, 380);
+                ctx.fillText("A.M  : " + item.am, 150, 430);
+                ctx.fillText("C.B  : " + item.cb, 150, 480);
+                ctx.fillText("TWIN : " + item.twin, 150, 530);
+
+                // Kodal
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#00d4ff";
+                ctx.font = "italic 24px Times New Roman";
+                ctx.fillText('"' + item.kodal + '"', 350, 630);
+
+                // Footer
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 20px Arial";
+                ctx.fillText("WWW.DANATOTO.VIP", 350, 730);
+            };
+        };
     }
 
-    function downloadSyair() {
+    function exportSyair() {
+        const canvas = document.getElementById('canvasSyair');
         const link = document.createElement('a');
-        link.download = 'Syair-Danatoto.png';
-        link.href = document.getElementById('canvasSyair').toDataURL();
+        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
+        link.href = canvas.toDataURL("image/png");
         link.click();
-    }
-
-    // CHECK LOGIN
-    if(sessionStorage.getItem('isLoggedIn')) {
-        document.body.style.display = 'block';
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('main-dashboard').style.display = 'block';
-        showWelcome();
-    } else {
-        document.body.style.display = 'block';
     }
 </script>
 </body>
