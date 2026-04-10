@@ -540,7 +540,7 @@ function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // LINK LANGSUNG (Tanpa Al-Qur'an sesuai perintah Bos)
+    // LINK LANGSUNG (Tanpa Al-Qur'an & Support Canvas)
     const urlBG = "https://drive.google.com/uc?export=view&id=1gyn4tps2H1p4j8LIpQKha-uXswhFcVB1";
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
 
@@ -549,28 +549,27 @@ function renderSyair() {
     const shio = new Image();
     const pisang = new Image();
 
+    // Pastikan Canvas diizinkan menarik gambar dari link luar
     bg.crossOrigin = logo.crossOrigin = shio.crossOrigin = pisang.crossOrigin = "anonymous";
 
-    // Set Sumber Gambar
     bg.src = urlBG;
     logo.src = urlLogo;
-    shio.src = item.urlShio;
-    pisang.src = item.urlTema;
+    shio.src = item.urlShio;  // Link gambar Monyet dari data Bos
+    pisang.src = item.urlTema; // Link gambar Pohon Pisang dari data Bos
 
-    // FUNGSI UTAMA: GAMBAR SEMUA TANPA BACOT/WARNING
-    const draw = () => {
-        // 1. BACKGROUND
+    const drawSemua = () => {
+        // 1. Gambar Background Utama
         ctx.drawImage(bg, 0, 0, 700, 800);
 
-        // 2. HEADER & TANGGAL
+        // 2. Logo & Tanggal (Header)
         ctx.drawImage(logo, 250, 45, 200, 60);
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "center";
         ctx.font = "bold 22px Arial";
         ctx.fillText(tglStr.toUpperCase(), 350, 155);
 
-        // 3. NOMOR-NOMOR (BBFS, AM, CB, TWIN)
-        ctx.fillStyle = "#ffeb3b"; // Shio Kuning
+        // 3. Prediksi Nomor (BBFS, AM, CB, TWIN)
+        ctx.fillStyle = "#ffeb3b"; // Warna Kuning Shio
         ctx.font = "bold 35px Georgia";
         ctx.fillText("SHIO: " + item.shio.toUpperCase(), 350, 225);
 
@@ -582,11 +581,11 @@ function renderSyair() {
         ctx.fillText("C.B  : " + item.cb, 180, 360);
         ctx.fillText("TWIN : " + item.twin, 180, 400);
 
-        // 4. ASSET (MONYET KIRI - PISANG KANAN)
+        // 4. Gambar Asset (Monyet Kiri - Pisang Kanan)
         ctx.drawImage(shio, 130, 430, 180, 180); 
         ctx.drawImage(pisang, 390, 430, 180, 180);
 
-        // 5. KODAL & PANTUN
+        // 5. Kodal & Pantun (Posisi Bawah Rapi)
         ctx.textAlign = "center";
         ctx.fillStyle = "#00d4ff";
         ctx.font = "italic 22px Times New Roman";
@@ -594,18 +593,18 @@ function renderSyair() {
 
         ctx.fillStyle = "#ffffff";
         ctx.font = "19px Arial";
-        const lines = item.pantun.split('\n');
-        lines.forEach((line, i) => {
-            ctx.fillText(line.trim(), 350, 680 + (i * 25));
+        const barisPantun = item.pantun.split('\n');
+        barisPantun.forEach((teks, i) => {
+            ctx.fillText(teks.trim(), 350, 680 + (i * 25));
         });
 
-        // 6. FOOTER
+        // 6. Nama Website (Footer)
         ctx.font = "bold 18px Arial";
         ctx.fillText("WWW.DANATOTO.VIP", 350, 765);
     };
 
-    // Trigger gambar setiap kali ada image yang selesai load
-    bg.onload = logo.onload = shio.onload = pisang.onload = draw;
+    // Jalankan fungsi gambar setiap kali satu aset selesai load
+    bg.onload = logo.onload = shio.onload = pisang.onload = drawSemua;
 }
 
 function exportSyair() {
