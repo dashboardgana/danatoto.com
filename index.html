@@ -537,13 +537,11 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Resolusi Tinggi
     canvas.width = 800;
     canvas.height = 1100;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "0269", twin: "22/66", cb: "2 / 6" };
 
@@ -565,85 +563,90 @@ async function renderSyair() {
     ]);
 
     ctx.clearRect(0, 0, 800, 1100);
-
-    // 1. BACKGROUND
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER TANGGAL (ELEGANT)
-    ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
-    ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
-    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
-    ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 65);
+    // 1. HEADER & LOGO
+    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+    ctx.beginPath(); ctx.roundRect(225, 20, 350, 60, 10); ctx.fill();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 30px Arial";
+    ctx.fillText(tglStr.toUpperCase(), 400, 60);
+    if (logo) ctx.drawImage(logo, 290, 95, 220, 70);
 
-    // 3. LOGO
-    if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
-
-    // 4. KOTAK NOMOR (PRESIKI)
+    // 2. KOTAK ANGKA
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 10, 25, 0.95)";
-        ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 15); ctx.fill();
-        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
-        ctx.fillStyle = "#00d4ff"; ctx.font = "bold 26px Arial";
-        ctx.fillText(label, x + 155, y + 42);
-        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
-        ctx.fillText(value, x + 155, y + 105);
+        ctx.beginPath(); ctx.roundRect(x, y, 310, 120, 15); ctx.fill();
+        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
+        ctx.fillStyle = "#00d4ff"; ctx.font = "bold 24px Arial";
+        ctx.fillText(label, x + 155, y + 40);
+        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial";
+        ctx.fillText(value, x + 155, y + 100);
     };
-    drawBox(60, 190, "BBFS", "0246912"); 
-    drawBox(430, 190, "ANGKA MAIN", item.am);
-    drawBox(60, 335, "TWIN", item.twin);
-    drawBox(430, 335, "COLOK BEBAS", item.cb);
+    drawBox(65, 180, "BBFS", "0246912"); 
+    drawBox(425, 180, "ANGKA MAIN", item.am);
+    drawBox(65, 315, "TWIN", item.twin);
+    drawBox(425, 315, "COLOK BEBAS", item.cb);
 
-    // 5. BINTANG & ANGKA (ANALISA POSISI: KUNCI MATI)
-    const cx = 400, cy = 565, rOuter = 85; 
-    function drawStar(cx, cy, spikes, outer, inner) {
-        let rot=Math.PI/2*3, step=Math.PI/spikes;
-        ctx.beginPath(); ctx.moveTo(cx, cy-outer);
-        for(let i=0; i<spikes; i++){
-            ctx.lineTo(cx+Math.cos(rot)*outer, cy+Math.sin(rot)*outer); rot+=step;
-            ctx.lineTo(cx+Math.cos(rot)*inner, cy+Math.sin(rot)*inner); rot+=step;
+    // 3. BINTANG & ANGKA (SIMETRIS FIX)
+    const cx = 400, cy = 560, r = 80; 
+    function drawStar(x, y, s, o, i) {
+        let rot=Math.PI/2*3, step=Math.PI/s;
+        ctx.beginPath(); ctx.moveTo(x, y-o);
+        for(let j=0; j<s; j++){
+            ctx.lineTo(x+Math.cos(rot)*o, y+Math.sin(rot)*o); rot+=step;
+            ctx.lineTo(x+Math.cos(rot)*i, y+Math.sin(rot)*i); rot+=step;
         }
-        ctx.lineTo(cx, cy-outer); ctx.closePath();
-        ctx.lineWidth=6; ctx.strokeStyle='#ffeb3b'; ctx.stroke();
+        ctx.lineTo(x, y-o); ctx.closePath();
+        ctx.lineWidth=5; ctx.strokeStyle='#ffeb3b'; ctx.stroke();
     }
-    drawStar(cx, cy, 5, rOuter, 40);
+    drawStar(cx, cy, 5, r, 35);
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 45px Arial";
+    ctx.fillText("89", cx, cy - r - 20);      // Atas
+    ctx.fillText("70", cx, cy + r + 50);      // Bawah
+    ctx.fillText("11", cx + r + 55, cy + 15); // Kanan
+    ctx.fillText("41", cx - r - 55, cy + 15); // Kiri
 
-    // ANGKA MELEKAT DI UJUNG BINTANG (FIX SIMETRIS)
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 46px Arial";
-    ctx.fillText("89", cx, cy - rOuter - 20);      // Atas
-    ctx.fillText("70", cx, cy + rOuter + 50);      // Bawah
-    ctx.fillText("11", cx + rOuter + 65, cy + 15); // Kanan
-    ctx.fillText("41", cx - rOuter - 65, cy + 15); // Kiri
+    // 4. ASSET GAMBAR (POSISI AMAN)
+    if (shioImg) ctx.drawImage(shioImg, 80, 710, 210, 210); 
+    // Pohon pisang dinaikkan koordinat Y-nya agar menjauh dari kotak pantun
+    if (pisangImg) ctx.drawImage(pisangImg, 520, 620, 220, 220); 
 
-    // 6. ASSET (SHIO & POHON PISANG - POSISI ANTI-KEPOTONG)
-    // Pohon Pisang dinaikkan koordinat Y-nya ke 610 (sebelumnya 660) agar tidak menabrak kotak pantun
-    if (shioImg) ctx.drawImage(shioImg, 70, 710, 230, 230); 
-    if (pisangImg) ctx.drawImage(pisangImg, 510, 610, 230, 230); 
-
-    // 7. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 660, 170, 45, 10); ctx.fill();
+    // 5. LABEL SHIO
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 665, 170, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-    ctx.fillText("SHIO MONYET", 185, 690);
+    ctx.fillText("SHIO MONYET", 185, 695);
 
-    // 8. TEKS TENGAH (MENGHAPUS PAKSA TEKS BIRU "BABI HUTAN")
-    // Baris ini sengaja dikosongkan agar teks kodal yang bermasalah tidak muncul di tengah
-    ctx.fillStyle = "rgba(0,0,0,0)";
-    ctx.fillText("", 400, 910); 
-
-    // 9. KOTAK PANTUN (DITURUNKAN KE DASAR AGAR RAPI)
+    // 6. KOTAK PANTUN DENGAN WRAP TEXT (ANTI-LUBER)
+    const boxY = 940, boxH = 135, boxW = 680, boxX = 60;
     ctx.fillStyle = "rgba(5, 15, 35, 0.98)";
-    ctx.beginPath(); ctx.roundRect(65, 960, 670, 120, 20); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(boxX, boxY, boxW, boxH, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 23px Arial";
-    const l1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
-    const l2 = "Angka keluar jangan sembarang, Semoga hoki datang menghampiri.";
-    ctx.fillText(l1, 400, 1005);
-    ctx.fillText(l2, 400, 1055);
+    const pantun = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri. Angka keluar jangan sembarang, Semoga hoki datang menghampiri.";
+    
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        let currentY = y;
+        for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = context.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                context.fillText(line, x, currentY);
+                line = words[n] + ' ';
+                currentY += lineHeight;
+            } else { line = testLine; }
+        }
+        context.fillText(line, x, currentY);
+    }
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 22px Arial";
+    // Teks dipaksa membungkus di dalam lebar 600px agar tidak keluar kotak
+    wrapText(ctx, pantun, 400, boxY + 50, 600, 35);
 }
-// Panggil fungsi
-renderSyair();
     function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
         const link = document.createElement('a');
