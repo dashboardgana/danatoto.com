@@ -540,17 +540,14 @@ async function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // --- PERBAIKAN LINK DRIVE OTOMATIS ---
-    const fixDriveUrl = (url) => {
-        if (url && url.includes('drive.google.com')) {
-            const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
-            return `https://lh3.googleusercontent.com/u/0/d/${id}=w1000?authuser=0`; // Jalur bypass Google Photos
-        }
-        return url;
+    // --- BYPASS PROTEKSI GAMBAR DRIVE ---
+    const getDirectUrl = (url) => {
+        if (!url || !url.includes('drive.google.com')) return url;
+        const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
+        return `https://lh3.googleusercontent.com/u/0/d/${id}=w1000`; 
     };
 
-    // Sumber gambar
-    const urlBG = fixDriveUrl("https://drive.google.com/file/d/1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB/view?usp=sharing");
+    const urlBG = getDirectUrl("https://drive.google.com/file/d/1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB/view?usp=sharing");
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
 
     const loadImg = (url) => new Promise((resolve) => {
@@ -558,81 +555,92 @@ async function renderSyair() {
         img.crossOrigin = "anonymous";
         img.src = url;
         img.onload = () => resolve(img);
-        img.onerror = () => {
-            console.error("Gagal muat gambar:", url);
-            resolve(null);
-        };
+        img.onerror = () => resolve(null);
     });
 
-    // Tarik semua aset barengan
-    const [bgImg, logoImg, shioImg, pisangImg] = await Promise.all([
-        loadImg(urlBG),
-        loadImg(urlLogo),
-        loadImg(fixDriveUrl(item.urlShio)),
-        loadImg(fixDriveUrl(item.urlTema))
+    // Load semua aset sekaligus
+    const [bg, logo, shioImg, pisangImg] = await Promise.all([
+        loadImg(urlBG), loadImg(urlLogo),
+        loadImg(getDirectUrl(item.urlShio)),
+        loadImg(getDirectUrl(item.urlTema))
     ]);
 
     ctx.clearRect(0, 0, 700, 800);
 
-    // 1. BACKGROUND (WAJIB MUNCUL)
-    if (bgImg) {
-        ctx.drawImage(bgImg, 0, 0, 700, 800);
-    } else {
-        ctx.fillStyle = "#0a1a2a"; // Warna cadangan elegan
-        ctx.fillRect(0, 0, 700, 800);
-    }
+    // 1. BACKGROUND UTAMA
+    if (bg) ctx.drawImage(bg, 0, 0, 700, 800);
 
-    // 2. LOGO DANATOTO & TANGGAL
-    if (logoImg) ctx.drawImage(logoImg, 250, 40, 200, 60);
+    // 2. KOTAK TANGGAL (WADAH KHUSUS)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.beginPath();
+    ctx.roundRect(250, 20, 200, 45, 10);
+    ctx.fill();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
+    
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
-    ctx.font = "bold 26px Arial";
-    ctx.fillText(tglStr.toUpperCase(), 350, 130);
+    ctx.font = "bold 20px Arial";
+    ctx.fillText(tglStr.toUpperCase(), 350, 50);
 
-    // 3. KOTAK NOMOR RAPI (BBFS, AM, CB, TWIN)
-    const drawBox = (x, y, label, value) => {
-        ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+    // 3. LOGO (DI BAWAH TANGGAL)
+    if (logo) ctx.drawImage(logo, 250, 75, 200, 60);
+
+    // 4. KOTAK NOMOR GELAP & BERLAMPU (BBFS, AM, TWIN, CB)
+    const drawNeonBox = (x, y, label, value) => {
+        // Efek Glow Lampu
+        ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
+        ctx.fillStyle = "rgba(10, 20, 30, 0.85)"; // Warna Gelap
         ctx.beginPath();
-        ctx.roundRect(x, y, 240, 85, 15);
+        ctx.roundRect(x, y, 240, 90, 15);
         ctx.fill();
-        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3;
-        ctx.stroke();
+        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
+        ctx.shadowBlur = 0; // Reset shadow agar teks tajam
 
-        ctx.fillStyle = "#333";
+        // Label
+        ctx.fillStyle = "#00d4ff";
         ctx.font = "italic bold 17px Times New Roman";
-        ctx.fillText(label, x + 120, y + 30);
-        ctx.fillStyle = "#000";
-        ctx.font = "bold 32px Arial";
-        ctx.fillText(value, x + 120, y + 70);
+        ctx.fillText(label, x + 120, y + 35);
+        // Angka (Warna Putih/Emas)
+        ctx.fillStyle = "#ffeb3b";
+        ctx.font = "bold 34px Arial";
+        ctx.fillText(value, x + 120, y + 75);
     };
 
-    drawBox(80, 170, "BBFS", item.bbfs);
-    drawBox(380, 170, "ANGKA MAIN", item.am);
-    drawBox(80, 275, "TWIN", item.twin);
-    drawBox(380, 275, "COLOK BEBAS", item.cb);
+    drawNeonBox(80, 160, "BBFS", item.bbfs);
+    drawNeonBox(380, 160, "ANGKA MAIN", item.am);
+    drawNeonBox(80, 270, "TWIN", item.twin);
+    drawNeonBox(380, 270, "COLOK BEBAS", item.cb);
 
-    // 4. SHIO (PROPORSIONAL)
-    ctx.fillStyle = "#ffeb3b";
-    ctx.font = "bold 45px Georgia";
+    // 5. SHIO (TEKS MEWAH)
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 42px Georgia";
     ctx.shadowBlur = 10; ctx.shadowColor = "black";
     ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 410);
     ctx.shadowBlur = 0;
 
-    // 5. ASSET (MONYET KIRI & POHON PISANG KANAN)
-    if (shioImg) ctx.drawImage(shioImg, 60, 430, 260, 260); // Monyet
-    if (pisangImg) ctx.drawImage(pisangImg, 380, 430, 260, 260); // Pohon Pisang
+    // 6. ASSET UTAMA (MONYET KIRI, PISANG KANAN)
+    // Jika gambar gagal, akan muncul kotak placeholder agar Bos tahu filenya yang bermasalah
+    if (shioImg) {
+        ctx.drawImage(shioImg, 60, 430, 260, 260);
+    } else {
+        console.log("Monyet Gagal Load");
+    }
 
-    // 6. PANTUN (TIDAK SINGKAT & RAPI)
+    if (pisangImg) {
+        ctx.drawImage(pisangImg, 380, 430, 260, 260);
+    } else {
+        console.log("Pisang Gagal Load");
+    }
+
+    // 7. PANTUN & KODAL (BAWAH)
     ctx.fillStyle = "#00d4ff";
     ctx.font = "italic bold 28px Times New Roman";
-    ctx.fillText('"' + item.kodal + '"', 350, 715);
+    ctx.fillText('"' + item.kodal + '"', 350, 720);
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 22px Arial";
-    const baris = item.pantun.split('\n');
-    baris.forEach((line, i) => {
-        ctx.fillText(line.trim(), 350, 750 + (i * 28));
-    });
+    const lines = item.pantun.split('\n');
+    lines.forEach((l, i) => ctx.fillText(l.trim(), 350, 755 + (i * 30)));
 }
 function exportSyair() {
     const canvas = document.getElementById('canvasSyair');
