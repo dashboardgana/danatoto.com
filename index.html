@@ -514,25 +514,25 @@
     }
 
   function loadSyairGenerator() {
-    resetMenu();
-    document.getElementById('main-grid').style.display = "block";
-    document.getElementById('txt-jalan').style.display = 'none';
-    document.getElementById('txt-tanggal').style.display = 'block';
-    document.getElementById('txt-tanggal').innerText = "GENERATOR SYAIR DANATOTO";
-    document.getElementById('sub-txt-tanggal').innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
-    document.getElementById('sub-txt-tanggal').style.display = 'block';
-    document.getElementById('menu-syair').classList.add('active-menu');
-    const grid = document.getElementById('main-grid');
-    grid.innerHTML = `
-        <div class="syair-wrapper">
-            <canvas id="canvasSyair" width="700" height="800"></canvas>
-            <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
-        </div>`;
-    renderSyair();
-}
+        resetMenu();
+        document.getElementById('main-grid').style.display = "block";
+        document.getElementById('txt-jalan').style.display = 'none';
+        document.getElementById('txt-tanggal').style.display = 'block';
+        document.getElementById('txt-tanggal').innerText = "GENERATOR SYAIR DANATOTO";
+        document.getElementById('sub-txt-tanggal').innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
+        document.getElementById('sub-txt-tanggal').style.display = 'block';
+        document.getElementById('menu-syair').classList.add('active-menu');
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = `
+            <div class="syair-wrapper">
+                <canvas id="canvasSyair" width="700" height="800"></canvas>
+                <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
+            </div>`;
+        renderSyair();
+    }
 
-// FUNGSI RENDER SYAIR DENGAN BACKGROUND DARI LINK
-async function renderSyair() {
+    // FUNGSI RENDER SYAIR DENGAN BACKGROUND DARI LINK
+ async function renderSyair() {
     const canvas = document.getElementById('canvasSyair');
     const ctx = canvas.getContext('2d');
     
@@ -645,6 +645,14 @@ async function renderSyair() {
     ctx.fillText(line1, 400, 995);
     ctx.fillText(line2, 400, 1040);
 }
+    function exportSyair() {
+        const canvas = document.getElementById('canvasSyair');
+        const link = document.createElement('a');
+        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }
+
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
     const d = masterData[index];
