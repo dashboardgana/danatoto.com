@@ -540,65 +540,58 @@ async function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // --- TEKNIK BYPASS TOTAL AGAR GAMBAR MUNCUL ---
-    const bypassUrl = (url) => {
-        if (!url) return '';
-        if (url.includes('drive.google.com')) {
-            const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
-            return `https://lh3.googleusercontent.com/u/0/d/${id}=w1000-iv1`; // Jalur bypass resolusi tinggi
-        }
-        return url;
-    };
-
-    const urlBG = bypassUrl("https://drive.google.com/file/d/1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB/view?usp=sharing");
+    // --- LINK BARU YANG SUDAH JADI DIRECT LINK (ANTI BLOKIR) ---
+    const urlBG = "https://drive.google.com/uc?export=view&id=1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB";
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
+    
+    // Ini link ImgBB yang sudah saya jadikan Direct Link
+    const directMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
+    const directPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
 
     const loadImg = (url) => new Promise((resolve) => {
-        if (!url) resolve(null);
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.src = url;
         img.onload = () => resolve(img);
-        img.onerror = () => {
-            console.error("Gagal muat:", url);
-            resolve(null);
-        };
+        img.onerror = () => resolve(null);
     });
 
+    // Load semua aset
     const [bg, logo, shioImg, pisangImg] = await Promise.all([
-        loadImg(urlBG), loadImg(urlLogo),
-        loadImg(bypassUrl(item.urlShio)),
-        loadImg(bypassUrl(item.urlTema))
+        loadImg(urlBG), 
+        loadImg(urlLogo),
+        loadImg(directMonyet), 
+        loadImg(directPisang)
     ]);
 
     ctx.clearRect(0, 0, 700, 800);
 
-    // 1. BACKGROUND
+    // 1. GAMBAR BACKGROUND
     if (bg) ctx.drawImage(bg, 0, 0, 700, 800);
 
-    // 2. KOTAK TANGGAL (WADAH KHUSUS - RAPI)
+    // 2. KOTAK TANGGAL (GAYA NAVIGASI ATAS - RAPI)
     ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
-    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
     ctx.beginPath();
-    ctx.roundRect(175, 15, 350, 65, 15);
+    ctx.roundRect(175, 15, 350, 60, 15);
     ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.shadowBlur = 0;
 
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
-    ctx.font = "bold 32px Arial";
-    ctx.fillText(tglStr.toUpperCase(), 350, 58);
+    ctx.font = "bold 30px Arial";
+    ctx.fillText(tglStr.toUpperCase(), 350, 56);
 
-    // 3. LOGO DANATOTO (POSISI PAS)
-    if (logo) ctx.drawImage(logo, 240, 95, 220, 75);
+    // 3. LOGO DANATOTO
+    if (logo) ctx.drawImage(logo, 240, 90, 220, 70);
 
-    // 4. KOTAK NOMOR GELAP NEON (ANGKA BESAR & RAPI)
+    // 4. KOTAK NOMOR GELAP NEON (TULISAN JUMBO & ELEGAN)
     const drawNeonBox = (x, y, label, value) => {
         ctx.shadowBlur = 20; ctx.shadowColor = "#00d4ff";
-        ctx.fillStyle = "rgba(5, 10, 20, 0.9)";
+        ctx.fillStyle = "rgba(5, 10, 20, 0.95)";
         ctx.beginPath();
-        ctx.roundRect(x, y, 270, 115, 15);
+        ctx.roundRect(x, y, 270, 110, 15);
         ctx.fill();
         ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
         ctx.shadowBlur = 0;
@@ -608,27 +601,27 @@ async function renderSyair() {
         ctx.fillText(label, x + 135, y + 40);
 
         ctx.fillStyle = "#ffeb3b"; // KUNING EMAS
-        ctx.font = "bold 52px Arial"; // ANGKA DIPERBESAR LAGI
+        ctx.font = "bold 52px Arial";
         ctx.fillText(value, x + 135, y + 95);
     };
 
-    drawNeonBox(50, 195, "BBFS", item.bbfs);
-    drawNeonBox(380, 195, "ANGKA MAIN", item.am);
-    drawNeonBox(50, 325, "TWIN", item.twin);
-    drawNeonBox(380, 325, "COLOK BEBAS", item.cb);
+    drawNeonBox(50, 185, "BBFS", item.bbfs);
+    drawNeonBox(380, 185, "ANGKA MAIN", item.am);
+    drawNeonBox(50, 315, "TWIN", item.twin);
+    drawNeonBox(380, 315, "COLOK BEBAS", item.cb);
 
-    // 5. SHIO (TEKS BESAR)
+    // 5. SHIO (TEKS BESAR & TEGAS)
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 55px Georgia";
     ctx.shadowBlur = 10; ctx.shadowColor = "black";
-    ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 480);
+    ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 475);
     ctx.shadowBlur = 0;
 
-    // 6. ASSET (MONYET KIRI, PISANG KANAN) - UKURAN JUMBO 320px
-    if (shioImg) ctx.drawImage(shioImg, 25, 490, 320, 320); 
-    if (pisangImg) ctx.drawImage(pisangImg, 355, 490, 320, 320);
+    // 6. ASSET (MONYET KIRI, PISANG KANAN) - UKURAN JUMBO
+    if (shioImg) ctx.drawImage(shioImg, 30, 490, 310, 310); 
+    if (pisangImg) ctx.drawImage(pisangImg, 360, 490, 310, 310);
 
-    // 7. PANTUN & KODAL
+    // 7. PANTUN & KODAL (BAWAH - TULISAN BESAR)
     ctx.fillStyle = "#00d4ff";
     ctx.font = "italic bold 34px Times New Roman";
     ctx.fillText('"' + item.kodal + '"', 350, 725);
