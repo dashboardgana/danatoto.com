@@ -540,118 +540,82 @@ function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // Fungsi bantu buat bersihin background putih gambar monyet/pisang
-    function cleanImage(img) {
-        const tempCanvas = document.createElement('canvas');
-        const tCtx = tempCanvas.getContext('2d');
-        tempCanvas.width = img.width;
-        tempCanvas.height = img.height;
-        tCtx.drawImage(img, 0, 0);
-        const imgData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        const data = imgData.data;
-        for (let i = 0; i < data.length; i += 4) {
-            if (data[i] > 210 && data[i+1] > 210 && data[i+2] > 210) {
-                data[i+3] = 0; // Buat transparan
-            } else {
-                data[i] *= 0.8; data[i+1] *= 0.8; data[i+2] *= 0.8; // Gelapin dikit
-            }
-        }
-        tCtx.putImageData(imgData, 0, 0);
-        return tempCanvas;
+    const sources = {
+        bg: "https://lh3.googleusercontent.com/d/1FNenJC9_cf3s9XtUV48pHte24AgzNEeb", // Background Utama Bos
+        logo: 'https://i.ibb.co/LhbL7T1/image-ad8680.png', 
+        shio: item.urlShio, // Gambar Monyet
+        tema: item.urlTema  // Gambar Pohon Pisang
+    };
+
+    const images = {};
+    let loaded = 0;
+    for (let src in sources) {
+        images[src] = new Image();
+        images[src].crossOrigin = "anonymous";
+        images[src].onload = () => { if (++loaded === 4) draw(); };
+        images[src].src = sources[src];
     }
 
-    // Load Background Utama
-    const bgImg = new Image();
-    bgImg.crossOrigin = "anonymous";
-    bgImg.src = "https://lh3.googleusercontent.com/d/1FNenJC9_cf3s9XtUV48pHte24AgzNEeb";
+    // Fungsi agar gambar Shio & Pisang tidak ada kotak putihnya
+    function clean(img) {
+        const temp = document.createElement('canvas');
+        const tCtx = temp.getContext('2d');
+        temp.width = img.width; temp.height = img.height;
+        tCtx.drawImage(img, 0, 0);
+        const data = tCtx.getImageData(0, 0, temp.width, temp.height);
+        for (let i = 0; i < data.data.length; i += 4) {
+            if (data.data[i] > 220 && data.data[i+1] > 220 && data.data[i+2] > 220) data.data[i+3] = 0;
+        }
+        tCtx.putImageData(data, 0, 0);
+        return temp;
+    }
 
-    bgImg.onload = function() {
-        ctx.drawImage(bgImg, 0, 0, 700, 800);
-        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-        ctx.fillRect(0, 0, 700, 800);
+    function draw() {
+        // --- 1. GAMBAR BACKGROUND ASLI ---
+        ctx.drawImage(images.bg, 0, 0, 700, 800);
 
-        ctx.strokeStyle = "#00d4ff";
-        ctx.lineWidth = 10;
-        ctx.strokeRect(20, 20, 660, 760);
+        // --- 2. HEADER (Logo & Tanggal) ---
+        ctx.drawImage(images.logo, 250, 60, 200, 60);
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
+        ctx.font = "bold 22px Arial";
+        ctx.fillText(tglStr.toUpperCase(), 350, 160);
 
-        // Render Logo
-        const imgLogo = new Image();
-        imgLogo.crossOrigin = "anonymous";
-        imgLogo.src = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
-        imgLogo.onload = function() {
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = "#00d4ff";
-            ctx.drawImage(imgLogo, 250, 40, 200, 65);
-            ctx.shadowBlur = 0;
+        // --- 3. AREA NOMOR (Di bagian atas kotak hitam) ---
+        ctx.fillStyle = "#ffeb3b";
+        ctx.font = "bold 35px Arial";
+        ctx.fillText("SHIO: " + item.shio.toUpperCase(), 350, 230);
 
-            // Judul & Tanggal
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 28px Arial";
-            ctx.textAlign = "center";
-            ctx.fillText("SYAIR PREDIKSI", 350, 150);
-            ctx.font = "20px Arial";
-            ctx.fillText(tglStr.toUpperCase(), 350, 185);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 26px Courier New";
+        ctx.textAlign = "left";
+        ctx.fillText("BBFS : " + item.bbfs, 180, 280);
+        ctx.fillText("A.M  : " + item.am, 180, 320);
+        ctx.fillText("C.B  : " + item.cb, 180, 360);
+        ctx.fillText("TWIN : " + item.twin, 180, 400);
 
-            // Kotak Nomor (Diturunkan sedikit biar muat gambar di tengah)
-            ctx.fillStyle = "rgba(255,255,255,0.1)";
-            ctx.fillRect(100, 210, 500, 160); 
-            ctx.strokeStyle = "#00d4ff";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(100, 210, 500, 160);
+        // --- 4. GAMBAR ASSET (Monyet di Kiri, Pisang di Kanan) ---
+        // Posisinya saya taruh di tengah kotak hitam background
+        ctx.drawImage(clean(images.shio), 150, 430, 180, 180); 
+        ctx.drawImage(clean(images.tema), 370, 430, 180, 180);
 
-            ctx.textAlign = "left";
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 24px Courier New";
-            ctx.fillText("BBFS : " + item.bbfs, 150, 245);
-            ctx.fillText("A.M  : " + item.am, 150, 280);
-            ctx.fillText("C.B  : " + item.cb, 150, 315);
-            ctx.fillText("TWIN : " + item.twin, 150, 350);
+        // --- 5. PANTUN & KODAL (Di bagian bawah kotak hitam) ---
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#00d4ff";
+        ctx.font = "italic 22px Times New Roman";
+        ctx.fillText('"' + item.kodal + '"', 350, 640);
 
-            // --- BAGIAN BARU: GAMBAR SHIO & TEMA ---
-            const imgShio = new Image();
-            const imgTema = new Image();
-            imgShio.crossOrigin = "anonymous";
-            imgTema.crossOrigin = "anonymous";
-            imgShio.src = item.urlShio; // Link Monyet
-            imgTema.src = item.urlTema; // Link Pisang
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "19px Arial";
+        const lines = item.pantun.split('\n');
+        lines.forEach((line, i) => {
+            ctx.fillText(line, 350, 680 + (i * 25));
+        });
 
-            let loadedCount = 0;
-            const startDrawingAssets = () => {
-                loadedCount++;
-                if (loadedCount === 2) {
-                    // Gambar Monyet di Kiri, Pisang di Kanan
-                    ctx.drawImage(cleanImage(imgShio), 130, 400, 160, 160);
-                    ctx.drawImage(cleanImage(imgTema), 410, 400, 160, 160);
-
-                    // Teks Shio di Tengah
-                    ctx.textAlign = "center";
-                    ctx.fillStyle = "#ffeb3b";
-                    ctx.font = "bold 45px Arial";
-                    ctx.fillText(item.shio, 350, 480);
-
-                    // Kodal
-                    ctx.fillStyle = "#00d4ff";
-                    ctx.font = "italic 24px Times New Roman";
-                    ctx.fillText('"' + item.kodal + '"', 350, 600);
-
-                    // Pantun
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "italic 20px Times New Roman";
-                    const lines = item.pantun.split('\n');
-                    lines.forEach((line, i) => {
-                        ctx.fillText(line, 350, 650 + (i * 28));
-                    });
-
-                    // Footer
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 20px Arial";
-                    ctx.fillText("WWW.DANATOTO.VIP", 350, 750);
-                }
-            };
-            imgShio.onload = startDrawingAssets;
-            imgTema.onload = startDrawingAssets;
-        };
-    };
+        // --- 6. FOOTER ---
+        ctx.font = "bold 18px Arial";
+        ctx.fillText("WWW.DANATOTO.VIP", 350, 760);
+    }
 }
 
 function exportSyair() {
