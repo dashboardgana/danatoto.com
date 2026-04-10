@@ -514,108 +514,153 @@
     }
 
   function loadSyairGenerator() {
-        resetMenu();
-        document.getElementById('main-grid').style.display = "block";
-        document.getElementById('txt-jalan').style.display = 'none';
-        document.getElementById('txt-tanggal').style.display = 'block';
-        document.getElementById('txt-tanggal').innerText = "GENERATOR SYAIR DANATOTO";
-        document.getElementById('sub-txt-tanggal').innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
-        document.getElementById('sub-txt-tanggal').style.display = 'block';
-        document.getElementById('menu-syair').classList.add('active-menu');
-        const grid = document.getElementById('main-grid');
-        grid.innerHTML = `
-            <div class="syair-wrapper">
-                <canvas id="canvasSyair" width="700" height="800"></canvas>
-                <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
-            </div>`;
-        renderSyair();
+    resetMenu();
+    document.getElementById('main-grid').style.display = "block";
+    document.getElementById('txt-jalan').style.display = 'none';
+    document.getElementById('txt-tanggal').style.display = 'block';
+    document.getElementById('txt-tanggal').innerText = "GENERATOR SYAIR DANATOTO";
+    document.getElementById('sub-txt-tanggal').innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
+    document.getElementById('sub-txt-tanggal').style.display = 'block';
+    document.getElementById('menu-syair').classList.add('active-menu');
+    const grid = document.getElementById('main-grid');
+    grid.innerHTML = `
+        <div class="syair-wrapper">
+            <canvas id="canvasSyair" width="700" height="800"></canvas>
+            <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
+        </div>`;
+    renderSyair();
+}
+
+// FUNGSI RENDER SYAIR DENGAN BACKGROUND DARI LINK
+function renderSyair() {
+    const canvas = document.getElementById('canvasSyair');
+    const ctx = canvas.getContext('2d');
+    const d = new Date();
+    const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const index = d.getDate() % paketSyair.length;
+    const item = paketSyair[index];
+
+    // Fungsi bantu buat bersihin background putih gambar monyet/pisang
+    function cleanImage(img) {
+        const tempCanvas = document.createElement('canvas');
+        const tCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        tCtx.drawImage(img, 0, 0);
+        const imgData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        const data = imgData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            if (data[i] > 210 && data[i+1] > 210 && data[i+2] > 210) {
+                data[i+3] = 0; // Buat transparan
+            } else {
+                data[i] *= 0.8; data[i+1] *= 0.8; data[i+2] *= 0.8; // Gelapin dikit
+            }
+        }
+        tCtx.putImageData(imgData, 0, 0);
+        return tempCanvas;
     }
 
-    // FUNGSI RENDER SYAIR DENGAN BACKGROUND DARI LINK
-    function renderSyair() {
-        const canvas = document.getElementById('canvasSyair');
-        const ctx = canvas.getContext('2d');
-        const d = new Date();
-        const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        const index = d.getDate() % paketSyair.length;
-        const item = paketSyair[index];
+    // Load Background Utama
+    const bgImg = new Image();
+    bgImg.crossOrigin = "anonymous";
+    bgImg.src = "https://lh3.googleusercontent.com/d/1FNenJC9_cf3s9XtUV48pHte24AgzNEeb";
 
-        const bgImg = new Image();
-        bgImg.crossOrigin = "anonymous";
-        // LINK BACKGROUND DARI BOSKU
-        bgImg.src = "https://lh3.googleusercontent.com/d/1FNenJC9_cf3s9XtUV48pHte24AgzNEeb";
+    bgImg.onload = function() {
+        ctx.drawImage(bgImg, 0, 0, 700, 800);
+        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.fillRect(0, 0, 700, 800);
 
-        bgImg.onload = function() {
-            // Gambar Background Utama
-            ctx.drawImage(bgImg, 0, 0, 700, 800);
+        ctx.strokeStyle = "#00d4ff";
+        ctx.lineWidth = 10;
+        ctx.strokeRect(20, 20, 660, 760);
 
-            // Overlay Gelap agar teks terbaca (Opsional, hapus jika background sudah gelap)
-            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-            ctx.fillRect(0, 0, 700, 800);
+        // Render Logo
+        const imgLogo = new Image();
+        imgLogo.crossOrigin = "anonymous";
+        imgLogo.src = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
+        imgLogo.onload = function() {
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#00d4ff";
+            ctx.drawImage(imgLogo, 250, 40, 200, 65);
+            ctx.shadowBlur = 0;
 
-            // Frame Biru
+            // Judul & Tanggal
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 28px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("SYAIR PREDIKSI", 350, 150);
+            ctx.font = "20px Arial";
+            ctx.fillText(tglStr.toUpperCase(), 350, 185);
+
+            // Kotak Nomor (Diturunkan sedikit biar muat gambar di tengah)
+            ctx.fillStyle = "rgba(255,255,255,0.1)";
+            ctx.fillRect(100, 210, 500, 160); 
             ctx.strokeStyle = "#00d4ff";
-            ctx.lineWidth = 10;
-            ctx.strokeRect(20, 20, 660, 760);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(100, 210, 500, 160);
 
-            // Render Logo Danatoto (Menggunakan logo yang ada di script sebelumnya)
-            const imgLogo = new Image();
-            imgLogo.crossOrigin = "anonymous";
-            imgLogo.src = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
-            imgLogo.onload = function() {
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = "#00d4ff";
-                ctx.drawImage(imgLogo, 250, 40, 200, 65);
-                ctx.shadowBlur = 0;
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 24px Courier New";
+            ctx.fillText("BBFS : " + item.bbfs, 150, 245);
+            ctx.fillText("A.M  : " + item.am, 150, 280);
+            ctx.fillText("C.B  : " + item.cb, 150, 315);
+            ctx.fillText("TWIN : " + item.twin, 150, 350);
 
-                // Judul & Tanggal
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 28px Arial";
-                ctx.textAlign = "center";
-                ctx.fillText("SYAIR PREDIKSI", 350, 150);
-                ctx.font = "20px Arial";
-                ctx.fillText(tglStr, 350, 185);
+            // --- BAGIAN BARU: GAMBAR SHIO & TEMA ---
+            const imgShio = new Image();
+            const imgTema = new Image();
+            imgShio.crossOrigin = "anonymous";
+            imgTema.crossOrigin = "anonymous";
+            imgShio.src = item.urlShio; // Link Monyet
+            imgTema.src = item.urlTema; // Link Pisang
 
-                // Konten Syair
-                ctx.fillStyle = "#ffeb3b";
-                ctx.font = "bold 60px Arial";
-                ctx.fillText(item.shio, 350, 280);
+            let loadedCount = 0;
+            const startDrawingAssets = () => {
+                loadedCount++;
+                if (loadedCount === 2) {
+                    // Gambar Monyet di Kiri, Pisang di Kanan
+                    ctx.drawImage(cleanImage(imgShio), 130, 400, 160, 160);
+                    ctx.drawImage(cleanImage(imgTema), 410, 400, 160, 160);
 
-                ctx.fillStyle = "rgba(255,255,255,0.1)";
-                ctx.fillRect(100, 320, 500, 250);
-                ctx.strokeStyle = "#00d4ff";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(100, 320, 500, 250);
+                    // Teks Shio di Tengah
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = "#ffeb3b";
+                    ctx.font = "bold 45px Arial";
+                    ctx.fillText(item.shio, 350, 480);
 
-                ctx.textAlign = "left";
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 30px Courier New";
-                ctx.fillText("BBFS : " + item.bbfs, 150, 380);
-                ctx.fillText("A.M  : " + item.am, 150, 430);
-                ctx.fillText("C.B  : " + item.cb, 150, 480);
-                ctx.fillText("TWIN : " + item.twin, 150, 530);
+                    // Kodal
+                    ctx.fillStyle = "#00d4ff";
+                    ctx.font = "italic 24px Times New Roman";
+                    ctx.fillText('"' + item.kodal + '"', 350, 600);
 
-                // Kodal
-                ctx.textAlign = "center";
-                ctx.fillStyle = "#00d4ff";
-                ctx.font = "italic 24px Times New Roman";
-                ctx.fillText('"' + item.kodal + '"', 350, 630);
+                    // Pantun
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "italic 20px Times New Roman";
+                    const lines = item.pantun.split('\n');
+                    lines.forEach((line, i) => {
+                        ctx.fillText(line, 350, 650 + (i * 28));
+                    });
 
-                // Footer
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 20px Arial";
-                ctx.fillText("WWW.DANATOTO.VIP", 350, 730);
+                    // Footer
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 20px Arial";
+                    ctx.fillText("WWW.DANATOTO.VIP", 350, 750);
+                }
             };
+            imgShio.onload = startDrawingAssets;
+            imgTema.onload = startDrawingAssets;
         };
-    }
+    };
+}
 
-    function exportSyair() {
-        const canvas = document.getElementById('canvasSyair');
-        const link = document.createElement('a');
-        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    }
+function exportSyair() {
+    const canvas = document.getElementById('canvasSyair');
+    const link = document.createElement('a');
+    link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+}
 
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
