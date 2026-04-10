@@ -545,7 +545,8 @@ async function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // --- LINK ASET (BYPASS DRIVE & DIRECT LINK) ---
+    // --- LINK ASET (WAJIB DIRECT LINK) ---
+    // Link background sudah diganti ke format yang pasti muncul
     const urlBG = "https://drive.google.com/uc?export=view&id=1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe";
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const directMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -566,14 +567,14 @@ async function renderSyair() {
 
     ctx.clearRect(0, 0, 800, 1000);
 
-    // 1. BACKGROUND UTAMA (WAJIB MUNCUL)
+    // 1. DRAW BACKGROUND
     if (bg) {
         ctx.drawImage(bg, 0, 0, 800, 1000);
     } else {
-        ctx.fillStyle = "#050a14"; ctx.fillRect(0, 0, 800, 1000); // Fallback jika drive error
+        ctx.fillStyle = "#050a14"; ctx.fillRect(0, 0, 800, 1000); 
     }
 
-    // 2. TANGGAL ATAS
+    // 2. HEADER TANGGAL
     ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 60, 15); ctx.fill();
@@ -585,25 +586,30 @@ async function renderSyair() {
     // 3. LOGO
     if (logo) ctx.drawImage(logo, 290, 95, 220, 70);
 
-    // 4. KOTAK NOMOR (POSISI PAS DI ATAS BINTANG)
+    // 4. KOTAK NOMOR (BBFS 7 ANGKA & TEKS JELAS)
     const drawNeonBox = (x, y, label, value) => {
         ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
         ctx.fillStyle = "rgba(5, 10, 20, 0.95)";
-        ctx.beginPath(); ctx.roundRect(x, y, 280, 105, 12); ctx.fill();
+        ctx.beginPath(); ctx.roundRect(x, y, 300, 110, 12); ctx.fill();
         ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
         ctx.shadowBlur = 0;
-        ctx.fillStyle = "#00d4ff"; ctx.font = "italic bold 20px Times New Roman";
-        ctx.fillText(label, x + 140, y + 35);
-        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 44px Arial";
-        ctx.fillText(value, x + 140, y + 90);
+        
+        ctx.fillStyle = "#00d4ff";
+        ctx.font = "italic bold 22px Times New Roman";
+        ctx.fillText(label, x + 150, y + 35);
+        
+        ctx.fillStyle = "#ffeb3b"; 
+        // Font BBFS diperkecil sedikit agar 7 angka muat, lainnya tetap jumbo
+        ctx.font = label === "BBFS" ? "bold 44px Arial" : "bold 52px Arial";
+        ctx.fillText(value, x + 150, y + 92);
     };
 
-    drawNeonBox(80, 180, "BBFS", item.bbfs);
-    drawNeonBox(440, 180, "ANGKA MAIN", item.am);
-    drawNeonBox(80, 305, "TWIN", item.twin);
-    drawNeonBox(440, 305, "COLOK BEBAS", item.cb);
+    drawNeonBox(70, 180, "BBFS", "0246912"); // Contoh 7 angka
+    drawNeonBox(430, 180, "ANGKA MAIN", item.am);
+    drawNeonBox(70, 310, "TWIN", item.twin);
+    drawNeonBox(430, 310, "COLOK BEBAS", item.cb);
 
-    // 5. BINTANG & ANGKA 2D (CENTERED & RAPI)
+    // 5. STAR & ANGKA 2D (RAPI BERJEJER)
     const cx = 400, cy = 520;
     function drawStar(cx, cy, spikes, outer, inner) {
         let rot = Math.PI/2*3, x=cx, y=cy, step=Math.PI/spikes;
@@ -618,36 +624,35 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 75, 35);
 
-    // Angka 2D Berjejer Presisi
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 30px Arial";
-    ctx.fillText("89", cx, cy - 95);     // Atas
-    ctx.fillText("70", cx, cy + 120);    // Bawah
-    ctx.fillText("11", cx + 120, cy + 10); // Kanan
-    ctx.fillText("41", cx - 120, cy + 10); // Kiri
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 32px Arial";
+    ctx.fillText("89", cx, cy - 95);      // Atas
+    ctx.fillText("70", cx, cy + 120);     // Bawah
+    ctx.fillText("11", cx + 130, cy + 10); // Kanan
+    ctx.fillText("41", cx - 130, cy + 10); // Kiri
 
     // 6. ASSET (MONYET & PISANG)
     if (shioImg) ctx.drawImage(shioImg, 60, 630, 270, 270); 
     if (pisangImg) ctx.drawImage(pisangImg, 470, 630, 270, 270);
 
-    // 7. KETERANGAN SHIO (DI ATAS GAMBAR MONYET)
+    // 7. KETERANGAN SHIO MONYET (DINAIKKAN)
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
-    ctx.beginPath(); ctx.roundRect(95, 615, 200, 45, 8); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(100, 580, 200, 45, 8); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 22px Georgia";
-    ctx.fillText("SHIO MONYET", 195, 645);
+    ctx.fillText("SHIO MONYET", 200, 610);
 
-    // 8. KOTAK PANTUN (SUDUT BAWAH - FULL RAPI)
-    ctx.fillStyle = "#00d4ff"; ctx.font = "italic bold 36px Times New Roman";
+    // 8. KOTAK PANTUN (SUDUT BAWAH - RAPI)
+    ctx.fillStyle = "#00d4ff"; ctx.font = "italic bold 38px Times New Roman";
     ctx.fillText('"' + item.kodal + '"', 400, 815);
 
-    // Wadah Pantun Hitam Elegan
+    // Wadah Pantun 4 Baris (Pas di kotak)
     ctx.fillStyle = "rgba(5, 10, 20, 0.95)";
-    ctx.beginPath(); ctx.roundRect(60, 850, 680, 110, 15); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(60, 840, 680, 130, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
 
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 24px Arial";
-    ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, 895);
-    ctx.fillText("Angka keluar jangan sembarang, Semoga hoki datang menghampiri.", 400, 935);
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
+    ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, 885);
+    ctx.fillText("Angka keluar jangan sembarang, Semoga hoki datang menghampiri.", 400, 930);
 }
 function exportSyair() {
     const canvas = document.getElementById('canvasSyair');
