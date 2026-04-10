@@ -540,11 +540,11 @@ async function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // --- BYPASS PROTEKSI GAMBAR DRIVE ---
+    // --- BYPASS PROTEKSI DRIVE (FORCE LOAD) ---
     const getDirectUrl = (url) => {
         if (!url || !url.includes('drive.google.com')) return url;
         const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
-        return `https://lh3.googleusercontent.com/u/0/d/${id}=w1000`; 
+        return `https://lh3.googleusercontent.com/u/0/d/${id}`; 
     };
 
     const urlBG = getDirectUrl("https://drive.google.com/file/d/1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB/view?usp=sharing");
@@ -558,7 +558,6 @@ async function renderSyair() {
         img.onerror = () => resolve(null);
     });
 
-    // Load semua aset sekaligus
     const [bg, logo, shioImg, pisangImg] = await Promise.all([
         loadImg(urlBG), loadImg(urlLogo),
         loadImg(getDirectUrl(item.urlShio)),
@@ -570,77 +569,67 @@ async function renderSyair() {
     // 1. BACKGROUND UTAMA
     if (bg) ctx.drawImage(bg, 0, 0, 700, 800);
 
-    // 2. KOTAK TANGGAL (WADAH KHUSUS)
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    // 2. WADAH TANGGAL (BESAR & RAPI)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
     ctx.beginPath();
-    ctx.roundRect(250, 20, 200, 45, 10);
+    ctx.roundRect(200, 15, 300, 55, 12);
     ctx.fill();
-    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
     
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
-    ctx.font = "bold 20px Arial";
-    ctx.fillText(tglStr.toUpperCase(), 350, 50);
+    ctx.font = "bold 26px Arial"; // TANGGAL DIPERBESAR
+    ctx.fillText(tglStr.toUpperCase(), 350, 52);
 
-    // 3. LOGO (DI BAWAH TANGGAL)
-    if (logo) ctx.drawImage(logo, 250, 75, 200, 60);
+    // 3. LOGO DANATOTO
+    if (logo) ctx.drawImage(logo, 240, 85, 220, 70);
 
-    // 4. KOTAK NOMOR GELAP & BERLAMPU (BBFS, AM, TWIN, CB)
+    // 4. KOTAK NOMOR GELAP NEON (TULISAN SUPER BESAR)
     const drawNeonBox = (x, y, label, value) => {
-        // Efek Glow Lampu
-        ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
-        ctx.fillStyle = "rgba(10, 20, 30, 0.85)"; // Warna Gelap
+        // Efek Glow Lampu Biru
+        ctx.shadowBlur = 20; ctx.shadowColor = "#00d4ff";
+        ctx.fillStyle = "rgba(5, 10, 20, 0.9)"; // Gelap Elegan
         ctx.beginPath();
-        ctx.roundRect(x, y, 240, 90, 15);
+        ctx.roundRect(x, y, 260, 100, 15);
         ctx.fill();
-        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
-        ctx.shadowBlur = 0; // Reset shadow agar teks tajam
+        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
+        ctx.shadowBlur = 0; 
 
-        // Label
+        // Label (BBFS, AM, dll)
         ctx.fillStyle = "#00d4ff";
-        ctx.font = "italic bold 17px Times New Roman";
-        ctx.fillText(label, x + 120, y + 35);
-        // Angka (Warna Putih/Emas)
+        ctx.font = "italic bold 20px Times New Roman"; 
+        ctx.fillText(label, x + 130, y + 35);
+        // Angka Utama (KUNING EMAS - BESAR)
         ctx.fillStyle = "#ffeb3b";
-        ctx.font = "bold 34px Arial";
-        ctx.fillText(value, x + 120, y + 75);
+        ctx.font = "bold 42px Arial"; // ANGKA DIPERBESAR
+        ctx.fillText(value, x + 130, y + 80);
     };
 
-    drawNeonBox(80, 160, "BBFS", item.bbfs);
-    drawNeonBox(380, 160, "ANGKA MAIN", item.am);
-    drawNeonBox(80, 270, "TWIN", item.twin);
-    drawNeonBox(380, 270, "COLOK BEBAS", item.cb);
+    drawNeonBox(60, 180, "BBFS", item.bbfs);
+    drawNeonBox(380, 180, "ANGKA MAIN", item.am);
+    drawNeonBox(60, 300, "TWIN", item.twin);
+    drawNeonBox(380, 300, "COLOK BEBAS", item.cb);
 
-    // 5. SHIO (TEKS MEWAH)
+    // 5. SHIO (TEKS BESAR & JELAS)
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 42px Georgia";
+    ctx.font = "bold 48px Georgia";
     ctx.shadowBlur = 10; ctx.shadowColor = "black";
-    ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 410);
+    ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 440);
     ctx.shadowBlur = 0;
 
-    // 6. ASSET UTAMA (MONYET KIRI, PISANG KANAN)
-    // Jika gambar gagal, akan muncul kotak placeholder agar Bos tahu filenya yang bermasalah
-    if (shioImg) {
-        ctx.drawImage(shioImg, 60, 430, 260, 260);
-    } else {
-        console.log("Monyet Gagal Load");
-    }
+    // 6. ASSET (MONYET KIRI, PISANG KANAN)
+    if (shioImg) ctx.drawImage(shioImg, 40, 460, 300, 300); // DIPERBESAR
+    if (pisangImg) ctx.drawImage(pisangImg, 360, 460, 300, 300); // DIPERBESAR
 
-    if (pisangImg) {
-        ctx.drawImage(pisangImg, 380, 430, 260, 260);
-    } else {
-        console.log("Pisang Gagal Load");
-    }
-
-    // 7. PANTUN & KODAL (BAWAH)
+    // 7. PANTUN & KODAL (BAWAH - TULISAN JELAS)
     ctx.fillStyle = "#00d4ff";
-    ctx.font = "italic bold 28px Times New Roman";
-    ctx.fillText('"' + item.kodal + '"', 350, 720);
+    ctx.font = "italic bold 32px Times New Roman";
+    ctx.fillText('"' + item.kodal + '"', 350, 725);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 22px Arial";
+    ctx.font = "bold 24px Arial"; // PANTUN DIPERBESAR
     const lines = item.pantun.split('\n');
-    lines.forEach((l, i) => ctx.fillText(l.trim(), 350, 755 + (i * 30)));
+    lines.forEach((l, i) => ctx.fillText(l.trim(), 350, 760 + (i * 35)));
 }
 function exportSyair() {
     const canvas = document.getElementById('canvasSyair');
