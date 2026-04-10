@@ -540,104 +540,96 @@ function renderSyair() {
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // 1. LINK BACKGROUND BARU (Tanpa Al-Qur'an)
-    const urlBackground = "https://drive.google.com/uc?export=view&id=1gyn4tps2H1p4j8LIpQKha-uXswhFcVB1";
+    // 1. LINK BACKGROUND BARU (Format Direct Link agar tidak diblokir browser)
+    const urlBackground = "https://lh3.googleusercontent.com/d/1gyn4tps2H1p4j8LIpQKha-uXswhFcVB1";
+    const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
 
-    // Fungsi bantu untuk hapus background putih & gelapkan gambar (Monyet/Pisang)
-    function processAsset(img) {
-        const temp = document.createElement('canvas');
-        const tCtx = temp.getContext('2d');
-        temp.width = img.width; temp.height = img.height;
-        tCtx.drawImage(img, 0, 0);
-        const imgData = tCtx.getImageData(0, 0, temp.width, temp.height);
-        const data = imgData.data;
-        for (let i = 0; i < data.length; i += 4) {
-            if (data[i] > 210 && data[i+1] > 210 && data[i+2] > 210) {
-                data[i+3] = 0; // Transparan
-            } else {
-                data[i] *= 0.8; data[i+1] *= 0.8; data[i+2] *= 0.8; // Efek Gelap
-            }
-        }
-        tCtx.putImageData(imgData, 0, 0);
-        return temp;
+    // Clear canvas sebelum mulai
+    ctx.clearRect(0, 0, 700, 800);
+    ctx.fillStyle = "#000"; // Background sementara hitam biar gak kedip
+    ctx.fillRect(0, 0, 700, 800);
+
+    const images = {};
+    const sources = {
+        bg: urlBackground,
+        logo: urlLogo,
+        shio: item.urlShio,
+        tema: item.urlTema
+    };
+
+    let loaded = 0;
+    const totalImages = Object.keys(sources).length;
+
+    for (let key in sources) {
+        images[key] = new Image();
+        images[key].crossOrigin = "anonymous"; 
+        images[key].onload = () => {
+            loaded++;
+            if (loaded === totalImages) drawEverything();
+        };
+        images[key].onerror = () => {
+            console.error("Gagal load gambar: " + key);
+            // Tetap lanjut gambar meskipun ada satu yang gagal (biar gak blank)
+            loaded++;
+            if (loaded === totalImages) drawEverything();
+        };
+        images[key].src = sources[key];
     }
 
-    // Load Background Utama
-    const bgImg = new Image();
-    bgImg.crossOrigin = "anonymous";
-    bgImg.src = urlBackground;
+    function drawEverything() {
+        // --- LAYER 1: BACKGROUND ---
+        if (images.bg.complete) ctx.drawImage(images.bg, 0, 0, 700, 800);
 
-    bgImg.onload = function() {
-        // A. Gambar Background
-        ctx.drawImage(bgImg, 0, 0, 700, 800);
+        // --- LAYER 2: LOGO & JUDUL ---
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(0, 212, 255, 0.8)";
+        ctx.drawImage(images.logo, 250, 45, 200, 60);
+        ctx.shadowBlur = 0;
 
-        // B. Logo Danatoto
-        const imgLogo = new Image();
-        imgLogo.crossOrigin = "anonymous";
-        imgLogo.src = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
-        imgLogo.onload = function() {
-            ctx.drawImage(imgLogo, 250, 50, 200, 60);
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
+        ctx.font = "bold 26px Arial";
+        ctx.fillText("SYAIR PREDIKSI", 350, 140);
+        ctx.font = "18px Arial";
+        ctx.fillText(tglStr.toUpperCase(), 350, 170);
 
-            // C. Judul & Tanggal (Tengah Atas)
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "center";
-            ctx.font = "bold 28px Arial";
-            ctx.fillText("SYAIR PREDIKSI", 350, 145);
-            ctx.font = "20px Arial";
-            ctx.fillText(tglStr.toUpperCase(), 350, 180);
+        // --- LAYER 3: SHIO (WARNA KUNING TEBAL) ---
+        ctx.fillStyle = "#ffeb3b";
+        ctx.font = "bold 45px Georgia";
+        ctx.fillText("SHIO: " + item.shio.toUpperCase(), 350, 235);
 
-            // D. SHIO (Kuning Terang di Atas Kotak)
-            ctx.fillStyle = "#ffeb3b";
-            ctx.font = "bold 45px Georgia";
-            ctx.fillText(item.shio.toUpperCase(), 350, 245);
+        // --- LAYER 4: KOTAK NOMOR (RAPI) ---
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 25px Courier New";
+        const startX = 180;
+        ctx.fillText("BBFS : " + item.bbfs, startX, 290);
+        ctx.fillText("A.M  : " + item.am, startX, 330);
+        ctx.fillText("C.B  : " + item.cb, startX, 370);
+        ctx.fillText("TWIN : " + item.twin, startX, 410);
 
-            // E. AREA NOMOR (BBFS, AM, CB, TWIN)
-            ctx.textAlign = "left";
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 26px Courier New";
-            ctx.fillText("BBFS : " + item.bbfs, 180, 300);
-            ctx.fillText("A.M  : " + item.am, 180, 340);
-            ctx.fillText("C.B  : " + item.cb, 180, 380);
-            ctx.fillText("TWIN : " + item.twin, 180, 420);
+        // --- LAYER 5: GAMBAR ASSET (MONYET & POHON PISANG) ---
+        // Posisikan sejajar di tengah area kotak
+        if (images.shio.complete) ctx.drawImage(images.shio, 140, 440, 180, 180);
+        if (images.tema.complete) ctx.drawImage(images.tema, 380, 440, 180, 180);
 
-            // F. LOAD GAMBAR MONYET & PISANG
-            const imgS = new Image();
-            const imgT = new Image();
-            imgS.crossOrigin = "anonymous";
-            imgT.crossOrigin = "anonymous";
-            imgS.src = item.urlShio;
-            imgT.src = item.urlTema;
+        // --- LAYER 6: KODAL & PANTUN (ANTI BERANTAKAN) ---
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#00d4ff";
+        ctx.font = "italic 22px Times New Roman";
+        ctx.fillText('"' + item.kodal + '"', 350, 650);
 
-            let count = 0;
-            const drawFinal = () => {
-                count++;
-                if (count === 2) {
-                    // Gambar Monyet (Kiri) & Pisang (Kanan)
-                    ctx.drawImage(processAsset(imgS), 130, 440, 180, 180);
-                    ctx.drawImage(processAsset(imgT), 390, 440, 180, 180);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "19px Arial";
+        const lines = item.pantun.split('\n');
+        lines.forEach((line, i) => {
+            ctx.fillText(line.trim(), 350, 690 + (i * 26));
+        });
 
-                    // G. KODAL & PANTUN (Bawah)
-                    ctx.textAlign = "center";
-                    ctx.fillStyle = "#00d4ff";
-                    ctx.font = "italic 24px Times New Roman";
-                    ctx.fillText('"' + item.kodal + '"', 350, 640);
-
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "italic 20px Times New Roman";
-                    const lines = item.pantun.split('\n');
-                    lines.forEach((line, i) => {
-                        ctx.fillText(line, 350, 680 + (i * 28));
-                    });
-
-                    // H. FOOTER
-                    ctx.font = "bold 20px Arial";
-                    ctx.fillText("WWW.DANATOTO.VIP", 350, 760);
-                }
-            };
-            imgS.onload = drawFinal;
-            imgT.onload = drawFinal;
-        };
-    };
+        // FOOTER
+        ctx.font = "bold 18px Arial";
+        ctx.fillText("WWW.DANATOTO.VIP", 350, 770);
+    }
 }
 
 function exportSyair() {
