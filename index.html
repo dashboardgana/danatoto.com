@@ -617,19 +617,49 @@
         link.click();
     }
 
-    function copyAllPrediksi() {
-        if(!masterData || masterData.length === 0) return;
-        const semuaTeks = masterData.map((d) => {
-            const b = d.bbfs.split('');
-            const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
-            const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
-            return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nSHIO : ${d.shioUtama}\n\nselalu utamakan prediksi sendiri`;
-        }).join('\n\n====================\n\n');
-        
-        navigator.clipboard.writeText(semuaTeks).then(() => {
-            alert("SEMUA PREDIKSI BERHASIL DI COPY!");
-        });
+    // FUNGSI UNTUK COPY SATU PER SATU
+function copyAction(index) {
+    const d = masterData[index];
+    if (!d) return;
+
+    // Format teks sesuai permintaan: Tanpa UPS, Hanya Slogan
+    const teks = `PREDIKSI ${d.name}\n` +
+                 `${d.tglHariIni || ""}\n` +
+                 `BBFS : ${d.bbfs}\n` +
+                 `ANGKA MAIN : ${d.am}\n` +
+                 `COLOK BEBAS : ${d.cb1} / ${d.cb2}\n` +
+                 `SHIO : ${d.shioUtama}\n\n` +
+                 `Selalu Utamakan Prediksi Sendiri`;
+
+    navigator.clipboard.writeText(teks).then(() => {
+        alert("BERHASIL DI COPY!\n" + d.name);
+    }).catch(err => {
+        console.error('Gagal menyalin: ', err);
+    });
+}
+
+// FUNGSI UNTUK COPY SEMUA (PASTIKAN SUDAH ADA)
+function copyAllPrediksi() {
+    if (!masterData || masterData.length === 0) {
+        alert("Data belum tersedia!");
+        return;
     }
+
+    const semuaTeks = masterData.map((d) => {
+        return `--- PREDIKSI ${d.name} ---\n` +
+               `BBFS : ${d.bbfs}\n` +
+               `ANGKA MAIN : ${d.am}\n` +
+               `COLOK BEBAS : ${d.cb1} / ${d.cb2}\n` +
+               `SHIO : ${d.shioUtama}\n` +
+               `Selalu Utamakan Prediksi Sendiri`;
+    }).join('\n\n====================\n\n');
+    
+    navigator.clipboard.writeText(semuaTeks).then(() => {
+        alert("SEMUA PREDIKSI BERHASIL DI COPY!");
+    }).catch(err => {
+        console.error('Gagal menyalin semua: ', err);
+    });
+}
 </script>
 </body>
 </html>
