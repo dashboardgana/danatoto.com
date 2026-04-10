@@ -193,19 +193,6 @@
             cursor: pointer; font-weight: bold;
         }
 
-        /* GENERATOR SYAIR STYLE */
-        .syair-wrapper {
-            max-width: 600px; margin: 0 auto; text-align: center;
-            background: #1a1a1a; padding: 20px; border-radius: 15px; border: 2px solid #00d4ff;
-        }
-        #canvasSyair {
-            width: 100%; border-radius: 10px; border: 1px solid #fff; margin-bottom: 20px;
-        }
-        .btn-export {
-            width: 100%; padding: 15px; background: linear-gradient(90deg, #00d4ff, #00ff88); color: #000;
-            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px;
-        }
-
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
@@ -220,9 +207,9 @@
 <div id="login-page">
     <div class="login-card">
         <i class="fas fa-lock fa-3x" style="color: #00d4ff; margin-bottom: 15px;"></i>
-        <h2>SILAHKAN LOGIN</h2>
-        <input type="text" id="user" placeholder="👤Username">
-        <input type="password" id="pass" placeholder="🔑Password">
+        <h2>VIP LOGIN</h2>
+        <input type="text" id="user" placeholder="Username">
+        <input type="password" id="pass" placeholder="Password">
         <button onclick="doLogin()">MASUK KE SISTEM</button>
         <p id="err" style="color: #ff5252; margin-top: 15px;"></p>
     </div>
@@ -230,7 +217,7 @@
 
 <div id="main-dashboard">
     <div class="sidebar">
-        <h2>DANATOTO</h2>
+        <h2>VIP PANEL</h2>
         <div id="menu-dash" class="menu-item active-menu" onclick="showWelcome()"><i class="fas fa-home"></i> DASHBOARD</div>
         <div id="menu-pred" class="menu-item" style="margin-top: 10px;" onclick="loadAllPasaran()">
             <i class="fas fa-fire"></i> PREDIKSI TOGEL
@@ -242,7 +229,7 @@
         <div id="menu-sgp" class="menu-item" onclick="loadSgpToto()">
             <i class="fas fa-calculator"></i> PERHITUNGAN SGP TOTO
         </div>
-        <div id="menu-syair" class="menu-item" onclick="loadSyairGenerator()">
+        <div id="menu-syair" class="menu-item" onclick="alert('Menu Syair Harian Segera Hadir')">
             <i class="fas fa-book-open"></i> SYAIR HARIAN
         </div>
         <div id="menu-win" class="menu-item" onclick="alert('Menu Postingan Kemenangan Segera Hadir')">
@@ -269,22 +256,6 @@
     const pasarans = ["HOKI DRAW", "TOTO MACAU PAGI", "KENTUCKY MIDDAY", "FLORIDA MIDDAY", "HUAHIN 0100", "BANGKOK 0130", "NEWYORK MIDDAY", "CAROLINA DAY", "BRUNEI 02", "OREGON 03", "OREGON 06", "CALIFORNIA", "FLORIDA EVENING", "OREGON 09", "BANGKOK 0930", "NEWYORK EVENING", "KENTUCKY EVENING", "CAROLINA EVENING", "TOTOCAMBODIA", "CHELSEA 11", "OREGON 12", "POIPET12", "BULLSEYE", "TOTOMACAU SIANG", "SYDNEY", "JAKARTA 1400", "BRUNEI 14", "CHELSEA 15", "TOTOMALI 1530", "TOTOMACAU 5D SORE", "POIPET15", "TOTOMACAU SORE", "HUAHIN 1630", "KING KONG 4D I", "SINGAPORE", "MAGNUM4D", "TOTOMACAU MALAM I", "CHELSEA 19", "POIPET19", "PCSO", "TOTOMALI 2030", "HUAHIN 2100", "CHELSEA 21", "TOTOMACAU 5D MALAM", "NEVADA", "BRUNEI 21", "TOTOMACAU MALAM II", "POIPET22", "HONGKONG", "TOTOMACAU MALAM III", "TOTOMALI 2330", "JAKARTA 2330", "KING KONG 4D II"];
     const shios = ["ULAR", "BABI", "KELINCI", "KERBAU", "HARIMAU", "AYAM", "ANJING", "MONYET", "NAGA", "TIKUS", "KAMBING", "KUDA"];
     let masterData = [];
-
-    // DATA PAKET SYAIR UNTUK GENERATOR (AUTO)
-    const paketSyair = [
-        { tema: "POHON PISANG", shio: "MONYET", bbfs: "12458", am: "1248", cb: "2 / 8", twin: "22/88", kodal: "MONYET MANJAT POHON PISANG AMBIL BUAH" },
-        { tema: "SAWAH BERLUMPUR", shio: "KERBAU", bbfs: "03467", am: "0347", cb: "3 / 7", twin: "33/77", kodal: "KERBAU NARIK BAJAK DI SAWAH LUAS" },
-        { tema: "HUTAN RIMBA", shio: "HARIMAU", bbfs: "45679", am: "4579", cb: "5 / 9", twin: "55/99", kodal: "PEMBURU KAGET LIHAT HARIMAU TIDUR" },
-        { tema: "LOBANG TANAH", shio: "ULAR", bbfs: "13568", am: "1368", cb: "1 / 6", twin: "11/66", kodal: "ULAR SANCA MASUK LOBANG PERSEMBUNYIAN" },
-        { tema: "PADANG RUMPUT", shio: "KUDA", bbfs: "24578", am: "2478", cb: "4 / 8", twin: "44/88", kodal: "KUDA BALAP LARI KENCANG KE GARIS FINISH" },
-        { tema: "KANDANG BAMBU", shio: "AYAM", bbfs: "02359", am: "0259", cb: "0 / 5", twin: "00/55", kodal: "AYAM JAGO BERKOKOK DI PAGI HARI" },
-        { tema: "RUMAH TUA", shio: "TIKUS", bbfs: "12367", am: "1267", cb: "2 / 7", twin: "22/77", kodal: "TIKUS DAPUR LAGI ASYIK NYOLONG ROTI" },
-        { tema: "TAMAN BUNGA", shio: "KELINCI", bbfs: "45689", am: "4689", cb: "6 / 9", twin: "66/99", kodal: "KELINCI PUTIH MAKAN WORTEL DI TAMAN" },
-        { tema: "AWAN MENDUNG", shio: "NAGA", bbfs: "01347", am: "0137", cb: "1 / 7", twin: "11/77", kodal: "NAGA TERBANG DI BALIK AWAN HITAM" },
-        { tema: "TEBING GUNUNG", shio: "KAMBING", bbfs: "23569", am: "2356", cb: "3 / 5", twin: "33/55", kodal: "KAMBING GUNUNG MANJAT TEBING CURAM" },
-        { tema: "PINTU PAGAR", shio: "ANJING", bbfs: "14578", am: "1458", cb: "4 / 5", twin: "44/55", kodal: "ANJING PENJAGA GONGGONG ORANG ASING" },
-        { tema: "KUBANGAN LUMPUR", shio: "BABI", bbfs: "02469", am: "0269", cb: "2 / 6", twin: "22/66", kodal: "BABI HUTAN CARI MAKAN DI LUMPUR" }
-    ];
 
     // CEK STATUS LOGIN SECEPAT MUNGKIN
     (function checkAuth() {
@@ -385,18 +356,22 @@
         document.getElementById('main-grid').style.display = "block";
         document.getElementById('txt-jalan').style.display = 'none';
         document.getElementById('txt-tanggal').style.display = 'block';
+        
         document.getElementById('txt-tanggal').innerText = "STATUS OPERASIONAL BANK";
         document.getElementById('sub-txt-tanggal').innerText = "SISTEM MONITORING BANK & E-WALLET REALTIME";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-bank').classList.add('active-menu');
+
         const grid = document.getElementById('main-grid');
         grid.innerHTML = `<div id="bank-container" class="bank-container"></div>`;
         const container = document.getElementById('bank-container');
+
         const now = new Date();
         const hr = now.getHours();
         const mn = now.getMinutes();
         const time = (hr * 100) + mn;
         const day = now.getDay();
+
         const banks = [
             { name: "BCA", schedule: "Senin-Jumat : 21.00-00.30 Offline<br>Sabtu-Minggu : Online 24 Jam", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/1200px-Bank_Central_Asia.svg.png" },
             { name: "BNI", schedule: "Online 24 Jam Nonstop", logo: "https://lh3.googleusercontent.com/d/1F5wmepEgaBo6PDevJr71Gvh_G-c-B-Hi" },
@@ -411,6 +386,7 @@
             { name: "QRIS", schedule: "Online 24 Jam (Auto Process)", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" },
             { name: "USDT", schedule: "Online 24 Jam (Global Currency)", logo: "https://static.crypto.com/token/icons/tether/color_icon.png" }
         ];
+
         banks.forEach(bank => {
             let isOnline = true;
             if (bank.name === "BCA" && (day >= 1 && day <= 5)) {
@@ -419,10 +395,12 @@
             if (bank.name === "MANDIRI") {
                 if (time >= 2245 || time <= 330) isOnline = false;
             }
+
             const lampClass = isOnline ? "lamp-online" : "lamp-offline";
             const textClass = isOnline ? "text-online" : "text-offline";
             const cardGlowClass = isOnline ? "card-online" : "card-offline";
             const statusLabel = isOnline ? "ONLINE" : "OFFLINE";
+
             container.innerHTML += `
                 <div class="bank-card ${cardGlowClass}">
                     <div class="logo-wrapper">
@@ -440,6 +418,7 @@
         });
     }
 
+    // FUNGSI PERHITUNGAN SGP TOTO
     function loadSgpToto() {
         resetMenu();
         document.getElementById('main-grid').style.display = "block";
@@ -449,6 +428,7 @@
         document.getElementById('sub-txt-tanggal').innerText = "KALKULATOR RUMUS RESMI SINGAPORE TOTO";
         document.getElementById('sub-txt-tanggal').style.display = 'block';
         document.getElementById('menu-sgp').classList.add('active-menu');
+
         const grid = document.getElementById('main-grid');
         grid.innerHTML = `
             <div class="toto-container">
@@ -465,7 +445,9 @@
                     <input type="number" id="addNum" value="24">
                 </div>
                 <button class="btn-hitung" onclick="hitungToto()">HITUNG RESULT</button>
+                
                 <button class="btn-clear" onclick="clearNomor()">CLEAR NOMOR</button>
+
                 <div class="result-box">
                     <h4>HASIL 4D RESULT:</h4>
                     <div id="finalRes" class="final-number">----</div>
@@ -473,7 +455,9 @@
             </div>`;
     }
 
+    // FUNGSI CLEAR NOMOR (BARU)
     function clearNomor() {
+        // Mengosongkan semua input bola
         document.getElementById('b1').value = "";
         document.getElementById('b2').value = "";
         document.getElementById('b3').value = "";
@@ -481,6 +465,7 @@
         document.getElementById('b5').value = "";
         document.getElementById('b6').value = "";
         document.getElementById('addNum').value = "";
+        // Reset tampilan hasil
         document.getElementById('finalRes').innerText = "----";
     }
 
@@ -492,13 +477,49 @@
         const b5 = parseInt(document.getElementById('b5').value) || 0;
         const b6 = parseInt(document.getElementById('b6').value) || 0;
         const add = parseInt(document.getElementById('addNum').value) || 0;
+
+        // TOTAL BOLA
         const totalBola = b1 + b2 + b3 + b4 + b5 + b6;
+
+        // 1. CARI ANGKA DEPAN (RIBUAN & RATUSAN)
+        // Rumus: (Total * 76) + Additional + 5
         const rumusDepan = (totalBola * 76) + add + 5;
         const angkaDepan = rumusDepan.toString().substring(0, 2);
+
+        // 2. CARI ANGKA BELAKANG (PULUHAN & SATUAN)
+        // Rumus: (Total * 2) - (Bola1 + Bola6) + Additional
         const rumusBelakang = (totalBola * 2) - (b1 + b6) + add;
         const angkaBelakang = (rumusBelakang % 100).toString().padStart(2, '0');
+
+        // GABUNGKAN
         const hasilFinal = angkaDepan + angkaBelakang;
         document.getElementById('finalRes').innerText = hasilFinal;
+    }
+
+    function copyAction(index) {
+        const d = masterData[index];
+        const b = d.bbfs.split('');
+        const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
+        const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
+        const teks = `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nSHIO : ${d.shioUtama}\n\nselalu utamakan prediksi sendiri`;
+        
+        navigator.clipboard.writeText(teks).then(() => {
+            alert("BERHASIL DI COPY!\n" + d.name);
+        });
+    }
+
+    function copyAllPrediksi() {
+        if(!masterData || masterData.length === 0) return;
+        const semuaTeks = masterData.map((d) => {
+            const b = d.bbfs.split('');
+            const p4d = `${b[0]}${b[2]}${b[4]}${b[6]} ${b[1]}${b[3]}${b[5]}${b[0]} ${b[2]}${b[1]}${b[6]}${b[3]}`;
+            const p2d = `${b[0]}${b[1]} ${b[2]}${b[3]} ${b[4]}${b[5]} ${b[6]}${b[0]} ${b[1]}${b[4]}`;
+            return `PREDIKSI ${d.name}\n${d.tglHariIni}\nBBFS : ${d.bbfs}\nANGKA MAIN : ${d.am}\n4D : ${p4d}\n2D (BB) : ${p2d}\nCOLOK BEBAS : ${d.cb1} / ${d.cb2}\nSHIO : ${d.shioUtama}\n\nselalu utamakan prediksi sendiri`;
+        }).join('\n\n====================\n\n');
+        
+        navigator.clipboard.writeText(semuaTeks).then(() => {
+            alert("SEMUA PREDIKSI BERHASIL DI COPY!");
+        });
     }
 
     function loadSyairGenerator() {
@@ -607,3 +628,4 @@
 </script>
 </body>
 </html>
+
