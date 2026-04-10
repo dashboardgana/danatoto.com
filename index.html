@@ -535,16 +535,19 @@
 async function renderSyair() {
     const canvas = document.getElementById('canvasSyair');
     const ctx = canvas.getContext('2d');
+    
+    // UKURAN BARU: Lebih Lebar & Lebih Panjang ke Bawah
+    canvas.width = 800;
+    canvas.height = 950;
+
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     const index = d.getDate() % paketSyair.length;
     const item = paketSyair[index];
 
-    // --- LINK BARU YANG SUDAH JADI DIRECT LINK (ANTI BLOKIR) ---
-    const urlBG = "https://drive.google.com/uc?export=view&id=1pvPM06l0TbBAuhiXVT7XBxtfAeKxsjBB";
+    // --- LINK ASET (DIRECT LINK) ---
+    const urlBG = "https://drive.google.com/uc?export=view&id=1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe";
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
-    
-    // Ini link ImgBB yang sudah saya jadikan Direct Link
     const directMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const directPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
 
@@ -556,80 +559,73 @@ async function renderSyair() {
         img.onerror = () => resolve(null);
     });
 
-    // Load semua aset
     const [bg, logo, shioImg, pisangImg] = await Promise.all([
-        loadImg(urlBG), 
-        loadImg(urlLogo),
-        loadImg(directMonyet), 
-        loadImg(directPisang)
+        loadImg(urlBG), loadImg(urlLogo),
+        loadImg(directMonyet), loadImg(directPisang)
     ]);
 
-    ctx.clearRect(0, 0, 700, 800);
+    ctx.clearRect(0, 0, 800, 950);
 
-    // 1. GAMBAR BACKGROUND
-    if (bg) ctx.drawImage(bg, 0, 0, 700, 800);
+    // 1. BACKGROUND (Full Screen)
+    if (bg) ctx.drawImage(bg, 0, 0, 800, 950);
 
-    // 2. KOTAK TANGGAL (GAYA NAVIGASI ATAS - RAPI)
+    // 2. KOTAK TANGGAL ATAS
     ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
-    ctx.beginPath();
-    ctx.roundRect(175, 15, 350, 60, 15);
-    ctx.fill();
+    ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
+    ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 62);
 
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "center";
-    ctx.font = "bold 30px Arial";
-    ctx.fillText(tglStr.toUpperCase(), 350, 56);
+    // 3. LOGO
+    if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
 
-    // 3. LOGO DANATOTO
-    if (logo) ctx.drawImage(logo, 240, 90, 220, 70);
-
-    // 4. KOTAK NOMOR GELAP NEON (TULISAN JUMBO & ELEGAN)
-    const drawNeonBox = (x, y, label, value) => {
+    // 4. KOTAK NOMOR JUMBO (BBFS, AM, TWIN, CB)
+    const drawBox = (x, y, label, value) => {
         ctx.shadowBlur = 20; ctx.shadowColor = "#00d4ff";
         ctx.fillStyle = "rgba(5, 10, 20, 0.95)";
-        ctx.beginPath();
-        ctx.roundRect(x, y, 270, 110, 15);
-        ctx.fill();
+        ctx.beginPath(); ctx.roundRect(x, y, 300, 120, 15); ctx.fill();
         ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
         ctx.shadowBlur = 0;
-
-        ctx.fillStyle = "#00d4ff";
-        ctx.font = "italic bold 22px Times New Roman";
-        ctx.fillText(label, x + 135, y + 40);
-
-        ctx.fillStyle = "#ffeb3b"; // KUNING EMAS
-        ctx.font = "bold 52px Arial";
-        ctx.fillText(value, x + 135, y + 95);
+        ctx.fillStyle = "#00d4ff"; ctx.font = "italic bold 24px Times New Roman";
+        ctx.fillText(label, x + 150, y + 40);
+        ctx.fillStyle = "#ffeb3b"; 
+        ctx.font = label === "BBFS" ? "bold 48px Arial" : "bold 56px Arial";
+        ctx.fillText(value, x + 150, y + 100);
     };
 
-    drawNeonBox(50, 185, "BBFS", item.bbfs);
-    drawNeonBox(380, 185, "ANGKA MAIN", item.am);
-    drawNeonBox(50, 315, "TWIN", item.twin);
-    drawNeonBox(380, 315, "COLOK BEBAS", item.cb);
+    drawBox(70, 200, "BBFS", item.bbfs);
+    drawBox(430, 200, "ANGKA MAIN", item.am);
+    drawBox(70, 340, "TWIN", item.twin);
+    drawBox(430, 340, "COLOK BEBAS", item.cb);
 
-    // 5. SHIO (TEKS BESAR & TEGAS)
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 55px Georgia";
-    ctx.shadowBlur = 10; ctx.shadowColor = "black";
-    ctx.fillText("SHIO : " + item.shio.toUpperCase(), 350, 475);
-    ctx.shadowBlur = 0;
+    // 5. KOTAK KECIL KETERANGAN SHIO (TENGAH)
+    ctx.fillStyle = "rgba(255, 215, 0, 0.2)";
+    ctx.beginPath(); ctx.roundRect(300, 500, 200, 60, 10); ctx.fill();
+    ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 28px Georgia";
+    ctx.fillText("SHIO MONYET", 400, 540);
 
-    // 6. ASSET (MONYET KIRI, PISANG KANAN) - UKURAN JUMBO
-    if (shioImg) ctx.drawImage(shioImg, 30, 490, 310, 310); 
-    if (pisangImg) ctx.drawImage(pisangImg, 360, 490, 310, 310);
+    // 6. ASSET (MONYET & PISANG)
+    if (shioImg) ctx.drawImage(shioImg, 40, 480, 320, 320); 
+    if (pisangImg) ctx.drawImage(pisangImg, 440, 480, 320, 320);
 
-    // 7. PANTUN & KODAL (BAWAH - TULISAN BESAR)
-    ctx.fillStyle = "#00d4ff";
-    ctx.font = "italic bold 34px Times New Roman";
-    ctx.fillText('"' + item.kodal + '"', 350, 725);
+    // 7. KOTAK PANTUN & KODAL (BAWAH RAPI)
+    // Kodal
+    ctx.fillStyle = "#00d4ff"; ctx.font = "italic bold 38px Times New Roman";
+    ctx.fillText('"' + item.kodal + '"', 400, 830);
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 26px Arial";
+    // Wadah Pantun 2 Baris
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.beginPath(); ctx.roundRect(50, 850, 700, 80, 15); ctx.fill();
+    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
+
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 28px Arial";
     const lines = item.pantun.split('\n');
-    lines.forEach((l, i) => ctx.fillText(l.trim(), 350, 765 + (i * 38)));
+    lines.forEach((l, i) => {
+        if(i < 2) ctx.fillText(l.trim(), 400, 885 + (i * 35));
+    });
 }
 function exportSyair() {
     const canvas = document.getElementById('canvasSyair');
