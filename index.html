@@ -537,6 +537,7 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
+    // 1. KANVAS 800x1100
     canvas.width = 800;
     canvas.height = 1100;
 
@@ -565,7 +566,7 @@ async function renderSyair() {
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 1. HEADER & LOGO
+    // 2. HEADER & LOGO
     ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(225, 15, 350, 60, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
@@ -573,25 +574,17 @@ async function renderSyair() {
     ctx.font = "bold 30px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 55);
     if (logo) ctx.drawImage(logo, 290, 85, 220, 65);
 
-    // 2. KOTAK ANGKA DENGAN GRADASI EMAS
+    // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
     const drawBox = (x, y, label, value) => {
-        ctx.shadowBlur = 0; // Reset shadow
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
         ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
         
-        // Warna Label (Cyan)
         ctx.fillStyle = "#00f2ff"; 
         ctx.font = "bold 24px Arial";
         ctx.fillText(label, x + 155, y + 38);
         
-        // Gradasi Emas untuk Angka
-        const grad = ctx.createLinearGradient(x, y + 60, x, y + 105);
-        grad.addColorStop(0, "#fff5ad"); // Kuning terang
-        grad.addColorStop(0.5, "#ffeb3b"); // Kuning solid
-        grad.addColorStop(1, "#f9a825"); // Orange emas
-        
-        ctx.fillStyle = grad;
+        ctx.fillStyle = "#ffeb3b"; // Kuning Solid
         ctx.font = "bold 58px Arial";
         ctx.fillText(value, x + 155, y + 95);
     };
@@ -600,76 +593,41 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", item.twin);
     drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-   // 3. BINTANG TENGAH (EFEK NEON BLUE)
+    // 4. BINTANG PUTIH TEGAS (ANTI PECAH)
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
-        let rot = Math.PI / 2 * 3, step = Math.PI / spikes;
-        
-        // Tambahkan efek Glow pada garis bintang
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "#00d4ff";
-        
-        // Buat Gradasi untuk garis bintang
-        let starGrad = ctx.createLinearGradient(x - 85, y - 85, x + 85, y + 85);
-        starGrad.addColorStop(0, "#00f2ff"); // Cyan terang
-        starGrad.addColorStop(1, "#0062ff"); // Biru kuat
-
-        ctx.beginPath(); 
-        ctx.moveTo(x, y - outer);
-        for(let i = 0; i < spikes; i++){
-            ctx.lineTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer); rot += step;
-            ctx.lineTo(x + Math.cos(rot) * inner, y + Math.sin(rot) * inner); rot += step;
+        let rot=Math.PI/2*3, step=Math.PI/spikes;
+        ctx.beginPath(); ctx.moveTo(x, y-outer);
+        for(let i=0; i<spikes; i++){
+            ctx.lineTo(x+Math.cos(rot)*outer, y+Math.sin(rot)*outer); rot+=step;
+            ctx.lineTo(x+Math.cos(rot)*inner, y+Math.sin(rot)*inner); rot+=step;
         }
-        ctx.lineTo(x, y - outer); 
-        ctx.closePath();
-        
-        ctx.lineWidth = 8; // Garis agak tebal biar neonnya berasa
-        ctx.strokeStyle = starGrad;
-        ctx.stroke();
-        
-        // Reset Shadow biar nggak ganggu teks
-        ctx.shadowBlur = 0;
+        ctx.lineTo(x, y-outer); ctx.closePath();
+        ctx.lineWidth=8; ctx.strokeStyle='#ffffff'; ctx.stroke();
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 4. ANGKA STAR (TETAP GLOW PUTIH BIAR KONTRAS DI ATAS BIRU)
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#ffffff";
-    ctx.fillStyle = "#ffffff";
+    // 5. ANGKA STAR - KUNING EMAS SOLID (HI-RES)
+    // Tanpa bayangan/glow agar tajam saat di-post
+    ctx.fillStyle = "#ffcc00"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
-    
     ctx.fillText("1", 315, 470); 
     ctx.fillText("5", 485, 470); 
     ctx.fillText("8", 315, 595); 
     ctx.fillText("4", 485, 595); 
-    
-    ctx.shadowBlur = 0;
 
-    // 4. ANGKA STAR DENGAN EFEK GLOW (BERSINAR)
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#ffffff";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 55px Arial";
-    ctx.textAlign = "center";
-    
-    ctx.fillText("1", 315, 470); 
-    ctx.fillText("5", 485, 470); 
-    ctx.fillText("8", 315, 595); 
-    ctx.fillText("4", 485, 595); 
-    
-    ctx.shadowBlur = 0; // Matikan glow untuk elemen lain
-
-    // 5. ASSET & LABEL SHIO
+    // 6. ASSET (MONYET & POHON PISANG)
     if (shioImg) ctx.drawImage(shioImg, 70, 580, 260, 260); 
     if (pisangImg) ctx.drawImage(pisangImg, 520, 500, 240, 340); 
 
+    // 7. LABEL SHIO
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(110, 535, 180, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
     ctx.fillText("SHIO MONYET", 200, 565);
 
-    // 6. KOTAK PANTUN
+    // 8. KOTAK PANTUN
     const pY = 930;
     ctx.fillStyle = "black"; 
     ctx.beginPath(); ctx.roundRect(65, pY, 670, 135, 20); ctx.fill();
