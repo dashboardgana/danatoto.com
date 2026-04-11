@@ -537,6 +537,7 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
+    // 1. KANVAS 800x1100
     canvas.width = 800;
     canvas.height = 1100;
 
@@ -565,7 +566,7 @@ async function renderSyair() {
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 1. HEADER & LOGO
+    // 2. HEADER & LOGO
     ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
@@ -573,7 +574,7 @@ async function renderSyair() {
     ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 65);
     if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
 
-    // 2. KOTAK ANGKA
+    // 3. KOTAK ANGKA UTAMA
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 15); ctx.fill();
@@ -588,8 +589,8 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 3. STAR & NOMOR (SIMETRIS)
-    const cx = 350, cy = 540; 
+    // 4. STAR (KEMBALI KE TENGAH: 400)
+    const cx = 400, cy = 550; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
         ctx.beginPath(); ctx.moveTo(x, y-outer);
@@ -600,37 +601,38 @@ async function renderSyair() {
         ctx.lineTo(x, y-outer); ctx.closePath();
         ctx.lineWidth=6; ctx.strokeStyle='#ffffff'; ctx.stroke();
     }
-    drawStar(cx, cy, 5, 80, 35);
+    drawStar(cx, cy, 5, 85, 38);
 
+    // 5. NOMOR STAR (DIAGONAL RAPI & TIDAK MENEMPEL KOTAK)
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 55px Arial";
-    ctx.fillText("1", 270, 480); // Kiri Atas
-    ctx.fillText("5", 430, 480); // Kanan Atas
-    ctx.fillText("8", 270, 630); // Kiri Bawah
-    ctx.fillText("4", 430, 630); // Kanan Bawah
+    // Kiri (310) | Kanan (490)
+    ctx.fillText("1", 310, 500); 
+    ctx.fillText("5", 490, 500); 
+    ctx.fillText("8", 310, 640); 
+    ctx.fillText("4", 490, 640); 
 
-    // 4. ASSET BESAR & SEJAJAR (NAIK KE ATAS)
-    // Monyet (Y: 580)
-    if (shioImg) ctx.drawImage(shioImg, 80, 580, 250, 250); 
-    // Pohon Pisang (Y: 480, Tinggi: 350) -> Berhenti di Y: 830
-    if (pisangImg) ctx.drawImage(pisangImg, 480, 480, 260, 350); 
+    // 6. ASSET (MONYET & POHON PISANG - BESAR & SEJAJAR)
+    // Kaki keduanya sejajar di Y: 860
+    if (shioImg) ctx.drawImage(shioImg, 70, 590, 270, 270); 
+    if (pisangImg) ctx.drawImage(pisangImg, 460, 480, 280, 380); 
 
-    // 5. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(115, 535, 170, 45, 10); ctx.fill();
+    // 7. LABEL SHIO
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(110, 545, 180, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 18px Arial";
-    ctx.fillText("SHIO MONYET", 200, 565);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
+    ctx.fillText("SHIO MONYET", 200, 575);
 
-    // 6. KOTAK PANTUN (Y: 920)
-    const pY = 920; 
+    // 8. KOTAK PANTUN (Y: 940 - AMAN DARI POHON)
+    const pY = 940; 
     ctx.fillStyle = "black"; 
-    ctx.beginPath(); ctx.roundRect(65, pY, 670, 140, 20); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(65, pY, 670, 135, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
-    const l1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
-    const l2 = "Angka keluar jangan sembarang hoki datang menghampiri.";
-    ctx.fillText(l1, 400, pY + 55);
-    ctx.fillText(l2, 400, pY + 105);
+    const line1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
+    const line2 = "Angka keluar jangan sembarang hoki datang menghampiri.";
+    ctx.fillText(line1, 400, pY + 55);
+    ctx.fillText(line2, 400, pY + 100);
 }
      function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
