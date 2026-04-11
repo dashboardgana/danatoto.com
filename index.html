@@ -537,7 +537,7 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Setting Kanvas Tetap
+    // 1. SETTING KANVAS
     canvas.width = 800;
     canvas.height = 1100;
 
@@ -546,6 +546,7 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
+    // 2. LOAD SEMUA ASSET (PASTIKAN LINK AKTIF)
     const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -566,7 +567,7 @@ async function renderSyair() {
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 1. HEADER & LOGO
+    // 3. HEADER & LOGO
     ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
@@ -574,7 +575,7 @@ async function renderSyair() {
     ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 65);
     if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
 
-    // 2. KOTAK ANGKA (DIPRESISI KEMBALI)
+    // 4. KOTAK ANGKA (BBFS, AM, TWIN, CB)
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 15); ctx.fill();
@@ -589,62 +590,52 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 3. STAR & NOMOR (AUDIT TOTAL)
-    const cx = 400, cy = 550; // Posisi pusat bintang dinaikkan
-    function drawStarNeon(x, y, spikes, outer, inner) {
-        let rot = Math.PI / 2 * 3, step = Math.PI / spikes;
-        ctx.beginPath(); ctx.moveTo(x, y - outer);
-        for (let i = 0; i < spikes; i++) {
-            ctx.lineTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer); rot += step;
-            ctx.lineTo(x + Math.cos(rot) * inner, y + Math.sin(rot) * inner); rot += step;
+    // 5. STAR DIAMOND & ANGKA (KOORDINAT MATI - RAPI)
+    const cx = 400, cy = 560; 
+    function drawStar(x, y, spikes, outer, inner) {
+        let rot=Math.PI/2*3, step=Math.PI/spikes;
+        ctx.beginPath(); ctx.moveTo(x, y-outer);
+        for(let i=0; i<spikes; i++){
+            ctx.lineTo(cx+Math.cos(rot)*outer, cy+Math.sin(rot)*outer); rot+=step;
+            ctx.lineTo(cx+Math.cos(rot)*inner, cy+Math.sin(rot)*inner); rot+=step;
         }
-        ctx.lineTo(x, y - outer); ctx.closePath();
-        ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 20;
-        ctx.lineWidth = 6; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+        ctx.lineTo(x, y-outer); ctx.closePath();
+        ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 15;
+        ctx.lineWidth=5; ctx.strokeStyle='#ffffff'; ctx.stroke();
         ctx.shadowBlur = 0;
     }
-    // Ukuran bintang diperbesar (90px) agar angka masuk ke sela-sela
-    drawStarNeon(cx, cy, 4, 90, 35);
+    drawStar(cx, cy, 5, 85, 35); // Ukuran bintang ideal
 
-    // Nomor Star: Posisinya sekarang berada di diagonal sela-sela kelopak (Persis Contoh)
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 52px Arial";
-    ctx.fillText("8", 315, 485); // Kiri Atas
-    ctx.fillText("2", 485, 485); // Kanan Atas
-    ctx.fillText("4", 315, 635); // Kiri Bawah
-    ctx.fillText("0", 485, 635); // Kanan Bawah
+    // SUSUNAN ANGKA (Diagonal Cantik & Tidak Tabrakan)
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 55px Arial";
+    ctx.fillText("8", 300, 480); // Kiri Atas
+    ctx.fillText("2", 500, 480); // Kanan Atas
+    ctx.fillText("4", 300, 650); // Kiri Bawah
+    ctx.fillText("0", 500, 650); // Kanan Bawah
 
-    // 4. ASSET SHIO & POHON PISANG (FIX Kaki Kepotong)
-    // Monyet diperbesar skalanya (200x200)
-    if (shioImg) ctx.drawImage(shioImg, 85, 690, 200, 200); 
-    // Pohon pisang dinaikkan jauh ke atas (Y: 630) dan diperbesar skalanya (200x220)
-    if (pisangImg) ctx.drawImage(pisangImg, 515, 630, 200, 220); 
+    // 6. ASSET UTAMA (MONYET & POHON PISANG - BESAR & JELAS)
+    if (shioImg) ctx.drawImage(shioImg, 80, 710, 210, 210); 
+    // Y dinaikkan ke 630 & Tinggi ditambah agar pohon terlihat tinggi menjulang (Tidak Kepotong)
+    if (pisangImg) ctx.drawImage(pisangImg, 510, 630, 220, 260); 
 
-    // 5. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 640, 160, 45, 10); ctx.fill();
+    // 7. LABEL SHIO
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 665, 170, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 19px Arial";
-    ctx.fillText("SHIO MONYET", 180, 670);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
+    ctx.fillText("SHIO MONYET", 185, 695);
 
-    // 6. KOTAK PANTUN (TEKS DI DALAM - ANTI MELUBER)
-    const pY = 910; // Kotak dinaikkan agar ada jarak napas
-    ctx.fillStyle = "rgba(5, 10, 25, 1)";
-    ctx.beginPath(); ctx.roundRect(65, pY, 670, 140, 20); ctx.fill();
+    // 8. KOTAK PANTUN (GELAP SOLID - TEKS RAPI DI DALAM)
+    const pY = 935;
+    ctx.fillStyle = "rgba(0, 0, 0, 1)"; 
+    ctx.beginPath(); ctx.roundRect(65, pY, 670, 135, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
-    // Teks dipisah manual jadi 2 baris agar PASTI muat
-    const line1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
-    const line2 = "Angka keluar jangan sembarang hoki datang menghampiri.";
-    ctx.fillText(line1, 400, pY + 55);
-    ctx.fillText(line2, 400, pY + 105);
+    const baris1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
+    const baris2 = "Angka keluar jangan sembarang hoki datang menghampiri.";
+    ctx.fillText(baris1, 400, pY + 50);
+    ctx.fillText(baris2, 400, pY + 100);
 }
-     function exportSyair() {
-        const canvas = document.getElementById('canvasSyair');
-        const link = document.createElement('a');
-        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    }
 
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
