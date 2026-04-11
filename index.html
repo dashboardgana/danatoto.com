@@ -603,12 +603,27 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 80, 35);
 
-    // ANGKA STAR: Kiri (310), Kanan (490) - Tegak lurus seperti keinginan Bos
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 55px Arial";
-    ctx.fillText("1", 310, 460); // Kiri Atas
-    ctx.fillText("5", 490, 460); // Kanan Atas
-    ctx.fillText("8", 310, 630); // Kiri Bawah
-    ctx.fillText("4", 490, 630); // Kanan Bawah
+   // ANGKA STAR (RAPI & SIMETRIS)
+ctx.fillStyle = "#ffffff";
+ctx.font = "bold 55px Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+// Jarak dari pusat bintang
+const offsetX = 140;
+const offsetY = 120;
+
+// Atas kiri
+ctx.fillText("1", cx - offsetX, cy - offsetY);
+
+// Atas kanan
+ctx.fillText("5", cx + offsetX, cy - offsetY);
+
+// Bawah kiri
+ctx.fillText("8", cx - offsetX, cy + offsetY);
+
+// Bawah kanan
+ctx.fillText("4", cx + offsetX, cy + offsetY);
 
     // 5. ASSET (MONYET & POHON PISANG - DIJAMIN UTUH)
     if (shioImg) ctx.drawImage(shioImg, 100, 710, 200, 200); 
