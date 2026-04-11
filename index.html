@@ -537,7 +537,7 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Setting Kanvas Tetap
+    // 1. SETTING DASAR (800x1100)
     canvas.width = 800;
     canvas.height = 1100;
 
@@ -546,6 +546,7 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
+    // 2. LOAD SEMUA ASSET GAMBAR
     const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -563,10 +564,11 @@ async function renderSyair() {
         loadImg(urlBG), loadImg(urlLogo), loadImg(urlMonyet), loadImg(urlPisang)
     ]);
 
+    // 3. GAMBAR BACKGROUND
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 1. HEADER & LOGO
+    // 4. HEADER TANGGAL & LOGO
     ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
@@ -574,7 +576,7 @@ async function renderSyair() {
     ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 65);
     if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
 
-    // 2. KOTAK ANGKA (DIPRESISI KEMBALI)
+    // 5. GAMBAR EMPAT KOTAK ANGKA
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 15); ctx.fill();
@@ -589,52 +591,55 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 3. STAR & NOMOR (AUDIT TOTAL)
-    const cx = 400, cy = 550; // Posisi pusat bintang dinaikkan
-    function drawStarNeon(x, y, spikes, outer, inner) {
-        let rot = Math.PI / 2 * 3, step = Math.PI / spikes;
-        ctx.beginPath(); ctx.moveTo(x, y - outer);
-        for (let i = 0; i < spikes; i++) {
-            ctx.lineTo(x + Math.cos(rot) * outer, y + Math.sin(rot) * outer); rot += step;
-            ctx.lineTo(x + Math.cos(rot) * inner, y + Math.sin(rot) * inner); rot += step;
+    // 6. STAR DIAMOND & ANGKA (KOORDINAT MATI - PASTI RAPI KEK CONTOH)
+    const cx = 400, cy = 560; // Titik tengah bintang
+    function drawNeonStar(x, y, spikes, outer, inner) {
+        let rot=Math.PI/2*3, step=Math.PI/spikes;
+        ctx.beginPath(); ctx.moveTo(x, y-outer);
+        for(let i=0; i<spikes; i++){
+            ctx.lineTo(x+Math.cos(rot)*outer, y+Math.sin(rot)*outer); rot+=step;
+            ctx.lineTo(x+Math.cos(rot)*inner, y+Math.sin(rot)*inner); rot+=step;
         }
-        ctx.lineTo(x, y - outer); ctx.closePath();
-        ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 20;
-        ctx.lineWidth = 6; ctx.strokeStyle = '#ffffff'; ctx.stroke();
-        ctx.shadowBlur = 0;
+        ctx.lineTo(x, y-outer); ctx.closePath();
+        ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 10;
+        ctx.lineWidth=5; ctx.strokeStyle='#ffffff'; ctx.stroke();
+        ctx.shadowBlur = 0; // Reset shadow biar teks gak buram
     }
-    // Ukuran bintang diperbesar (90px) agar angka masuk ke sela-sela
-    drawStarNeon(cx, cy, 4, 90, 35);
+    // rOuter diperkecil sedikit agar angka di luar tidak berantakan
+    drawNeonStar(cx, cy, 5, 75, 30);
 
-    // Nomor Star: Posisinya sekarang berada di diagonal sela-sela kelopak (Persis Contoh)
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 52px Arial";
-    ctx.fillText("8", 315, 485); // Kiri Atas
-    ctx.fillText("2", 485, 485); // Kanan Atas
-    ctx.fillText("4", 315, 635); // Kiri Bawah
-    ctx.fillText("0", 485, 635); // Kanan Bawah
+    // SUSUNAN ANGKA STAR (KOORDINAT DIKUNCI PASTI - TIDAK LARI)
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 50px Arial";
+    // Posisi Atas (Persis Contoh image_20.png)
+    ctx.fillText("1", 400, 465); // Angka 1 di Atas
+    // Posisi Diagonal (Persis Contoh image_20.png)
+    ctx.fillText("5", 515, 495); // Angka 5 di Kanan-Atas (Sela-sela kelopak)
+    ctx.fillText("8", 285, 625); // Angka 8 di Kiri-Bawah (Sela-sela kelopak)
+    ctx.fillText("4", 515, 625); // Angka 4 di Kanan-Bawah (Sela-sela kelopak)
 
-    // 4. ASSET SHIO & POHON PISANG (FIX Kaki Kepotong)
-    if (shioImg) ctx.drawImage(shioImg, 85, 690, 200, 200); 
-    // Koordinat Y pohon pisang dinaikkan ke 630 (Aman 100% dari kotak pantun)
-    if (pisangImg) ctx.drawImage(pisangImg, 515, 630, 200, 220); 
+    // 7. ASSET (SHIO MONYET & POHON PISANG - SEJAJAR & AMAN)
+    if (shioImg) ctx.drawImage(shioImg, 80, 720, 180, 180); 
+    // Pohon pisang dinaikkan ke Y: 650 supaya kakinya AMAN dari kotak pantun
+    if (pisangImg) ctx.drawImage(pisangImg, 530, 650, 180, 200); 
 
-    // 5. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 640, 160, 45, 10); ctx.fill();
+    // 8. LABEL SHIO
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 680, 150, 40, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 19px Arial";
-    ctx.fillText("SHIO MONYET", 180, 670);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 17px Arial";
+    ctx.fillText("SHIO MONYET", 175, 707);
 
-    // 6. KOTAK PANTUN (TEKS DI DALAM - ANTI MELUBER)
-    const pY = 910; 
-    ctx.fillStyle = "rgba(5, 10, 25, 1)";
-    ctx.beginPath(); ctx.roundRect(65, pY, 670, 140, 20); ctx.fill();
+    // 9. KOTAK PANTUN (SANGAT RAPI - ANTI MELUBER)
+    const pY = 945; // Kotak baru mulai di sini
+    ctx.fillStyle = "rgba(5, 10, 25, 1)"; // Warna gelap solid biar elegant
+    ctx.beginPath(); ctx.roundRect(65, pY, 670, 130, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
+    // Teks dipotong manual jadi 2 baris agar PASTI muat
     const line1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
     const line2 = "Angka keluar jangan sembarang hoki datang menghampiri.";
-    ctx.fillText(line1, 400, pY + 55);
-    ctx.fillText(line2, 400, pY + 105);
+    ctx.fillText(line1, 400, pY + 50);
+    ctx.fillText(line2, 400, pY + 95);
 }
 
     // FUNGSI UNTUK COPY SATU PER SATU
