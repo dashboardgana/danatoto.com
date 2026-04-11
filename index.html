@@ -566,7 +566,7 @@ async function renderSyair() {
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER
+    // 2. HEADER & LOGO (NAIK KE ATAS)
     ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(225, 15, 350, 60, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
@@ -574,7 +574,7 @@ async function renderSyair() {
     ctx.font = "bold 30px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 55);
     if (logo) ctx.drawImage(logo, 290, 85, 220, 65);
 
-    // 3. KOTAK ANGKA (DINAIKKAN KE ATAS)
+    // 3. KOTAK ANGKA (POSISI ATAS AGAR LEGA)
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -584,13 +584,12 @@ async function renderSyair() {
         ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial";
         ctx.fillText(value, x + 155, y + 95);
     };
-    // Titik Y diturunkan dari 190 ke 165
-    drawBox(60, 165, "BBFS", "0246912"); 
-    drawBox(430, 165, "ANGKA MAIN", item.am);
-    drawBox(60, 295, "TWIN", item.twin);
-    drawBox(430, 295, "COLOK BEBAS", item.cb);
+    drawBox(60, 160, "BBFS", "0246912"); 
+    drawBox(430, 160, "ANGKA MAIN", item.am);
+    drawBox(60, 285, "TWIN", item.twin);
+    drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG TENGAH (POSISI STABIL)
+    // 4. BINTANG TENGAH
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -604,20 +603,22 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (PRESEISI DI SUDUT DIAGONAL)
+    // 5. ANGKA STAR (PRESEISI DI SUDUT)
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
-    // Diagonal rapi masuk ke sela-sela sudut bintang
-    ctx.fillText("1", 315, 470); // Kiri Atas
-    ctx.fillText("5", 485, 470); // Kanan Atas
-    ctx.fillText("8", 315, 595); // Kiri Bawah
-    ctx.fillText("4", 485, 595); // Kanan Bawah
+    ctx.fillText("1", 315, 470); 
+    ctx.fillText("5", 485, 470); 
+    ctx.fillText("8", 315, 595); 
+    ctx.fillText("4", 485, 595); 
 
-    // 6. ASSET (MONYET & POHON PISANG - BESAR & SEJAJAR)
-    // Kaki keduanya sejajar di Y: 840
-    if (shioImg) ctx.drawImage(shioImg, 75, 580, 270, 270); 
-    if (pisangImg) ctx.drawImage(pisangImg, 465, 470, 280, 370); 
+    // 6. ASSET (POHON PISANG DI SUDUT KANAN & MONYET DI KIRI)
+    // Monyet: Tetap di kiri
+    if (shioImg) ctx.drawImage(shioImg, 70, 580, 260, 260); 
+    
+    // Pohon Pisang: Digeser ke pojok kanan (X: 520) agar tidak menutupi angka 4
+    // Ukuran disesuaikan agar tidak terpotong bagian atasnya
+    if (pisangImg) ctx.drawImage(pisangImg, 520, 500, 240, 340); 
 
     // 7. LABEL SHIO
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(110, 535, 180, 45, 10); ctx.fill();
