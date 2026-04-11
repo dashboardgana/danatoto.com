@@ -595,7 +595,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", item.twin);
     drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG TENGAH (PUTIH SOLID)
+    // 4. BINTANG TENGAH (WARNA EMAS TERANG)
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -605,12 +605,14 @@ async function renderSyair() {
             ctx.lineTo(x+Math.cos(rot)*inner, y+Math.sin(rot)*inner); rot+=step;
         }
         ctx.lineTo(x, y-outer); ctx.closePath();
-        ctx.lineWidth=8; ctx.strokeStyle='#ffffff'; ctx.stroke();
+        ctx.lineWidth=8; 
+        ctx.strokeStyle='#FFD700'; // WARNA EMAS BIAR CANTIK
+        ctx.stroke();
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (KUNING EMAS SOLID)
-    ctx.fillStyle = "#ffcc00"; 
+    // 5. ANGKA STAR (KUNING CERAH SOLID)
+    ctx.fillStyle = "#FFFF00"; // WARNA KUNING CERAH BIAR COCOK
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
     ctx.fillText("1", 315, 470); 
