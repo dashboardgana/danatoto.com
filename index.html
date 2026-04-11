@@ -603,27 +603,21 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 80, 35);
 
-   // ANGKA STAR (RAPI & SIMETRIS)
+// ANGKA STAR (FINAL FIX - MIRIP CONTOH 100%)
 ctx.fillStyle = "#ffffff";
-ctx.font = "bold 55px Arial";
+ctx.font = "bold 45px Arial";
 ctx.textAlign = "center";
 ctx.textBaseline = "middle";
 
-// Jarak dari pusat bintang
-const offsetX = 140;
-const offsetY = 120;
+// beda jarak X & Y (ini kunci biar mirip)
+const offsetX = 130; // kiri kanan lebih lebar
+const offsetY = 90;  // atas bawah lebih dekat
 
-// Atas kiri
-ctx.fillText("1", cx - offsetX, cy - offsetY);
-
-// Atas kanan
-ctx.fillText("5", cx + offsetX, cy - offsetY);
-
-// Bawah kiri
-ctx.fillText("8", cx - offsetX, cy + offsetY);
-
-// Bawah kanan
-ctx.fillText("4", cx + offsetX, cy + offsetY);
+// posisi angka
+ctx.fillText("1", cx - offsetX, cy - offsetY); // kiri atas
+ctx.fillText("5", cx + offsetX, cy - offsetY); // kanan atas
+ctx.fillText("8", cx - offsetX, cy + offsetY); // kiri bawah
+ctx.fillText("4", cx + offsetX, cy + offsetY); // kanan bawah
 
     // 5. ASSET (MONYET & POHON PISANG - DIJAMIN UTUH)
     if (shioImg) ctx.drawImage(shioImg, 100, 710, 200, 200); 
