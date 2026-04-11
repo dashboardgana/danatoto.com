@@ -546,12 +546,15 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
+    // LINK BACKGROUND BESAR DARI DRIVE BOS
+    const urlBG = "https://lh3.googleusercontent.com/u/0/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe=w800-h1100-iv1"; 
+    
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
-    // Link background kotak syair dari Drive 
-    const urlBGSyair = "https://lh3.googleusercontent.com/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe"; 
+    
+    // Link background kotak syair tetap yang sebelumnya
+    const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
 
     const loadImg = (url) => new Promise((resolve) => {
         const img = new Image();
@@ -566,6 +569,7 @@ async function renderSyair() {
     ]);
 
     ctx.clearRect(0, 0, 800, 1100);
+    // Gambar background besar (Drive)
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
     // 2. HEADER & LOGO
@@ -624,18 +628,17 @@ async function renderSyair() {
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
     ctx.fillText("SHIO MONYET", 160, 565);
 
-    // 8. KOTAK PANTUN DENGAN BACKGROUND BARU 
+    // 8. KOTAK PANTUN DENGAN BACKGROUND KOTAK
     const pY = 930;
     const pW = 670;
     const pH = 135;
     const pX = 65;
 
-    // Gambar background di dalam area kotak
     if (bgSyair) {
         ctx.save();
         ctx.beginPath();
         ctx.roundRect(pX, pY, pW, pH, 20);
-        ctx.clip(); // Potong gambar agar sesuai bentuk kotak
+        ctx.clip();
         ctx.drawImage(bgSyair, pX, pY, pW, pH);
         ctx.restore();
     } else {
@@ -643,10 +646,8 @@ async function renderSyair() {
         ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
     }
 
-    // Border Kotak Pantun
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
-    // Teks Pantun
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
     ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 55);
     ctx.fillText("Angka keluar jangan sembarang hoki datang menghampiri.", 400, pY + 100);
