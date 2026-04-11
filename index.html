@@ -546,7 +546,7 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // Link Gambar
+    // Link Gambar (Pastikan link ini stabil)
     const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -564,7 +564,7 @@ async function renderSyair() {
         loadImg(urlBG), loadImg(urlLogo), loadImg(urlMonyet), loadImg(urlPisang)
     ]);
 
-    // WAJIB: Bersihkan kanvas dulu
+    // WAJIB Bersihkan kanvas dulu
     ctx.clearRect(0, 0, 800, 1100);
 
     // 1. BACKGROUND (WAJIB PERTAMA)
@@ -595,9 +595,9 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 5. BINTANG KUNING
-    const cx = 400, cy = 565; 
-    function drawStar(x, y, spikes, outer, inner) {
+    // 5. STAR DIAMOND PUTIH NEON (GANTI KUNING, PRESIKI BERSIH)
+    const cx = 400, cy = 560; 
+    function drawNeonStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
         ctx.beginPath(); ctx.moveTo(x, y-outer);
         for(let i=0; i<spikes; i++){
@@ -605,43 +605,41 @@ async function renderSyair() {
             ctx.lineTo(cx+Math.cos(rot)*inner, cy+Math.sin(rot)*inner); rot+=step;
         }
         ctx.lineTo(x, y-outer); ctx.closePath();
-        ctx.lineWidth=6; ctx.strokeStyle='#ffeb3b'; ctx.stroke();
+        // EFEK GLOW PUTIH NEON
+        ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 15;
+        ctx.lineWidth=5; ctx.strokeStyle='#ffffff'; ctx.stroke();
+        ctx.shadowBlur = 0; // Reset shadow biar teks gak buram
     }
-    // rOuter diperkecil sedikit agar angka di luar tidak berantakan
-    drawStar(cx, cy, 5, 75, 30);
+    drawNeonStar(cx, cy, 5, 80, 35); // rOuter=80
 
-    // 4. NOMOR STAR (FIXED POSITION & KECIL - SERAPI CONTOH)
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 45px Arial"; // Skala font diperkecil
+    // NOMOR STAR - POSISI DIKUNCI MATI
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 45px Arial";
     ctx.fillText("89", 400, 465); // Atas
-    ctx.fillText("70", 400, 715); // Bawah
-    ctx.fillText("11", 535, 575); // Kanan
-    ctx.fillText("41", 265, 575); // Kiri
+    ctx.fillText("70", 400, 705); // Bawah
+    ctx.fillText("11", 545, 575); // Kanan
+    ctx.fillText("41", 245, 575); // Kiri
 
-    // 5. ASSET (SHIO & POHON PISANG - SEJAJAR & TIDAK KEPOTONG)
-    // Skala diperkecil drastis dan koordinat y dinaikkan agar rapi di atas kotak pantun
-    if (shioImg) ctx.drawImage(shioImg, 85, 735, 180, 180); 
-    if (pisangImg) ctx.drawImage(pisangImg, 530, 680, 180, 200); 
+    // 6. ASSET (SHIO & POHON PISANG - SEJAJAR & ANTI KEPOTONG)
+    if (shioImg) ctx.drawImage(shioImg, 80, 715, 210, 210); 
+    if (pisangImg) ctx.drawImage(pisangImg, 510, 670, 220, 220); // Posisi dinaikkan jauh di atas kotak pantun
 
-    // 6. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(105, 685, 140, 40, 10); ctx.fill();
+    // 7. LABEL SHIO
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 665, 170, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 16px Arial";
-    ctx.fillText("SHIO MONYET", 175, 712);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
+    ctx.fillText("SHIO MONYET", 185, 695);
 
-    // 7. KOTAK PANTUN (SANGAT RAPI, TIDAK MELUBER, GANTI WARNA GELAP)
-    const pY = 960;
-    ctx.fillStyle = "rgba(5, 10, 25, 0.98)";
+    // 8. KOTAK PANTUN (GELAP & MEWAH, TEKS AMAN)
+    const pY = 955;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.95)"; // Warna gelap solid
     ctx.beginPath(); ctx.roundRect(65, pY, 670, 115, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
-    ctx.fillStyle = "#ffffff"; 
-    ctx.font = "bold 21px Arial"; // Font diperkecil agar tidak meluber
-    // Teks dipisah baris manual (AUTO-WRAP)
-    const baris1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
-    const baris2 = "Angka keluar jangan sembarang hoki datang.";
-    
-    ctx.fillText(baris1, 400, pY + 45);
-    ctx.fillText(baris2, 400, pY + 90);
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
+    const l1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
+    const l2 = "Angka keluar jangan sembarang hoki datang.";
+    ctx.fillText(l1, 400, pY + 48);
+    ctx.fillText(l2, 400, pY + 92);
     
     // HAPUS TEKS NYASAR (Babi Hutan dll)
     ctx.fillStyle = "rgba(0,0,0,0)";
