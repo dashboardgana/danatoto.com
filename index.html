@@ -537,15 +537,18 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Dimensi Tetap
+    // Dimensi Kanvas Standard & Tinggi (High-Res)
     canvas.width = 800;
     canvas.height = 1100;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    
+    // Data paketSyair Bos (Pakai data yang sudah ada di dashboard Bos)
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "0269", twin: "22/66", cb: "2 / 6" };
 
+    // Link Gambar (Pastikan link ini stabil)
     const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -563,24 +566,26 @@ async function renderSyair() {
         loadImg(urlBG), loadImg(urlLogo), loadImg(urlMonyet), loadImg(urlPisang)
     ]);
 
+    // WAJIB Bersihkan kanvas dulu biar gak numpuk
     ctx.clearRect(0, 0, 800, 1100);
 
-    // 1. BACKGROUND
+    // 1. BACKGROUND (HARUS DI BAWAH SENDIRI)
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
+    else { ctx.fillStyle = "#050a14"; ctx.fillRect(0, 0, 800, 1100); } // Fallback jika BG gagal load
 
     // 2. HEADER TANGGAL
-    ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
     ctx.font = "bold 32px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 65);
     
-    // 3. LOGO
+    // 3. LOGO (Presisi di tengah)
     if (logo) ctx.drawImage(logo, 290, 100, 220, 70);
 
-    // 4. KOTAK NOMOR
+    // 4. KOTAK ANGKA (DIBUAT SIMETRIS BANGET)
     const drawBox = (x, y, label, value) => {
-        ctx.fillStyle = "rgba(5, 12, 35, 0.95)";
+        ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 15); ctx.fill();
         ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
         ctx.fillStyle = "#00d4ff"; ctx.font = "bold 26px Arial";
@@ -593,8 +598,8 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 5. BINTANG & NOMOR (SIMETRIS & RAPI)
-    const cx = 400, cy = 570, rOuter = 85; 
+    // 5. BINTANG & NOMOR (ANALISA & KUNCI KOORDINAT MATI)
+    const cx = 400, cy = 570; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
         ctx.beginPath(); ctx.moveTo(x, y-outer);
@@ -605,40 +610,43 @@ async function renderSyair() {
         ctx.lineTo(x, y-outer); ctx.closePath();
         ctx.lineWidth=6; ctx.strokeStyle='#ffeb3b'; ctx.stroke();
     }
-    drawStar(cx, cy, 5, rOuter, 40);
+    drawStar(cx, cy, 5, 80, 35); // rOuter=80 biar rpi
 
-    // ANGKA MENEMPEL DI UJUNG BINTANG
+    // NOMOR STAR - POSISI DIKUNCI MATI BIAR SIMETRIS
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 48px Arial";
-    ctx.fillText("89", cx, cy - rOuter - 25);      // Atas
-    ctx.fillText("70", cx, cy + rOuter + 65);      // Bawah
-    ctx.fillText("11", cx + rOuter + 75, cy + 15); // Kanan
-    ctx.fillText("41", cx - rOuter - 75, cy + 15); // Kiri
+    ctx.fillText("89", 400, 465); // Atas
+    ctx.fillText("70", 400, 715); // Bawah
+    ctx.fillText("11", 555, 585); // Kanan
+    ctx.fillText("41", 245, 585); // Kiri
 
-    // 6. ASSET (SHIO & POHON PISANG - SEJAJAR & AMAN)
-    if (shioImg) ctx.drawImage(shioImg, 80, 725, 200, 200); 
-    // Pohon pisang dinaikkan koordinat Y-nya agar menjauh dari kotak pantun
-    if (pisangImg) ctx.drawImage(pisangImg, 520, 680, 220, 220); 
+    // 6. ASSET (MONYET & POHON PISANG - SEJAJAR & ANTI KEPOTONG)
+    // Monyet & Pisang berdiri bebas di atas kotak pantun bawah
+    if (shioImg) ctx.drawImage(shioImg, 80, 720, 210, 210); 
+    // Pohon Pisang dinaikkan drastis (y:670) dan diperkecil skala (220) agar utuh
+    if (pisangImg) ctx.drawImage(pisangImg, 510, 670, 220, 220); 
 
     // 7. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 675, 160, 45, 10); ctx.fill();
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 665, 170, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-    ctx.fillText("SHIO MONYET", 180, 705);
+    ctx.fillText("SHIO MONYET", 185, 695);
 
-    // 8. KOTAK PANTUN (GANTI WARNA GELAP & TEKS RAPI 2 BARIS)
-    const pY = 960;
-    ctx.fillStyle = "rgba(5, 10, 25, 0.98)";
-    ctx.beginPath(); ctx.roundRect(65, pY, 670, 115, 20); ctx.fill();
+    // 8. KOTAK PANTUN (SANGAT RAPI, GANTI WARNA BIAR MEWAH, TEKS AMAN)
+    const pY = 955;
+    ctx.fillStyle = "rgba(5, 10, 25, 0.98)"; // Warna gelap solid biar elegant
+    ctx.beginPath(); ctx.roundRect(65, pY, 670, 120, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
-    // Teks dipisah manual jadi 2 baris agar tidak keluar kotak
-    ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 48);
-    ctx.fillText("Angka keluar jangan sembarang, Semoga hoki datang menghampiri.", 400, pY + 92);
-
-    // Hapus total teks nyasar jika masih ada di memori
+    ctx.fillStyle = "#ffffff"; 
+    ctx.font = "bold 22px Arial";
+    // Teks dipisah baris manual (AUTO-WRAP) biar pas di tengah kotak dan TIDAK MELUBER
+    ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 45);
+    ctx.fillText("Angka keluar jangan sembarang,", 400, pY + 75);
+    ctx.fillText("Semoga hoki datang menghampiri.", 400, pY + 105);
+    
+    // HAPUS TEKS NYASAR (Babi Hutan dll)
     ctx.fillStyle = "rgba(0,0,0,0)";
-    ctx.fillText("", 400, 915);
+    ctx.fillText("", 400, 910);
 }
     function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
