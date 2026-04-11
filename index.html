@@ -537,7 +537,7 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Dimensi Kanvas
+    // Dimensi Tetap
     canvas.width = 800;
     canvas.height = 1100;
 
@@ -546,7 +546,6 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "0269", twin: "22/66", cb: "2 / 6" };
 
-    // Link Gambar
     const urlBG = "https://i.ibb.co/XfXmY8W/bg-new.jpg"; 
     const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -564,20 +563,13 @@ async function renderSyair() {
         loadImg(urlBG), loadImg(urlLogo), loadImg(urlMonyet), loadImg(urlPisang)
     ]);
 
-    // WAJIB: Bersihkan kanvas dulu
     ctx.clearRect(0, 0, 800, 1100);
 
-    // 1. BACKGROUND (WAJIB PERTAMA)
-    if (bg) {
-        ctx.drawImage(bg, 0, 0, 800, 1100);
-    } else {
-        // Jika BG gagal muat, kasih warna gelap agar tulisan kelihatan
-        ctx.fillStyle = "#050a14";
-        ctx.fillRect(0, 0, 800, 1100);
-    }
+    // 1. BACKGROUND
+    if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
     // 2. HEADER TANGGAL
-    ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
     ctx.beginPath(); ctx.roundRect(225, 20, 350, 65, 15); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
@@ -588,7 +580,7 @@ async function renderSyair() {
 
     // 4. KOTAK NOMOR
     const drawBox = (x, y, label, value) => {
-        ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
+        ctx.fillStyle = "rgba(5, 12, 35, 0.95)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 125, 15); ctx.fill();
         ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
         ctx.fillStyle = "#00d4ff"; ctx.font = "bold 26px Arial";
@@ -601,7 +593,7 @@ async function renderSyair() {
     drawBox(60, 335, "TWIN", item.twin);
     drawBox(430, 335, "COLOK BEBAS", item.cb);
 
-    // 5. BINTANG & NOMOR (FIX KUALITAS TINGGI)
+    // 5. BINTANG & NOMOR (SIMETRIS & RAPI)
     const cx = 400, cy = 570, rOuter = 85; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -615,38 +607,38 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, rOuter, 40);
 
-    // ANGKA MENEMPEL DI UJUNG BINTANG SESUAI PANAH MERAH BOS
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 45px Arial";
-    ctx.fillText("89", cx, cy - rOuter - 15);      // Atas
-    ctx.fillText("70", cx, cy + rOuter + 45);      // Bawah
-    ctx.fillText("11", cx + rOuter + 60, cy + 10); // Kanan
-    ctx.fillText("41", cx - rOuter - 60, cy + 10); // Kiri
+    // ANGKA MENEMPEL DI UJUNG BINTANG
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 48px Arial";
+    ctx.fillText("89", cx, cy - rOuter - 25);      // Atas
+    ctx.fillText("70", cx, cy + rOuter + 65);      // Bawah
+    ctx.fillText("11", cx + rOuter + 75, cy + 15); // Kanan
+    ctx.fillText("41", cx - rOuter - 75, cy + 15); // Kiri
 
-    // 6. ASSET (ANTI TABRAKAN: MONYET & POHON PISANG SEJAJAR)
-    // Tinggi dinaikkan drastis dan skala diperkecil sedikit agar utuh
-    if (shioImg) ctx.drawImage(shioImg, 80, 715, 210, 210); 
-    if (pisangImg) ctx.drawImage(pisangImg, 510, 650, 230, 230); // Posisi dinaikkan agar berdiri bebas
+    // 6. ASSET (SHIO & POHON PISANG - SEJAJAR & AMAN)
+    if (shioImg) ctx.drawImage(shioImg, 80, 725, 200, 200); 
+    // Pohon pisang dinaikkan koordinat Y-nya agar menjauh dari kotak pantun
+    if (pisangImg) ctx.drawImage(pisangImg, 520, 680, 220, 220); 
 
     // 7. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 665, 170, 45, 10); ctx.fill();
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 675, 160, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-    ctx.fillText("SHIO MONYET", 185, 695);
+    ctx.fillText("SHIO MONYET", 180, 705);
 
-    // Hapus total teks birunya "Babi Hutan..."
-    ctx.fillStyle = "rgba(0,0,0,0)";
-    ctx.fillText("", 400, 915); 
-
-    // 8. KOTAK PANTUN (GANTI WARNA HITAM SOLID - TIDAK POLOS PUTIH)
-    ctx.fillStyle = "rgba(5, 15, 35, 0.98)";
-    ctx.beginPath(); ctx.roundRect(65, 960, 670, 115, 20); ctx.fill();
+    // 8. KOTAK PANTUN (GANTI WARNA GELAP & TEKS RAPI 2 BARIS)
+    const pY = 960;
+    ctx.fillStyle = "rgba(5, 10, 25, 0.98)";
+    ctx.beginPath(); ctx.roundRect(65, pY, 670, 115, 20); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 23px Arial";
-    const l1 = "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.";
-    const l2 = "Angka keluar jangan sembarang, Semoga hoki datang menghampiri.";
-    ctx.fillText(l1, 400, 1005);
-    ctx.fillText(l2, 400, 1050);
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
+    // Teks dipisah manual jadi 2 baris agar tidak keluar kotak
+    ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 48);
+    ctx.fillText("Angka keluar jangan sembarang, Semoga hoki datang menghampiri.", 400, pY + 92);
+
+    // Hapus total teks nyasar jika masih ada di memori
+    ctx.fillStyle = "rgba(0,0,0,0)";
+    ctx.fillText("", 400, 915);
 }
     function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
