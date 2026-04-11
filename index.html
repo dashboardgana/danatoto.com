@@ -641,6 +641,13 @@ async function renderSyair() {
     ctx.fillText(line1, 400, pY + 50);
     ctx.fillText(line2, 400, pY + 95);
 }
+     function exportSyair() {
+        const canvas = document.getElementById('canvasSyair');
+        const link = document.createElement('a');
+        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }
 
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
