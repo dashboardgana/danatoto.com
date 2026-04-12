@@ -595,10 +595,13 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", item.twin);
     drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG TENGAH (WARNA EMAS GLOW - AGAR MASUK KE BACKGROUND)
+    // 4. BINTANG TENGAH (PUTIH DENGAN GLOW BIRU)
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
+        ctx.save();
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#00d4ff";
         ctx.beginPath(); ctx.moveTo(x, y-outer);
         for(let i=0; i<spikes; i++){
             ctx.lineTo(x+Math.cos(rot)*outer, y+Math.sin(rot)*outer); rot+=step;
@@ -606,13 +609,14 @@ async function renderSyair() {
         }
         ctx.lineTo(x, y-outer); ctx.closePath();
         ctx.lineWidth=8; 
-        ctx.strokeStyle='#FFD700'; // REVISI: Ganti warna Emas agar mewah
+        ctx.strokeStyle='#ffffff'; 
         ctx.stroke();
+        ctx.restore();
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (KUNING EMAS NYALA)
-    ctx.fillStyle = "#FFFF00"; // REVISI: Ganti ke Kuning Terang agar tajam
+    // 5. ANGKA STAR (REVISI: WARNA HITAM)
+    ctx.fillStyle = "#000000"; // GANTI JADI HITAM
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
     ctx.fillText("1", 315, 470); 
