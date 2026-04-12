@@ -546,10 +546,9 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET (URL LOGO SUDAH DIPERBAIKI BIAR MUNCUL)
-    const urlBG = "https://lh3.googleusercontent.com/u/0/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe=w800-h1100-iv1"; 
-    // Link Direct Download Logo Danatoto Bos
-    const urlLogoDanatoto = 'https://lh3.googleusercontent.com/u/0/d/1h9XRkflDIhNnRxzlzbk2UvUZ4Cwyap85=w800-h800-iv1'; 
+    // LINK ASSET (SUDAH DIPERBAIKI TANDA PETIKNYA)
+    const urlBG = "https://i.ibb.co/LvbVfV6/bg-terbaru.png"; 
+    const urlLogoDanatoto = 'https://i.ibb.co/LhbL7T1/image-ad8680.png'; // TANDA PETIK DI SINI TADI HILANG
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
@@ -572,7 +571,7 @@ async function renderSyair() {
     // 2. HEADER: TANGGAL DI SUDUT KIRI PALING ATAS (MEPET)
     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
     ctx.beginPath(); 
-    ctx.roundRect(15, 15, 240, 45, 10); // Posisi makin ke sudut (x:15, y:15)
+    ctx.roundRect(15, 15, 240, 45, 10); 
     ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     
@@ -583,11 +582,10 @@ async function renderSyair() {
 
     // LOGO DANATOTO (TENGAH ATAS)
     if (logo) {
-        // Posisi logo tepat di tengah header
         ctx.drawImage(logo, 250, 10, 300, 100); 
     }
 
-    // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
+    // 3. KOTAK ANGKA
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -602,22 +600,19 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", item.twin);
     drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG TENGAH (PUTIH DENGAN GLOW BIRU)
+    // 4. BINTANG TENGAH
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
         ctx.save();
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = "#00d4ff";
+        ctx.shadowBlur = 15; ctx.shadowColor = "#00d4ff";
         ctx.beginPath(); ctx.moveTo(x, y-outer);
         for(let i=0; i<spikes; i++){
             ctx.lineTo(x+Math.cos(rot)*outer, y+Math.sin(rot)*outer); rot+=step;
             ctx.lineTo(x+Math.cos(rot)*inner, y+Math.sin(rot)*inner); rot+=step;
         }
         ctx.lineTo(x, y-outer); ctx.closePath();
-        ctx.lineWidth=8; 
-        ctx.strokeStyle='#ffffff'; 
-        ctx.stroke();
+        ctx.lineWidth=8; ctx.strokeStyle='#ffffff'; ctx.stroke();
         ctx.restore();
     }
     drawStar(cx, cy, 5, 85, 38);
@@ -642,23 +637,15 @@ async function renderSyair() {
     ctx.fillText("SHIO MONYET", 160, 565);
 
     // 8. KOTAK PANTUN
-    const pY = 930;
-    const pW = 670;
-    const pH = 135;
-    const pX = 65;
-
+    const pY = 930; const pW = 670; const pH = 135; const pX = 65;
     if (bgSyair) {
         ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(pX, pY, pW, pH, 20);
-        ctx.clip();
+        ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
         ctx.drawImage(bgSyair, pX, pY, pW, pH);
         ctx.restore();
     } else {
-        ctx.fillStyle = "black"; 
-        ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
+        ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
     }
-
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
     ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 55);
