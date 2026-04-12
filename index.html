@@ -575,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (POSISI: DINAIKKAN LAGI BIAR GAK KETUTUP)
+    // 2. HEADER: LOGO DANATOTO (POSISI: DISESUAIKAN BIAR PAS TENGAH)
     if (logo) {
-        // x=315 (tengah), y=120 (naik sedikit dari sebelumnya), lebar=170, tinggi=50
-        ctx.drawImage(logo, 315, 120, 170, 50); 
+        // x=325 (biar rata tengah), y=120, lebar=150, tinggi=45
+        ctx.drawImage(logo, 325, 120, 150, 45); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
@@ -629,8 +629,8 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (WARNA PUTIH BIAR NAMPAK JELAS)
-    ctx.fillStyle = "#ffffff"; 
+    // 5. ANGKA STAR (GANTI WARNA JADI KUNING EMAS BIAR KEREN)
+    ctx.fillStyle = "#ffeb3b"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
     ctx.fillText("1", 315, 470); 
@@ -649,16 +649,11 @@ async function renderSyair() {
     ctx.fillText("SHIO MONYET", 160, 565);
 
     // 8. KOTAK PANTUN
-    const pY = 930;
-    const pW = 670;
-    const pH = 135;
-    const pX = 65;
+    const pY = 930, pW = 670, pH = 135, pX = 65;
 
     if (bgSyair) {
         ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(pX, pY, pW, pH, 20);
-        ctx.clip();
+        ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
         ctx.drawImage(bgSyair, pX, pY, pW, pH);
         ctx.restore();
     } else {
