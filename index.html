@@ -546,9 +546,10 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET (LOGO DANATOTO & LAINNYA)
+    // LINK ASSET (URL LOGO SUDAH DIPERBAIKI BIAR MUNCUL)
     const urlBG = "https://lh3.googleusercontent.com/u/0/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe=w800-h1100-iv1"; 
-    const urlLogoDanatoto = 'https://i.ibb.co/LhbL7T1/image-ad8680.png'; 
+    // Link Direct Download Logo Danatoto Bos
+    const urlLogoDanatoto = 'https://lh3.googleusercontent.com/u/0/d/1h9XRkflDIhNnRxzlzbk2UvUZ4Cwyap85=w800-h800-iv1'; 
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
@@ -568,19 +569,22 @@ async function renderSyair() {
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER: TANGGAL DI POJOK KIRI ATAS (KOTAK MERAH)
+    // 2. HEADER: TANGGAL DI SUDUT KIRI PALING ATAS (MEPET)
     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-    ctx.beginPath(); ctx.roundRect(30, 25, 250, 45, 10); ctx.fill(); // Posisi di sudut tirai
+    ctx.beginPath(); 
+    ctx.roundRect(15, 15, 240, 45, 10); // Posisi makin ke sudut (x:15, y:15)
+    ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     
     ctx.fillStyle = "#ffffff"; 
     ctx.textAlign = "center";
     ctx.font = "bold 20px Arial"; 
-    ctx.fillText(tglStr.toUpperCase(), 155, 55);
+    ctx.fillText(tglStr.toUpperCase(), 135, 45);
 
-    // LOGO DANATOTO (TENGAH)
+    // LOGO DANATOTO (TENGAH ATAS)
     if (logo) {
-        ctx.drawImage(logo, 275, 15, 250, 80); 
+        // Posisi logo tepat di tengah header
+        ctx.drawImage(logo, 250, 10, 300, 100); 
     }
 
     // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
