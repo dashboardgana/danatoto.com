@@ -567,7 +567,7 @@ async function renderSyair() {
 
     ctx.clearRect(0, 0, 800, 1100);
     
-    // Gambar Background Utama (LAYER 1)
+    // Gambar Background Utama
     if (bg) {
         ctx.drawImage(bg, 0, 0, 800, 1100);
     } else {
@@ -575,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (REVISI: NAIK KE ATAS & LEBIH LEBAR)
+    // 2. HEADER: LOGO DANATOTO (POSISI: PAS DIBAWAH MEKAR & LEBAR)
     if (logo) {
-        // x=290 (tengah), y=110 (naik pas di bawah mekar), lebar=220 (dilebarin), tinggi=50
-        ctx.drawImage(logo, 290, 110, 220, 50); 
+        // x=275 agar seimbang, y=100 (naik pas di bawah mekar), lebar=250 (lebih lebar), tinggi=55
+        ctx.drawImage(logo, 275, 100, 250, 55); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
@@ -609,7 +609,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", item.twin);
     drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG TENGAH (PUTIH DENGAN GLOW BIRU)
+    // 4. BINTANG TENGAH
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -629,7 +629,7 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (WARNA KUNING EMAS)
+    // 5. ANGKA STAR (KUNING EMAS)
     ctx.fillStyle = "#ffeb3b"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
@@ -650,7 +650,6 @@ async function renderSyair() {
 
     // 8. KOTAK PANTUN
     const pY = 930, pW = 670, pH = 135, pX = 65;
-
     if (bgSyair) {
         ctx.save();
         ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
@@ -660,7 +659,6 @@ async function renderSyair() {
         ctx.fillStyle = "black"; 
         ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
     }
-
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
     ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 55);
