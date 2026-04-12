@@ -546,9 +546,9 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET (LOGO DANATOTO DITAMBAHKAN)
+    // LINK ASSET (LOGO DANATOTO & LAINNYA)
     const urlBG = "https://lh3.googleusercontent.com/u/0/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe=w800-h1100-iv1"; 
-    const urlLogoDanatoto = 'https://i.ibb.co/LhbL7T1/image-ad8680.png'; // Logo Danatoto Bos
+    const urlLogoDanatoto = 'https://i.ibb.co/LhbL7T1/image-ad8680.png'; 
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
@@ -568,24 +568,22 @@ async function renderSyair() {
     ctx.clearRect(0, 0, 800, 1100);
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER: LOGO DANATOTO (TENGAH) & TANGGAL (SUDUT KIRI)
-    // Gambar Logo Danatoto di Tengah
-    if (logo) {
-        ctx.drawImage(logo, 275, 20, 250, 75); 
-    }
-
-    // Tanggal Geser ke Sudut Kiri (Atas BBFS)
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-    ctx.beginPath(); ctx.roundRect(60, 100, 280, 45, 10); ctx.fill();
-    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
+    // 2. HEADER: TANGGAL DI POJOK KIRI ATAS (KOTAK MERAH)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.beginPath(); ctx.roundRect(30, 25, 250, 45, 10); ctx.fill(); // Posisi di sudut tirai
+    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     
     ctx.fillStyle = "#ffffff"; 
-    ctx.textAlign = "left";
-    ctx.font = "bold 22px Arial"; 
-    ctx.fillText(tglStr.toUpperCase(), 80, 132);
+    ctx.textAlign = "center";
+    ctx.font = "bold 20px Arial"; 
+    ctx.fillText(tglStr.toUpperCase(), 155, 55);
+
+    // LOGO DANATOTO (TENGAH)
+    if (logo) {
+        ctx.drawImage(logo, 275, 15, 250, 80); 
+    }
 
     // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
-    ctx.textAlign = "center"; // Reset textAlign ke center untuk kotak
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -639,7 +637,7 @@ async function renderSyair() {
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
     ctx.fillText("SHIO MONYET", 160, 565);
 
-    // 8. KOTAK PANTUN DENGAN BACKGROUND KOTAK
+    // 8. KOTAK PANTUN
     const pY = 930;
     const pW = 670;
     const pH = 135;
