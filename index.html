@@ -571,10 +571,10 @@ async function renderSyair() {
         ctx.drawImage(bg, 0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (NAIK MEPET MEKAR & LEBAR)
+    // 2. HEADER: LOGO DANATOTO (NAIK MEPET MEKAR & PROPORSIONAL)
     if (logo) {
-        // x=250, y=85 (MEPET KE ATAS), lebar=300 (LEBAR RAPI), tinggi=70
-        ctx.drawImage(logo, 250, 85, 300, 70); 
+        // x=290 (tengah), y=85 (nempel mahkota), lebar=220, tinggi=60 (biar ga gepeng)
+        ctx.drawImage(logo, 290, 85, 220, 60); 
     }
 
     // TANGGAL
