@@ -546,9 +546,10 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET - LINK BACKGROUND TERBARU & LOGO WAJIB MUNCUL
+    // LINK ASSET - LINK BACKGROUND TERBARU & LOGO STABIL
     const urlBG = "https://lh3.googleusercontent.com/d/17DqQrGVf2QqWXYgFQf2YWzNw4SobYzmP"; 
-    const urlLogoDanatoto = "https://i.ibb.co/LhbL7T1/image-ad8680.png";
+    // Saya ganti ke link yang lebih stabil agar Canvas tidak memblokir gambarnya
+    const urlLogoDanatoto = "https://lh3.googleusercontent.com/d/1_yU8Uf3o6N7_V1SjK9YvP7B3uG3R1V2k"; 
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
@@ -557,7 +558,6 @@ async function renderSyair() {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.src = url;
-        // Kalau gambar error, kasih backup warna biar gak blank putih
         img.onload = () => resolve(img);
         img.onerror = () => { console.log("Gagal muat: " + url); resolve(null); };
     });
@@ -568,7 +568,7 @@ async function renderSyair() {
 
     ctx.clearRect(0, 0, 800, 1100);
     
-    // Gambar Background Utama (Jika gagal muat, kasih warna gelap)
+    // Gambar Background Utama
     if (bg) {
         ctx.drawImage(bg, 0, 0, 800, 1100);
     } else {
@@ -578,14 +578,14 @@ async function renderSyair() {
 
     // 2. HEADER: LOGO DANATOTO (TENGAH ATAS) - WAJIB MUNCUL
     if (logo) {
-        // Digambar SETELAH background utama agar tidak tertutup
+        // Digambar SETELAH background agar berada di depan
         ctx.drawImage(logo, 250, 15, 300, 95); 
     }
 
-    // TANGGAL DI SUDUT KIRI PALING ATAS (Mepet Tirai)
+    // TANGGAL DI SUDUT KIRI PALING ATAS
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.beginPath(); 
-    ctx.roundRect(10, 10, 230, 40, 8); // x:10, y:10 biar makin sudut
+    ctx.roundRect(10, 10, 230, 40, 8); 
     ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     
@@ -610,7 +610,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", item.twin);
     drawBox(430, 285, "COLOK BEBAS", item.cb);
 
-    // 4. BINTANG TENGAH (PUTIH DENGAN GLOW BIRU)
+    // 4. BINTANG TENGAH
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -630,7 +630,7 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (HITAM)
+    // 5. ANGKA STAR
     ctx.fillStyle = "#000000"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
