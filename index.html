@@ -575,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (POSISI: DINAIKKAN DIKIT & MUNGIL)
+    // 2. HEADER: LOGO DANATOTO (REVISI: NAIK KE ATAS & LEBIH BESAR BIAR RAPI)
     if (logo) {
-        // x=315 (tengah), y=125 (dinaikkan dikit dari sebelumnya), lebar=170, tinggi=50
-        ctx.drawImage(logo, 315, 125, 170, 50); 
+        // x=300 (tengah), y=70 (naik ke area atas), lebar=200, tinggi=60
+        ctx.drawImage(logo, 300, 70, 200, 60); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
@@ -629,14 +629,14 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-   // 5. ANGKA STAR (WARNA KUNING EMAS)
+    // 5. ANGKA STAR (WARNA KUNING EMAS)
     ctx.fillStyle = "#ffeb3b"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("1", 315, 510); 
-    ctx.fillText("5", 485, 510); 
-    ctx.fillText("8", 315, 635); 
-    ctx.fillText("4", 485, 635);
+    ctx.fillText("1", 315, 470); 
+    ctx.fillText("5", 485, 470); 
+    ctx.fillText("8", 315, 595); 
+    ctx.fillText("4", 485, 595); 
 
     // 6. ASSET (MONYET & POHON PISANG)
     if (shioImg) ctx.drawImage(shioImg, 30, 580, 260, 260); 
@@ -649,16 +649,11 @@ async function renderSyair() {
     ctx.fillText("SHIO MONYET", 160, 565);
 
     // 8. KOTAK PANTUN
-    const pY = 930;
-    const pW = 670;
-    const pH = 135;
-    const pX = 65;
+    const pY = 930, pW = 670, pH = 135, pX = 65;
 
     if (bgSyair) {
         ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(pX, pY, pW, pH, 20);
-        ctx.clip();
+        ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
         ctx.drawImage(bgSyair, pX, pY, pW, pH);
         ctx.restore();
     } else {
