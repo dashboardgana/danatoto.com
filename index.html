@@ -575,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (POSISI FIX: TURUN LAGI & LEBIH KECIL)
+    // 2. HEADER: LOGO DANATOTO (POSISI: TURUN LAGI & LEBIH MUNGIL)
     if (logo) {
-        // x=315 (tengah), y=120 (sudah turun lagi), lebar=170 (makin mungil), tinggi=50
-        ctx.drawImage(logo, 315, 120, 170, 50); 
+        // x=320 (tengah), y=135 (diturunkan lagi), lebar=160 (mungil), tinggi=45
+        ctx.drawImage(logo, 320, 135, 160, 45); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
@@ -629,8 +629,8 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (HITAM)
-    ctx.fillStyle = "#000000"; 
+    // 5. ANGKA STAR (GANTI WARNA JADI PUTIH BIAR NAMPAK)
+    ctx.fillStyle = "#ffffff"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
     ctx.fillText("1", 315, 470); 
