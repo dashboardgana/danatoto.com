@@ -546,9 +546,8 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET - PERBAIKAN DIRECT LINK (WAJIB MUNCUL)
+    // LINK ASSET - TETAP PAKAI LINK STABIL
     const urlBG = "https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C"; 
-    // Link Logo Danatoto sudah dikonversi ke format Direct Link agar tidak terblokir
     const urlLogoDanatoto = 'https://lh3.googleusercontent.com/u/0/d/1h9XRkflDIhNnRxzlzbk2UvUZ4Cwyap85=w800-h800-iv1';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
@@ -576,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (UKURAN DIPERBAIKI: DIBAWAH EMAS & MUNGIL)
+    // 2. HEADER: LOGO DANATOTO (POSISI DIBAWAH EMAS & LEBIH MUNGIL)
     if (logo) {
-        // x=295 (tengah), y=65 (di bawah emas), lebar=210 (kecil), tinggi=70
-        ctx.drawImage(logo, 295, 65, 210, 70); 
+        // x=305 (tengah), y=85 (lebih turun), lebar=190 (lebih kecil), tinggi=60
+        ctx.drawImage(logo, 305, 85, 190, 60); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
