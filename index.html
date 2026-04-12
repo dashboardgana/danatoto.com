@@ -546,10 +546,8 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET - LINK BACKGROUND TERBARU & LOGO WAJIB MUNCUL
-    // Link Background baru Bos yang sudah saya jadikan Direct Download
+    // LINK ASSET - TETAP MENGGUNAKAN LINK ASLI BOS
     const urlBG = "https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C"; 
-    // Link Logo Danatoto (Menggunakan link stabil agar wajib muncul)
     const urlLogoDanatoto = "https://i.ibb.co/LhbL7T1/image-ad8680.png";
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
@@ -559,11 +557,11 @@ async function renderSyair() {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.src = url;
-        // Kalau gambar error, kasih backup warna biar gak blank putih
         img.onload = () => resolve(img);
         img.onerror = () => { console.log("Gagal muat: " + url); resolve(null); };
     });
 
+    // Menunggu semua asset dimuat sempurna
     const [bg, logo, shioImg, pisangImg, bgSyair] = await Promise.all([
         loadImg(urlBG), loadImg(urlLogoDanatoto), loadImg(urlMonyet), loadImg(urlPisang), loadImg(urlBGSyair)
     ]);
@@ -580,14 +578,14 @@ async function renderSyair() {
 
     // 2. HEADER: LOGO DANATOTO (WAJIB MUNCUL - LAYER 2)
     if (logo) {
-        // Saya pastikan digambar SETELAH background agar tampil di depan
+        // Digambar tepat setelah background agar berada di paling depan
         ctx.drawImage(logo, 250, 15, 300, 95); 
     }
 
-    // TANGGAL DI SUDUT KIRI PALING ATAS (Mepet Tirai)
+    // TANGGAL DI SUDUT KIRI PALING ATAS
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.beginPath(); 
-    ctx.roundRect(10, 10, 230, 40, 8); // x:10, y:10 biar makin sudut
+    ctx.roundRect(10, 10, 230, 40, 8); 
     ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     
