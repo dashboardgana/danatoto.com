@@ -576,11 +576,11 @@ const urlLogoDanatoto = "https://i.ibb.co/LhbL7T1/image-ad8680.png";
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (TENGAH ATAS)
-    if (logo) {
-        // Tampilkan Logo Danatoto Bos
-        ctx.drawImage(logo, 250, 10, 300, 95); 
-    }
+   // 2. HEADER: LOGO DANATOTO (TENGAH ATAS)
+if (logo) {
+    // Digambar SETELAH background utama agar tidak tertutup
+    ctx.drawImage(logo, 250, 15, 300, 95); 
+}
 
     // TANGGAL DI SUDUT KIRI PALING ATAS (Mepet Tirai)
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
