@@ -544,9 +544,9 @@ async function renderSyair() {
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
-    const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
+    const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "0347", twin: "33/77", cb: "3 / 7" };
 
-    // LINK ASSET - TETAP PAKAI LINK STABIL
+    // LINK ASSET - TETAP AMAN
     const urlBG = "https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C"; 
     const urlLogoDanatoto = 'https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD';
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
@@ -567,33 +567,28 @@ async function renderSyair() {
 
     ctx.clearRect(0, 0, 800, 1100);
     
-    // Gambar Background Utama
     if (bg) {
         ctx.drawImage(bg, 0, 0, 800, 1100);
-    } else {
-        ctx.fillStyle = "#111";
-        ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (POSISI: PAS DIBAWAH MEKAR & LEBAR)
+    // 2. HEADER: LOGO DANATOTO (NAIK MEPET MEKAR & LEBAR)
     if (logo) {
-        // x=275 agar seimbang, y=100 (naik pas di bawah mekar), lebar=250 (lebih lebar), tinggi=55
-        ctx.drawImage(logo, 275, 100, 250, 55); 
+        // x=250, y=85 (MEPET KE ATAS), lebar=300 (LEBAR RAPI), tinggi=70
+        ctx.drawImage(logo, 250, 85, 300, 70); 
     }
 
-    // TANGGAL DI SUDUT KIRI PALING ATAS
+    // TANGGAL
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.beginPath(); 
     ctx.roundRect(10, 10, 230, 40, 8); 
     ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
-    
     ctx.fillStyle = "#ffffff"; 
     ctx.textAlign = "center";
     ctx.font = "bold 18px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 125, 37);
 
-    // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
+    // 3. KOTAK ANGKA
     ctx.textAlign = "center";
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
@@ -629,7 +624,7 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (KUNING EMAS)
+    // 5. ANGKA STAR
     ctx.fillStyle = "#ffeb3b"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
@@ -638,7 +633,7 @@ async function renderSyair() {
     ctx.fillText("8", 315, 595); 
     ctx.fillText("4", 485, 595); 
 
-    // 6. ASSET (MONYET & POHON PISANG)
+    // 6. ASSET
     if (shioImg) ctx.drawImage(shioImg, 30, 580, 260, 260); 
     if (pisangImg) ctx.drawImage(pisangImg, 520, 500, 240, 340); 
 
