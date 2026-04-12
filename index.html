@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                                                                <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -546,9 +546,9 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK ASSET - SUDAH DIGANTI KE LINK TERBARU (DIRECT LINK)
-    const urlBG = "https://lh3.googleusercontent.com/u/0/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe=w800-h1100-iv1"; 
-const urlLogoDanatoto = "https://i.ibb.co/LhbL7T1/image-ad8680.png";
+    // LINK ASSET - LINK BACKGROUND TERBARU & LOGO WAJIB MUNCUL
+    const urlBG = "https://lh3.googleusercontent.com/d/17DqQrGVf2QqWXYgFQf2YWzNw4SobYzmP"; 
+    const urlLogoDanatoto = "https://i.ibb.co/LhbL7T1/image-ad8680.png";
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
@@ -576,11 +576,11 @@ const urlLogoDanatoto = "https://i.ibb.co/LhbL7T1/image-ad8680.png";
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-   // 2. HEADER: LOGO DANATOTO (TENGAH ATAS)
-if (logo) {
-    // Digambar SETELAH background utama agar tidak tertutup
-    ctx.drawImage(logo, 250, 15, 300, 95); 
-}
+    // 2. HEADER: LOGO DANATOTO (TENGAH ATAS) - WAJIB MUNCUL
+    if (logo) {
+        // Digambar SETELAH background utama agar tidak tertutup
+        ctx.drawImage(logo, 250, 15, 300, 95); 
+    }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS (Mepet Tirai)
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
