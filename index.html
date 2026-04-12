@@ -546,14 +546,11 @@ async function renderSyair() {
     const index = d.getDate() % (typeof paketSyair !== 'undefined' ? paketSyair.length : 1);
     const item = (typeof paketSyair !== 'undefined') ? paketSyair[index] : { am: "1248", twin: "22/88", cb: "2 / 8" };
 
-    // LINK BACKGROUND BESAR DARI DRIVE BOS
+    // LINK ASSET (LOGO DANATOTO DITAMBAHKAN)
     const urlBG = "https://lh3.googleusercontent.com/u/0/d/1TFDkW3cyjE0epjcHIVb7f-gno_9X0JCe=w800-h1100-iv1"; 
-    
-    const urlLogo = 'https://i.ibb.co/LhbL7T1/image-ad8680.png';
+    const urlLogoDanatoto = 'https://i.ibb.co/LhbL7T1/image-ad8680.png'; // Logo Danatoto Bos
     const urlMonyet = "https://i.ibb.co/k6mB39d3/monyet.png"; 
     const urlPisang = "https://i.ibb.co/tMpKXXVw/pohon-pisang.png";
-    
-    // Link background kotak syair tetap yang sebelumnya
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
 
     const loadImg = (url) => new Promise((resolve) => {
@@ -565,22 +562,30 @@ async function renderSyair() {
     });
 
     const [bg, logo, shioImg, pisangImg, bgSyair] = await Promise.all([
-        loadImg(urlBG), loadImg(urlLogo), loadImg(urlMonyet), loadImg(urlPisang), loadImg(urlBGSyair)
+        loadImg(urlBG), loadImg(urlLogoDanatoto), loadImg(urlMonyet), loadImg(urlPisang), loadImg(urlBGSyair)
     ]);
 
     ctx.clearRect(0, 0, 800, 1100);
-    // Gambar background besar (Drive)
     if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER & LOGO
-    ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
-    ctx.beginPath(); ctx.roundRect(225, 15, 350, 60, 15); ctx.fill();
+    // 2. HEADER: LOGO DANATOTO (TENGAH) & TANGGAL (SUDUT KIRI)
+    // Gambar Logo Danatoto di Tengah
+    if (logo) {
+        ctx.drawImage(logo, 275, 20, 250, 75); 
+    }
+
+    // Tanggal Geser ke Sudut Kiri (Atas BBFS)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.beginPath(); ctx.roundRect(60, 100, 280, 45, 10); ctx.fill();
     ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
-    ctx.font = "bold 30px Arial"; ctx.fillText(tglStr.toUpperCase(), 400, 55);
-    if (logo) ctx.drawImage(logo, 290, 85, 220, 65);
+    
+    ctx.fillStyle = "#ffffff"; 
+    ctx.textAlign = "left";
+    ctx.font = "bold 22px Arial"; 
+    ctx.fillText(tglStr.toUpperCase(), 80, 132);
 
     // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
+    ctx.textAlign = "center"; // Reset textAlign ke center untuk kotak
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -615,8 +620,8 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (REVISI: WARNA HITAM)
-    ctx.fillStyle = "#000000"; // GANTI JADI HITAM
+    // 5. ANGKA STAR (HITAM)
+    ctx.fillStyle = "#000000"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
     ctx.fillText("1", 315, 470); 
@@ -653,7 +658,6 @@ async function renderSyair() {
     }
 
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
-
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
     ctx.fillText("Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", 400, pY + 55);
     ctx.fillText("Angka keluar jangan sembarang hoki datang menghampiri.", 400, pY + 100);
