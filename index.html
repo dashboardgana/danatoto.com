@@ -575,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (REVISI: LEBIH BESAR, LEBIH ATAS, RATA TENGAH)
+   // 2. HEADER: LOGO DANATOTO (POSISI FIX: TURUN LAGI & LEBIH KECIL)
     if (logo) {
-        // x=310 (tengah), y=110 (naik ke atas), lebar=180, tinggi=55 (lebih besar)
-        ctx.drawImage(logo, 310, 110, 180, 55); 
+        // x=315 (tengah), y=120 (sudah turun lagi), lebar=170 (makin mungil), tinggi=50
+        ctx.drawImage(logo, 315, 120, 170, 50); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
