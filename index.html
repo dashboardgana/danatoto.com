@@ -575,10 +575,10 @@ async function renderSyair() {
         ctx.fillRect(0, 0, 800, 1100);
     }
 
-    // 2. HEADER: LOGO DANATOTO (REVISI: DI BAWAH MEKAR & LEBAR)
+    // 2. HEADER: LOGO DANATOTO (REVISI: TURUN DI BAWAH MEKAR & LEBIH BESAR)
     if (logo) {
-        // x=300 (tengah), y=145 (pas di bawah hiasan mahkota), lebar=200, tinggi=55
-        ctx.drawImage(logo, 300, 145, 200, 55); 
+        // x=295 (tengah), y=155 (turun di bawah mahkota), lebar=210, tinggi=60
+        ctx.drawImage(logo, 295, 155, 210, 60); 
     }
 
     // TANGGAL DI SUDUT KIRI PALING ATAS
@@ -593,7 +593,7 @@ async function renderSyair() {
     ctx.font = "bold 18px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 125, 37);
 
-    // 3. KOTAK ANGKA (BBFS, AM, TWIN, CB)
+    // 3. KOTAK ANGKA (DITURUNKAN SIKIT AGAR TIDAK NABRAK LOGO)
     ctx.textAlign = "center";
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
@@ -604,13 +604,14 @@ async function renderSyair() {
         ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
         ctx.fillText(value, x + 155, y + 95);
     };
-    drawBox(60, 160, "BBFS", "0246912"); 
-    drawBox(430, 160, "ANGKA MAIN", item.am);
-    drawBox(60, 285, "TWIN", item.twin);
-    drawBox(430, 285, "COLOK BEBAS", item.cb);
+    // y diubah ke 225 & 350 agar lega
+    drawBox(60, 225, "BBFS", "0246912"); 
+    drawBox(430, 225, "ANGKA MAIN", item.am);
+    drawBox(60, 350, "TWIN", item.twin);
+    drawBox(430, 350, "COLOK BEBAS", item.cb);
 
     // 4. BINTANG TENGAH (PUTIH DENGAN GLOW BIRU)
-    const cx = 400, cy = 520; 
+    const cx = 400, cy = 560; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
         ctx.save();
@@ -633,20 +634,20 @@ async function renderSyair() {
     ctx.fillStyle = "#ffeb3b"; 
     ctx.font = "bold 55px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("1", 315, 470); 
-    ctx.fillText("5", 485, 470); 
-    ctx.fillText("8", 315, 595); 
-    ctx.fillText("4", 485, 595); 
+    ctx.fillText("1", 315, 510); 
+    ctx.fillText("5", 485, 510); 
+    ctx.fillText("8", 315, 635); 
+    ctx.fillText("4", 485, 635); 
 
     // 6. ASSET (MONYET & POHON PISANG)
-    if (shioImg) ctx.drawImage(shioImg, 30, 580, 260, 260); 
-    if (pisangImg) ctx.drawImage(pisangImg, 520, 500, 240, 340); 
+    if (shioImg) ctx.drawImage(shioImg, 30, 600, 260, 260); 
+    if (pisangImg) ctx.drawImage(pisangImg, 520, 520, 240, 340); 
 
     // 7. LABEL SHIO
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 535, 180, 45, 10); ctx.fill();
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 555, 180, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-    ctx.fillText("SHIO MONYET", 160, 565);
+    ctx.fillText("SHIO MONYET", 160, 585);
 
     // 8. KOTAK PANTUN
     const pY = 930, pW = 670, pH = 135, pX = 65;
