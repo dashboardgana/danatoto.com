@@ -594,8 +594,8 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // FUNGSI UTAMA: PENGHAPUS BACKGROUND ANTI-GAGAL
-    const drawImgNoBg = (url, x, y, w, h) => {
+    // FUNGSI PERBAIKAN: HAPUS BG & JAGA ASPEK RASIO AGAR TIDAK KEPOTONG
+    const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
             const img = new Image();
             img.crossOrigin = "anonymous";
@@ -603,9 +603,8 @@ async function renderSyair() {
             img.onload = () => {
                 const tempCanvas = document.createElement('canvas');
                 const tempCtx = tempCanvas.getContext('2d');
-                // Menggunakan ukuran asli agar tidak ada bagian yang terpotong
-                tempCanvas.width = img.width;   
-                tempCanvas.height = img.height; 
+                tempCanvas.width = img.width;
+                tempCanvas.height = img.height;
                 tempCtx.drawImage(img, 0, 0);
                 
                 const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
@@ -613,11 +612,7 @@ async function renderSyair() {
                 const width = tempCanvas.width;
                 const height = tempCanvas.height;
 
-                // Putih bersih dengan toleransi sedikit untuk pinggiran halus
-                const targetR = 255, targetG = 255, targetB = 255;
-                const tolerance = 35;
-
-                // Flood Fill dimulai dari empat pojok gambar
+                const tolerance = 40;
                 const queue = [[0, 0], [width-1, 0], [0, height-1], [width-1, height-1]];
                 const visited = new Uint8Array(width * height);
 
@@ -628,15 +623,21 @@ async function renderSyair() {
                     visited[pixIdx] = 1;
                     const pos = pixIdx * 4;
 
-                    if (Math.abs(data[pos] - targetR) <= tolerance && 
-                        Math.abs(data[pos+1] - targetG) <= tolerance && 
-                        Math.abs(data[pos+2] - targetB) <= tolerance) {
-                        data[pos+3] = 0; // Transparan
+                    if (data[pos] > 255 - tolerance && data[pos+1] > 255 - tolerance && data[pos+2] > 255 - tolerance) {
+                        data[pos+3] = 0; 
                         queue.push([currX+1, currY], [currX-1, currY], [currX, currY+1], [currX, currY-1]);
                     }
                 }
                 tempCtx.putImageData(imgData, 0, 0);
-                ctx.drawImage(tempCanvas, x, y, w, h); 
+
+                // LOGIKA ANTI-KEPOTONG: Hitung skala agar gambar masuk sempurna ke kotak
+                const scale = Math.min(targetW / width, targetH / height);
+                const finalW = width * scale;
+                const finalH = height * scale;
+                const offsetX = targetX + (targetW - finalW) / 2;
+                const offsetY = targetY + (targetH - finalH) / 2;
+
+                ctx.drawImage(tempCanvas, offsetX, offsetY, finalW, finalH);
                 resolve();
             };
             img.onerror = () => resolve();
@@ -654,8 +655,9 @@ async function renderSyair() {
     };
 
     ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100); // BG Utama
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60); // Logo
+    // Background Utama & Logo
+    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
+    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
 
     // Tanggal
     ctx.fillStyle = "black";
@@ -679,7 +681,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
     drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // Bintang & Angka Tengah
+    // Bintang & Angka
     const cx = 400, cy = 520; 
     ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
     ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -692,9 +694,9 @@ async function renderSyair() {
     ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // ASSET (DENGAN PERBAIKAN TOTAL)
-    await drawImgNoBg(hariIni.img2, 520, 500, 240, 340); // Rumah/Back Shio
-    await drawImgNoBg(hariIni.img, 30, 580, 280, 280);   // Harimau/Hewan Shio
+    // ASSET UTAMA
+    await drawImgNoBg(hariIni.img2, 520, 500, 240, 340); // Rumah/Back
+    await drawImgNoBg(hariIni.img, 30, 580, 280, 280);   // Hewan Shio - Sekarang dijamin utuh!
 
     // Label Shio
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 510, 180, 45, 10); ctx.fill();
