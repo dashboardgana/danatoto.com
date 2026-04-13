@@ -594,7 +594,7 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // FUNGSI PENGHAPUS BACKGROUND PUTIH (VERSI HALUS - TIDAK PECAH)
+    // FUNGSI PENGHAPUS BACKGROUND PUTIH (VERSI EXTRA HALUS)
     const drawImgNoBg = (url, x, y, w, h) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -610,12 +610,12 @@ async function renderSyair() {
                 const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
                 const data = imgData.data;
                 
-                // Menghapus putih hanya di area background (toleransi lebih rendah agar body tidak bolong)
+                // TOLERANSI DIPERKETAT: Hanya hapus yang nyaris putih sempurna (250-255)
+                // Ini supaya putih di bulu harimau (biasanya di bawah 245) aman
                 for (let i = 0; i < data.length; i += 4) {
                     let r = data[i], g = data[i+1], b = data[i+2];
-                    // Jika warna putih bersih (background), buat transparan
-                    if (r > 240 && g > 240 && b > 240) {
-                        data[i+3] = 0;
+                    if (r > 250 && g > 250 && b > 250) {
+                        data[i+3] = 0; // Jadi transparan
                     }
                 }
                 tempCtx.putImageData(imgData, 0, 0);
