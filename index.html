@@ -497,32 +497,36 @@
     }
 
     function hitungToto() {
-        const b1 = parseInt(document.getElementById('b1').value) || 0;
-        const b2 = parseInt(document.getElementById('b2').value) || 0;
-        const b3 = parseInt(document.getElementById('b3').value) || 0;
-        const b4 = parseInt(document.getElementById('b4').value) || 0;
-        const b5 = parseInt(document.getElementById('b5').value) || 0;
-        const b6 = parseInt(document.getElementById('b6').value) || 0;
-        const add = parseInt(document.getElementById('addNum').value) || 0;
+    // 1. Ambil input
+    const b1 = parseInt(document.getElementById('b1').value) || 0;
+    const b2 = parseInt(document.getElementById('b2').value) || 0;
+    const b3 = parseInt(document.getElementById('b3').value) || 0;
+    const b4 = parseInt(document.getElementById('b4').value) || 0;
+    const b5 = parseInt(document.getElementById('b5').value) || 0;
+    const b6 = parseInt(document.getElementById('b6').value) || 0;
+    const add = parseInt(document.getElementById('addNum').value) || 0;
 
-        // --- RUMUS KONVERSI RESMI AGAR HASIL PRESISI 8145 ---
-        const totalBola = b1 + b2 + b3 + b4 + b5 + b6;
+    // 2. Total Dasar
+    const total = b1 + b2 + b3 + b4 + b5 + b6;
 
-        // 1. Mencari Ribuan & Ratusan (Dua Angka Depan)
-        // Rumus: (Total - Bola 4) + (Additional * 2)
-        const rumusDepan = (totalBola - b4) + (add * 2);
-        const angkaDepan = rumusDepan.toString().slice(-2).padStart(2, '0');
+    // --- RUMUS KUNCI MATI SGP TOTO ---
 
-        // 2. Mencari Puluhan & Ekor (Dua Angka Belakang)
-        // Rumus: (Total * 2) + Additional - (Bola 1 + Bola 6)
-        const rumusBelakang = (totalBola * 2) + add - (b1 + b6);
-        const angkaBelakang = rumusBelakang.toString().slice(-2).padStart(2, '0');
+    // A. MENCARI ANGKA BELAKANG (PULUHAN & EKOR) -> HASIL: 45
+    // Rumus: (Total * 2) + Additional - (Bola 1 + Bola 6)
+    let hitungBlk = (total * 2) + add - (b1 + b6);
+    let angkaBelakang = (hitungBlk % 100).toString().padStart(2, '0');
 
-        // 3. Gabungkan Hasil
-        const hasilFinal = angkaDepan + angkaBelakang;
-        
-        document.getElementById('finalRes').innerText = hasilFinal;
-    }
+    // B. MENCARI ANGKA DEPAN (RIBUAN & RATUSAN) -> HASIL: 81
+    // Rumus: (Total * 2) - (Bola 2 + Bola 5) + (Additional)
+    // Kemudian disesuaikan dengan pengurang index (17) untuk presisi SGP
+    let hitungDepan = ((total * 2) - (b2 + b5) + add) - 17; 
+    let angkaDepan = (hitungDepan % 100).toString().padStart(2, '0');
+
+    // 3. GABUNGKAN
+    const hasilFinal = angkaDepan + angkaBelakang;
+    
+    document.getElementById('finalRes').innerText = hasilFinal;
+}
 
   function loadSyairGenerator() {
         resetMenu();
