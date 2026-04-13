@@ -594,54 +594,7 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // --- FUNGSI HAPUS BG SUPER HALUS (FLOOD FILL) - TETAP DI PERTAHANKAN ---
-    const drawImgNoBg = (url, x, y, w, h) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = url;
-            img.onload = () => {
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = img.width;
-                tempCanvas.height = img.height;
-                tempCtx.drawImage(img, 0, 0);
-                
-                const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                const data = imgData.data;
-                const width = tempCanvas.width;
-                const height = tempCanvas.height;
-
-                const targetR = 255, targetG = 255, targetB = 255;
-                const tolerance = 20;
-
-                const queue = [[0, 0]];
-                const visited = new Uint8Array(width * height);
-
-                while (queue.length > 0) {
-                    const [currX, currY] = queue.shift();
-                    const idx = (currY * width + currX);
-                    if (currX < 0 || currX >= width || currY < 0 || currY >= height || visited[idx]) continue;
-                    
-                    visited[idx] = 1;
-                    const pos = idx * 4;
-
-                    if (Math.abs(data[pos] - targetR) <= tolerance && 
-                        Math.abs(data[pos+1] - targetG) <= tolerance && 
-                        Math.abs(data[pos+2] - targetB) <= tolerance) {
-                        
-                        data[pos+3] = 0; 
-                        queue.push([currX + 1, currY], [currX - 1, currY], [currX, currY + 1], [currX, currY - 1]);
-                    }
-                }
-                tempCtx.putImageData(imgData, 0, 0);
-                ctx.drawImage(tempCanvas, x, y, w, h);
-                resolve();
-            };
-            img.onerror = () => { resolve(); };
-        });
-    };
-
+    // Fungsi gambar standar supaya gambar shio padat dan tidak pecah
     const drawImg = (url, x, y, w, h) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -679,7 +632,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
     drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // Bintang (Area Tengah)
+    // Bintang & Angka
     const cx = 400, cy = 520; 
     ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
     ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -692,9 +645,9 @@ async function renderSyair() {
     ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // ASSET (DENGAN FLOOD FILL ASLI)
+    // ASSET (DIBUAT UTUH TANPA HAPUS BG AGAR TIDAK PECAH)
     await drawImg(hariIni.img2, 520, 500, 240, 340);
-    await drawImgNoBg(hariIni.img, 30, 580, 280, 280); 
+    await drawImg(hariIni.img, 30, 580, 280, 280); 
 
     // LABEL SHIO (POSISI DINAIKKAN AGAR RAPI)
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 510, 180, 45, 10); ctx.fill();
