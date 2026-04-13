@@ -497,37 +497,50 @@
     }
 
     function hitungToto() {
-    // 1. Ambil input
-    const b1 = parseInt(document.getElementById('b1').value) || 0;
-    const b2 = parseInt(document.getElementById('b2').value) || 0;
-    const b3 = parseInt(document.getElementById('b3').value) || 0;
-    const b4 = parseInt(document.getElementById('b4').value) || 0;
-    const b5 = parseInt(document.getElementById('b5').value) || 0;
-    const b6 = parseInt(document.getElementById('b6').value) || 0;
-    const add = parseInt(document.getElementById('addNum').value) || 0;
+        // Ambil input dinamis dari dashboard Bos
+        const d6 = parseInt(document.getElementById('b1').value) || 0; 
+        const e6 = parseInt(document.getElementById('b2').value) || 0; 
+        const f6 = parseInt(document.getElementById('b3').value) || 0; 
+        const g6 = parseInt(document.getElementById('b4').value) || 0; 
+        const h6 = parseInt(document.getElementById('b5').value) || 0; 
+        const i6 = parseInt(document.getElementById('b6').value) || 0; 
+        const j6 = parseInt(document.getElementById('addNum').value) || 0; 
 
-    // 2. Total Dasar
-    const total = b1 + b2 + b3 + b4 + b5 + b6;
+        // --- PROSES RUMUS SESUAI DOKUMEN EXCEL BOS ---
+        
+        // G6+H6 (Bola 4 + Bola 5) -> Untuk Result Digit 2
+        const resE8 = (g6 + h6).toString(); 
+        
+        // E6+F6 (Bola 2 + Bola 3) -> Untuk Result Digit 1
+        const resD8 = (e6 + f6).toString(); 
 
-    // --- RUMUS KUNCI MATI SGP TOTO ---
+        // SUM(D6:I6)*2 (Total semua bola * 2)
+        const sumSemua = d6 + e6 + f6 + g6 + h6 + i6;
+        const resG8 = (sumSemua * 2).toString();
 
-    // A. MENCARI ANGKA BELAKANG (PULUHAN & EKOR) -> HASIL: 45
-    // Rumus: (Total * 2) + Additional - (Bola 1 + Bola 6)
-    let hitungBlk = (total * 2) + add - (b1 + b6);
-    let angkaBelakang = (hitungBlk % 100).toString().padStart(2, '0');
+        // G8-D6-I6+J6 (Hasil G8 - Bola 1 - Bola 6 + Add)
+        const resH8 = ( (sumSemua * 2) - d6 - i6 + j6 ).toString();
 
-    // B. MENCARI ANGKA DEPAN (RIBUAN & RATUSAN) -> HASIL: 81
-    // Rumus: (Total * 2) - (Bola 2 + Bola 5) + (Additional)
-    // Kemudian disesuaikan dengan pengurang index (17) untuk presisi SGP
-    let hitungDepan = ((total * 2) - (b2 + b5) + add) - 17; 
-    let angkaDepan = (hitungDepan % 100).toString().padStart(2, '0');
+        // --- PENGAMBILAN KARAKTER (LOGIKA MID EXCEL BOS) ---
+        
+        // Angka 1: Karakter ke-2 dari hasil E6+F6
+        const digit1 = resD8.charAt(resD8.length - 1) || "0";
 
-    // 3. GABUNGKAN
-    const hasilFinal = angkaDepan + angkaBelakang;
-    
-    document.getElementById('finalRes').innerText = hasilFinal;
-}
+        // Angka 2: Karakter ke-2 dari hasil G6+H6
+        const digit2 = resE8.charAt(resE8.length - 1) || "0";
 
+        // Angka 3: Karakter ke-2 dari hasil H8 (Sesuai kolom Result ke-3 di Excel)
+        const digit3 = resH8.charAt(1) || "0";
+
+        // Angka 4: Karakter ke-3 (paling belakang) dari hasil H8
+        const digit4 = resH8.charAt(resH8.length - 1) || "0";
+
+        // HASIL AKHIR GABUNGAN 4D
+        const hasil4D = digit1 + digit2 + digit3 + digit4;
+        
+        // Tampilkan di dashboard
+        document.getElementById('finalRes').innerText = hasil4D;
+    }
   function loadSyairGenerator() {
         resetMenu();
         document.getElementById('main-grid').style.display = "block";
