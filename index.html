@@ -537,90 +537,40 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
+    // 1. SETTING KANVAS (800x1100) - TETAP
     canvas.width = 800;
     canvas.height = 1100;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     
-    // --- DAFTAR UPDATE OTOMATIS (MONYET & PISANG SUDAH SAYA MASUKKAN LAGI) ---
+    // --- DATABASE HARIAN (Hanya Data, Tidak Merusak Script) ---
     const daftarHarian = [
-        { 
-            shio: "MONYET", 
-            bg: "https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", // Background Lama
-            img: "https://i.ibb.co/k6mB39d3/monyet.png",
-            img2: "https://i.ibb.co/tMpKXXVw/pohon-pisang.png", // Asset Tambahan
-            p1: "Pergi ke hutan memetik pisang,", p2: "Terlihat monyet duduk berseri.", p3: "Angka keluar jangan sembarang,", p4: "Hoki datang menghampiri."
-        },
-        { 
-            shio: "KERBAU", 
-            bg: "https://drive.google.com/uc?export=view&id=1cg9DBdJwV22Rvwno5HDV6dKOfcam_-vg",
-            img: "https://drive.google.com/uc?export=view&id=1-GvVEQRkOgdxwlQtxaBaQRoPpSoaadnH",
-            p1: "Si kerbau turun ke sawah,", p2: "Lumpur tebal penuh cerita,", p3: "Kalau hati sedang resah,", p4: "Jangan lupa tetap tertawa"
-        },
-        { 
-            shio: "HARIMAU", 
-            bg: "https://drive.google.com/uc?export=view&id=1cKKLVTFLxyQYfeGXaFym898sB2a8dopY",
-            img: "https://drive.google.com/uc?export=view&id=1LjILso6Yx_5ZcRQ47bCHEh_zkljqYtco",
-            p1: "Harimau gagah di tengah rimba,", p2: "Langkah pelan penuh wibawa,", p3: "Kalau hidup penuh usaha,", p4: "Rezeki datang tanpa diduga"
-        },
-        { 
-            shio: "ULAR", 
-            bg: "https://drive.google.com/uc?export=view&id=1DsprGmP_2MJTRaKgsq1hoBMCTdiiBSck",
-            img: "https://drive.google.com/uc?export=view&id=1YYY-wVGRgxsQupy0wUdWexP3HUAL1OyF",
-            p1: "Ular melingkar di tepi batu,", p2: "Diam tenang menunggu mangsa,", p3: "Kalau hidup penuh ragu,", p4: "Jangan takut terus berusaha"
-        },
-        { 
-            shio: "KUDA", 
-            bg: "https://drive.google.com/uc?export=view&id=1guqxMaX9wtKw7yZ_W6xXRcygaBhmOgEt",
-            img: "https://drive.google.com/uc?export=view&id=18cKgBNde_YiX_IiW47rcdUhbGqka32em",
-            p1: "Kuda berlari di padang luas,", p2: "Angin sepoi menemani langkah,", p3: "Kalau hati ingin sukses,", p4: "Jangan malas terus berusaha"
-        },
-        { 
-            shio: "AYAM", 
-            bg: "https://drive.google.com/uc?export=view&id=16q-yQYteJAg5xCLCQ2DhyO2zaQkKxRLB",
-            img: "https://drive.google.com/uc?export=view&id=1of2fizXU-_A2Ko0c8RCAn7WRYUSyDplH",
-            p1: "Pergi ke pasar membeli ayam,", p2: "Ayam dibeli warnanya merah.", p3: "Kalau hati sedang tenggelam,", p4: "Jangan sedih, tetaplah cerah"
-        },
-        { 
-            shio: "TIKUS", 
-            bg: "https://drive.google.com/uc?export=view&id=1B6DETgAR4xPKSGw4BdVqprBImBNozHa1",
-            img: "https://drive.google.com/uc?export=view&id=1avOrW4XGlwNxGP2twmFMHQgOupNpz7OX",
-            p1: "Tikus kecil berlari cepat,", p2: "Masuk lubang saat malam,", p3: "Kalau ingin hidup hebat,", p4: "Jangan takut terus melangkah"
-        },
-        { 
-            shio: "KELINCI", 
-            bg: "https://drive.google.com/uc?export=view&id=1dgcjdtx_6zUxAOe_JsQp3C-gGM4_mcTH",
-            img: "https://drive.google.com/uc?export=view&id=1Io0vGJVC7qJ2jQEdMOkdoSBz8C4-t-oL",
-            p1: "Beli bunga di pagi hari,", p2: "Bunganya indah warna-warni.", p3: "Kalau hidup ingin berarti,", p4: "Jangan lupa berbagi hati"
-        },
-        { 
-            shio: "NAGA", 
-            bg: "https://drive.google.com/uc?export=view&id=1gInF2lhoZZl67k_c4ELPv7V8FVjexvE8",
-            img: "https://drive.google.com/uc?export=view&id=1avcNGI4wDKJ06zFgla4orucnHyDv7vOJ",
-            p1: "Pergi ke laut melihat pinguin,", p2: "Pinguin lucu berjalan pelan.", p3: "Kalau hati lagi dingin,", p4: "Coba senyum biar hangat perlahan"
-        }
+        { shio: "MONYET", bg: "https://i.ibb.co/Kjq3z4M/back.png", img: "https://i.ibb.co/k6mB39d3/monyet.png", img2: "https://i.ibb.co/tMpKXXVw/pohon-pisang.png", p1: "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", p2: "Angka keluar jangan sembarang hoki datang menghampiri." },
+        { shio: "KERBAU", bg: "https://drive.google.com/uc?export=view&id=1cg9DBdJwV22Rvwno5HDV6dKOfcam_-vg", img: "https://drive.google.com/uc?export=view&id=1-GvVEQRkOgdxwlQtxaBaQRoPpSoaadnH", p1: "Si kerbau turun ke sawah, Lumpur tebal penuh cerita,", p2: "Kalau hati sedang resah, Jangan lupa tetap tertawa" },
+        { shio: "HARIMAU", bg: "https://drive.google.com/uc?export=view&id=1cKKLVTFLxyQYfeGXaFym898sB2a8dopY", img: "https://drive.google.com/uc?export=view&id=1LjILso6Yx_5ZcRQ47bCHEh_zkljqYtco", p1: "Harimau gagah di tengah rimba, Langkah pelan penuh wibawa,", p2: "Kalau hidup penuh usaha, Rezeki datang tanpa diduga" },
+        { shio: "ULAR", bg: "https://drive.google.com/uc?export=view&id=1DsprGmP_2MJTRaKgsq1hoBMCTdiiBSck", img: "https://drive.google.com/uc?export=view&id=1YYY-wVGRgxsQupy0wUdWexP3HUAL1OyF", p1: "Ular melingkar di tepi batu, Diam tenang menunggu mangsa,", p2: "Kalau hidup penuh ragu, Jangan takut terus berusaha" },
+        { shio: "KUDA", bg: "https://drive.google.com/uc?export=view&id=1guqxMaX9wtKw7yZ_W6xXRcygaBhmOgEt", img: "https://drive.google.com/uc?export=view&id=18cKgBNde_YiX_IiW47rcdUhbGqka32em", p1: "Kuda berlari di padang luas, Angin sepoi menemani langkah,", p2: "Kalau hati ingin sukses, Jangan malas terus berusaha" },
+        { shio: "AYAM", bg: "https://drive.google.com/uc?export=view&id=16q-yQYteJAg5xCLCQ2DhyO2zaQkKxRLB", img: "https://drive.google.com/uc?export=view&id=1of2fizXU-_A2Ko0c8RCAn7WRYUSyDplH", p1: "Pergi ke pasar membeli ayam, Ayam dibeli warnanya merah.", p2: "Kalau hati sedang tenggelam, Jangan sedih, tetaplah cerah" },
+        { shio: "TIKUS", bg: "https://drive.google.com/uc?export=view&id=1B6DETgAR4xPKSGw4BdVqprBImBNozHa1", img: "https://drive.google.com/uc?export=view&id=1avOrW4XGlwNxGP2twmFMHQgOupNpz7OX", p1: "Tikus kecil berlari cepat, Masuk lubang saat malam,", p2: "Kalau ingin hidup hebat, Jangan takut terus melangkah" },
+        { shio: "KELINCI", bg: "https://drive.google.com/uc?export=view&id=1dgcjdtx_6zUxAOe_JsQp3C-gGM4_mcTH", img: "https://drive.google.com/uc?export=view&id=1Io0vGJVC7qJ2jQEdMOkdoSBz8C4-t-oL", p1: "Beli bunga di pagi hari, Bunganya indah warna-warni.", p2: "Kalau hidup ingin berarti, Jangan lupa berbagi hati" },
+        { shio: "NAGA", bg: "https://drive.google.com/uc?export=view&id=1gInF2lhoZZl67k_c4ELPv7V8FVjexvE8", img: "https://drive.google.com/uc?export=view&id=1avcNGI4wDKJ06zFgla4orucnHyDv7vOJ", p1: "Pergi ke laut melihat pinguin, Pinguin lucu berjalan pelan.", p2: "Kalau hati lagi dingin, Coba senyum biar hangat perlahan" }
     ];
 
     const idx = d.getDate() % daftarHarian.length;
     const hariIni = daftarHarian[idx];
 
-    // GENERATOR ANGKA OTOMATIS
+    // GENERATOR ANGKA OTOMATIS (Berdasarkan Tanggal)
     const seed = d.getDate() + d.getMonth();
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
-    const bbfs = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
-    const angkaHarian = {
-        am: genNo(1) + genNo(2),
-        twin: genNo(3) + "/" + genNo(4),
-        cb: genNo(5).substring(0,1) + " / " + genNo(6).substring(0,1),
-        s1: genNo(7).substring(0,1), s2: genNo(8).substring(0,1), s3: genNo(9).substring(0,1), s4: genNo(10).substring(0,1)
-    };
+    const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
+    // LINK ASSET - TETAP AMAN
+    const urlBG = "https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C"; 
     const urlLogoDanatoto = 'https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD';
     const urlBGSyair = "https://i.ibb.co/Kjq3z4M/back.png"; 
 
     const loadImg = (url) => new Promise((resolve) => {
-        if(!url) resolve(null);
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.src = url;
@@ -628,24 +578,25 @@ async function renderSyair() {
         img.onerror = () => resolve(null);
     });
 
-    const [bg, logo, shioImg, shioImg2, bgSyair] = await Promise.all([
-        loadImg(hariIni.bg), loadImg(urlLogoDanatoto), loadImg(hariIni.img), loadImg(hariIni.img2), loadImg(urlBGSyair)
+    const [bg, logo, shioImg, extraImg, bgSyair] = await Promise.all([
+        loadImg(urlBG), loadImg(urlLogoDanatoto), loadImg(hariIni.img), loadImg(hariIni.img2), loadImg(urlBGSyair)
     ]);
 
     ctx.clearRect(0, 0, 800, 1100);
-    
-    if (bg) { ctx.drawImage(bg, 0, 0, 800, 1100); } 
+    if (bg) { ctx.drawImage(bg, 0, 0, 800, 1100); }
 
+    // 2. HEADER: LOGO DANATOTO (POSISI ASLI BOS)
     if (logo) { ctx.drawImage(logo, 290, 85, 220, 60); }
 
-    // TANGGAL
+    // TANGGAL (POSISI ASLI BOS)
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.beginPath(); ctx.roundRect(10, 10, 230, 40, 8); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 18px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 125, 37);
 
-    // KOTAK ANGKA
+    // 3. KOTAK ANGKA (STRUKTUR ASLI BOS)
+    ctx.textAlign = "center";
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -655,12 +606,12 @@ async function renderSyair() {
         ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
         ctx.fillText(value, x + 155, y + 95);
     };
-    drawBox(60, 160, "BBFS", bbfs); 
-    drawBox(430, 160, "ANGKA MAIN", angkaHarian.am);
-    drawBox(60, 285, "TWIN", angkaHarian.twin);
-    drawBox(430, 285, "COLOK BEBAS", angkaHarian.cb);
+    drawBox(60, 160, "BBFS", bbfsOto); 
+    drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
+    drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
+    drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // BINTANG
+    // 4. BINTANG TENGAH (POSISI ASLI BOS)
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -677,34 +628,35 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial";
-    ctx.fillText(angkaHarian.s1, 315, 470); ctx.fillText(angkaHarian.s2, 485, 470); 
-    ctx.fillText(angkaHarian.s3, 315, 595); ctx.fillText(angkaHarian.s4, 485, 595); 
+    // 5. ANGKA STAR (OTOMATIS)
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+    ctx.fillText(genNo(7).substring(0,1), 315, 470); 
+    ctx.fillText(genNo(8).substring(0,1), 485, 470); 
+    ctx.fillText(genNo(9).substring(0,1), 315, 595); 
+    ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // GAMBAR SHIO (Pohon Pisang Muncul Kalau Shio Monyet)
-    if (shioImg) {
-        ctx.drawImage(shioImg, 60, 580, 280, 280); 
-    }
-    if (shioImg2) { // Khusus Pohon Pisang
-        ctx.drawImage(shioImg2, 520, 500, 240, 340);
-    }
+    // 6. ASSET (POSISI ASLI BOS - TIDAK KEPOTONG)
+    if (shioImg) ctx.drawImage(shioImg, 30, 580, 260, 260); 
+    if (extraImg) ctx.drawImage(extraImg, 520, 500, 240, 340); // Untuk Pohon Pisang
 
-    // LABEL SHIO
+    // 7. LABEL SHIO (POSISI ASLI BOS)
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 535, 180, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
     ctx.fillText("SHIO " + hariIni.shio, 160, 565);
 
-    // PANTUN
+    // 8. KOTAK PANTUN (POSISI ASLI BOS)
     const pY = 930, pW = 670, pH = 135, pX = 65;
     if (bgSyair) {
         ctx.save(); ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
         ctx.drawImage(bgSyair, pX, pY, pW, pH); ctx.restore();
+    } else {
+        ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
     }
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
-    ctx.fillText(hariIni.p1 + " " + hariIni.p2, 400, pY + 55);
-    ctx.fillText(hariIni.p3 + " " + hariIni.p4, 400, pY + 100);
+    ctx.fillText(hariIni.p1, 400, pY + 55);
+    ctx.fillText(hariIni.p2, 400, pY + 100);
 }
      function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
