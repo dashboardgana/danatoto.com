@@ -537,14 +537,14 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // 1. SETTING KANVAS (800x1100) - TETAP
+    // 1. SETTING KANVAS (800x1100)
     canvas.width = 800;
     canvas.height = 1100;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     
-    // --- DATABASE FULL 12 SHIO (HEWAN + TEMPAT SINKRON) ---
+    // --- DATABASE 12 SHIO (LIST LENGKAP) ---
     const daftarHarian = [
         { shio: "MONYET", img: "https://i.ibb.co/h0V70i_I/monyet-emas.png", img2: "https://i.ibb.co/tMpKXXVw/pohon-pisang.png", p1: "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", p2: "Angka keluar jangan sembarang hoki datang menghampiri." },
         { shio: "KERBAU", img: "https://i.ibb.co/wWlV5g6K/kerbau-premium.png", img2: "https://drive.google.com/uc?export=view&id=1cg9DBdJwV22Rvwno5HDV6dKOfcam_-vg", p1: "Si kerbau turun ke sawah, Lumpur tebal penuh cerita,", p2: "Kalau hati sedang resah, Jangan lupa tetap tertawa" },
@@ -563,7 +563,7 @@ async function renderSyair() {
     const idx = d.getDate() % daftarHarian.length;
     const hariIni = daftarHarian[idx];
 
-    // --- GENERATOR NOMOR OTOMATIS (GANTI TIAP HARI) ---
+    // --- GENERATOR NOMOR OTOMATIS BERUBAH TIAP HARI ---
     const seed = d.getDate() + d.getMonth() + d.getFullYear();
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
@@ -578,28 +578,32 @@ async function renderSyair() {
         img.crossOrigin = "anonymous";
         img.src = url;
         img.onload = () => resolve(img);
-        img.onerror = () => resolve(null);
+        img.onerror = () => { console.log("Gagal muat: " + url); resolve(null); };
     });
 
+    // LOAD SEMUA GAMBAR (Termasuk Shio & Item Tambahan Hari Ini)
     const [bg, logo, shioImg, extraImg, bgSyair] = await Promise.all([
-        loadImg(urlBG), loadImg(urlLogoDanatoto), loadImg(hariIni.img), loadImg(hariIni.img2), loadImg(urlBGSyair)
+        loadImg(urlBG), 
+        loadImg(urlLogoDanatoto), 
+        loadImg(hariIni.img), 
+        loadImg(hariIni.img2), 
+        loadImg(urlBGSyair)
     ]);
 
     ctx.clearRect(0, 0, 800, 1100);
-    if (bg) { ctx.drawImage(bg, 0, 0, 800, 1100); }
+    if (bg) ctx.drawImage(bg, 0, 0, 800, 1100);
 
-    // 2. HEADER: LOGO DANATOTO (POSISI ASLI)
-    if (logo) { ctx.drawImage(logo, 290, 85, 220, 60); }
+    // 2. HEADER: LOGO DANATOTO
+    if (logo) ctx.drawImage(logo, 290, 85, 220, 60); 
 
-    // TANGGAL (POSISI ASLI)
+    // TANGGAL
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.beginPath(); ctx.roundRect(10, 10, 230, 40, 8); ctx.fill();
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 18px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 125, 37);
 
-    // 3. KOTAK ANGKA (STRUKTUR ASLI)
-    ctx.textAlign = "center";
+    // 3. KOTAK ANGKA (NOMOR OTOMATIS)
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -614,7 +618,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
     drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // 4. BINTANG TENGAH (POSISI ASLI)
+    // 4. BINTANG TENGAH
     const cx = 400, cy = 520; 
     function drawStar(x, y, spikes, outer, inner) {
         let rot=Math.PI/2*3, step=Math.PI/spikes;
@@ -631,28 +635,30 @@ async function renderSyair() {
     }
     drawStar(cx, cy, 5, 85, 38);
 
-    // 5. ANGKA STAR (OTOMATIS GANTI)
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+    // 5. ANGKA STAR (OTOMATIS)
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial";
     ctx.fillText(genNo(7).substring(0,1), 315, 470); 
     ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); 
     ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // 6. ASSET (HEWAN DI KIRI, TEMPAT DI KANAN - TIDAK BERSERAK)
+    // 6. ASSET (HEWAN & ITEM TAMBAHAN)
     if (shioImg) ctx.drawImage(shioImg, 30, 580, 260, 260); 
     if (extraImg) ctx.drawImage(extraImg, 520, 500, 240, 340); 
 
-    // 7. LABEL SHIO (POSISI ASLI)
+    // 7. LABEL SHIO
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 535, 180, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
     ctx.fillText("SHIO " + hariIni.shio, 160, 565);
 
-    // 8. KOTAK PANTUN (POSISI ASLI)
+    // 8. KOTAK PANTUN
     const pY = 930, pW = 670, pH = 135, pX = 65;
     if (bgSyair) {
-        ctx.save(); ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
-        ctx.drawImage(bgSyair, pX, pY, pW, pH); ctx.restore();
+        ctx.save();
+        ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.clip();
+        ctx.drawImage(bgSyair, pX, pY, pW, pH);
+        ctx.restore();
     }
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
