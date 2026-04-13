@@ -447,7 +447,7 @@
         });
     }
 
-    // FUNGSI PERHITUNGAN SGP TOTO
+// FUNGSI PERHITUNGAN SGP TOTO
     function loadSgpToto() {
         resetMenu();
         document.getElementById('main-grid').style.display = "block";
@@ -459,19 +459,20 @@
         document.getElementById('menu-sgp').classList.add('active-menu');
 
         const grid = document.getElementById('main-grid');
+        // Bagian VALUE di bawah ini sekarang kosong agar tidak muncul angka lama saat pindah menu
         grid.innerHTML = `
             <div class="toto-container">
                 <div class="toto-grid">
-                    <div class="toto-input-group"><label>Bola 1</label><input type="number" id="b1" value="1"></div>
-                    <div class="toto-input-group"><label>Bola 2</label><input type="number" id="b2" value="2"></div>
-                    <div class="toto-input-group"><label>Bola 3</label><input type="number" id="b3" value="6"></div>
-                    <div class="toto-input-group"><label>Bola 4</label><input type="number" id="b4" value="9"></div>
-                    <div class="toto-input-group"><label>Bola 5</label><input type="number" id="b5" value="44"></div>
-                    <div class="toto-input-group"><label>Bola 6</label><input type="number" id="b6" value="48"></div>
+                    <div class="toto-input-group"><label>Bola 1</label><input type="number" id="b1" value=""></div>
+                    <div class="toto-input-group"><label>Bola 2</label><input type="number" id="b2" value=""></div>
+                    <div class="toto-input-group"><label>Bola 3</label><input type="number" id="b3" value=""></div>
+                    <div class="toto-input-group"><label>Bola 4</label><input type="number" id="b4" value=""></div>
+                    <div class="toto-input-group"><label>Bola 5</label><input type="number" id="b5" value=""></div>
+                    <div class="toto-input-group"><label>Bola 6</label><input type="number" id="b6" value=""></div>
                 </div>
                 <div class="toto-input-group" style="margin-bottom:20px;">
                     <label>Additional Number</label>
-                    <input type="number" id="addNum" value="24">
+                    <input type="number" id="addNum" value="">
                 </div>
                 <button class="btn-hitung" onclick="hitungToto()">HITUNG RESULT</button>
                 
