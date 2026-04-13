@@ -594,7 +594,7 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // FUNGSI HAPUS PUTIH + SMART SCALE (JAMINAN TIDAK KEPOTONG)
+    // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -610,18 +610,21 @@ async function renderSyair() {
                 const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
                 const data = imgData.data;
                 for (let i = 0; i < data.length; i += 4) {
-                    if (data[i] > 245 && data[i+1] > 245 && data[i+2] > 245) {
+                    if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
                         data[i+3] = 0;
                     }
                 }
                 tempCtx.putImageData(imgData, 0, 0);
 
-                // Hitung skala otomatis biar kepala & kaki utuh
-                const scale = Math.min(targetW / img.width, targetH / img.height);
+                // Tambahkan padding internal 15px biar ga mepet batas
+                const padding = 15;
+                const innerW = targetW - (padding * 2);
+                const innerH = targetH - (padding * 2);
+                
+                const scale = Math.min(innerW / img.width, innerH / img.height);
                 const drawW = img.width * scale;
                 const drawH = img.height * scale;
                 
-                // Taruh di tengah-tengah kotak target
                 const drawX = targetX + (targetW - drawW) / 2;
                 const drawY = targetY + (targetH - drawH) / 2;
 
@@ -643,8 +646,8 @@ async function renderSyair() {
     };
 
     ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100); // BG
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60); // Logo
+    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
+    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
 
     // Tanggal
     ctx.fillStyle = "black";
@@ -653,7 +656,7 @@ async function renderSyair() {
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // Kotak Angka (BBFS, AM, TWIN, CB)
+    // Kotak Angka
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -668,7 +671,7 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
     drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // Bintang & Angka (TETAP DI TENGAH - TIDAK BOLEH TERTUTUP)
+    // Bintang (Area Tengah - DILARANG TERTUTUP)
     const cx = 400, cy = 520; 
     ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
     ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -677,27 +680,26 @@ async function renderSyair() {
         ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
     }
     ctx.closePath(); ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial";
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
     ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // --- AREA ASSET BARU: SUDUT KIRI VS SUDUT KANAN ---
+    // --- REVISI FINAL: POSISI SUDUT KIRI & KANAN ---
 
-    // 1. Gambar Background/Hutan (Sudut Kanan Mentok)
-    // X=500 (Aman dari bintang), Lebar=270, Tinggi sampai atas pantun (410)
-    await drawImg(hariIni.img2, 500, 480, 270, 410); 
+    // 1. Gambar Hutan (Sudut Kanan Mentok) - X=510 biar ga kena bintang
+    await drawImg(hariIni.img2, 510, 480, 260, 410); 
 
-    // 2. Gambar Shio (Sudut Kiri Mentok)
-    // X=30, Lebar=280, Tinggi=350 (Anti-kepotong kaki/kepala)
-    await drawImgNoBg(hariIni.img, 30, 560, 280, 350); 
+    // 2. Gambar Shio (Sudut Kiri Mentok) - Y=550 dinaikkan biar kaki aman
+    // Area target ditinggikan (400) biar kepala gak mentok label
+    await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
 
-    // Label Shio (Posisikan di Sudut Kiri atas Shio)
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(40, 500, 180, 45, 10); ctx.fill();
+    // Label Shio - Di Sudut Kiri
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
-    ctx.fillText("SHIO " + hariIni.shio, 130, 530);
+    ctx.fillText("SHIO " + hariIni.shio, 140, 530);
 
-    // Kotak Pantun (Batas Bawah)
+    // Pantun
     const pY = 930, pW = 670, pH = 135, pX = 65;
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
     ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
