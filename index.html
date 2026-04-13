@@ -594,7 +594,7 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // --- FUNGSI HAPUS BG SUPER HALUS (FLOOD FILL) AGAR TIDAK PECAH ---
+    // --- FUNGSI HAPUS BG SUPER HALUS (FLOOD FILL) - TETAP DI PERTAHANKAN ---
     const drawImgNoBg = (url, x, y, w, h) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -630,7 +630,7 @@ async function renderSyair() {
                         Math.abs(data[pos+1] - targetG) <= tolerance && 
                         Math.abs(data[pos+2] - targetB) <= tolerance) {
                         
-                        data[pos+3] = 0; // Jadi Transparan
+                        data[pos+3] = 0; 
                         queue.push([currX + 1, currY], [currX - 1, currY], [currX, currY + 1], [currX, currY - 1]);
                     }
                 }
@@ -653,7 +653,7 @@ async function renderSyair() {
     };
 
     ctx.clearRect(0, 0, 800, 1100);
-    // Background Utama & Logo (Pastikan URL IBB sudah benar)
+    // Background Utama & Logo
     await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
     await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
 
@@ -664,7 +664,7 @@ async function renderSyair() {
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // Kotak Angka (BBFS, Main, Twin, Colok)
+    // Kotak Angka
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -692,7 +692,7 @@ async function renderSyair() {
     ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // ASSET (DENGAN FLOOD FILL - SHIO DIJAMIN MULUS)
+    // ASSET (DENGAN FLOOD FILL ASLI)
     await drawImg(hariIni.img2, 520, 500, 240, 340);
     await drawImgNoBg(hariIni.img, 30, 580, 280, 280); 
 
@@ -702,7 +702,7 @@ async function renderSyair() {
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
     ctx.fillText("SHIO " + hariIni.shio, 160, 540);
 
-    // Pantun (Area Bawah)
+    // Pantun
     const pY = 930, pW = 670, pH = 135, pX = 65;
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
     ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
