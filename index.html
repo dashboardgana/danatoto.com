@@ -594,7 +594,7 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // FUNGSI PERBAIKAN: HAPUS BG & JAGA ASPEK RASIO AGAR TIDAK KEPOTONG
+    // FUNGSI ANTI-KEPOTONG: Menyesuaikan gambar agar pas di dalam frame
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -612,32 +612,30 @@ async function renderSyair() {
                 const width = tempCanvas.width;
                 const height = tempCanvas.height;
 
-                const tolerance = 40;
+                // Flood Fill untuk hapus putih background saja
                 const queue = [[0, 0], [width-1, 0], [0, height-1], [width-1, height-1]];
                 const visited = new Uint8Array(width * height);
-
                 while (queue.length > 0) {
                     const [currX, currY] = queue.shift();
                     const pixIdx = (currY * width + currX);
                     if (currX < 0 || currX >= width || currY < 0 || currY >= height || visited[pixIdx]) continue;
                     visited[pixIdx] = 1;
                     const pos = pixIdx * 4;
-
-                    if (data[pos] > 255 - tolerance && data[pos+1] > 255 - tolerance && data[pos+2] > 255 - tolerance) {
+                    if (data[pos] > 240 && data[pos+1] > 240 && data[pos+2] > 240) {
                         data[pos+3] = 0; 
                         queue.push([currX+1, currY], [currX-1, currY], [currX, currY+1], [currX, currY-1]);
                     }
                 }
                 tempCtx.putImageData(imgData, 0, 0);
 
-                // LOGIKA ANTI-KEPOTONG: Hitung skala agar gambar masuk sempurna ke kotak
-                const scale = Math.min(targetW / width, targetH / height);
-                const finalW = width * scale;
-                const finalH = height * scale;
-                const offsetX = targetX + (targetW - finalW) / 2;
-                const offsetY = targetY + (targetH - finalH) / 2;
+                // HITUNG SKALA AGAR TIDAK KEPOTONG
+                const ratio = Math.min(targetW / width, targetH / height);
+                const drawW = width * ratio;
+                const drawH = height * ratio;
+                const drawX = targetX + (targetW - drawW) / 2;
+                const drawY = targetY + (targetH - drawH) / 2;
 
-                ctx.drawImage(tempCanvas, offsetX, offsetY, finalW, finalH);
+                ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
                 resolve();
             };
             img.onerror = () => resolve();
@@ -655,9 +653,8 @@ async function renderSyair() {
     };
 
     ctx.clearRect(0, 0, 800, 1100);
-    // Background Utama & Logo
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
+    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100); // BG
+    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60); // Logo
 
     // Tanggal
     ctx.fillStyle = "black";
@@ -694,9 +691,9 @@ async function renderSyair() {
     ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // ASSET UTAMA
-    await drawImgNoBg(hariIni.img2, 520, 500, 240, 340); // Rumah/Back
-    await drawImgNoBg(hariIni.img, 30, 580, 280, 280);   // Hewan Shio - Sekarang dijamin utuh!
+    // AREA ASSET SHIO (DIATUR BIAR TIDAK TABRAKAN)
+    await drawImgNoBg(hariIni.img2, 520, 480, 240, 340); // Bg Rumah (Naik dikit)
+    await drawImgNoBg(hariIni.img, 40, 560, 260, 320);   // Hewan Shio (Area tinggi biar kepala kaki aman)
 
     // Label Shio
     ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 510, 180, 45, 10); ctx.fill();
