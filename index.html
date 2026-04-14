@@ -809,19 +809,27 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
-// VARIABEL PENYIMPAN DATA GAMBAR (PASTE)
+
+// Deklarasi global biar gak error saat paste
 let gambarPaste = { bg: null, bukti: null };
 
 function loadKemenangan() {
-    // 1. Reset Judul Atas agar tidak tertukar dengan Syair Harian
+    // --- 1. PEMAKSA NAVIGASI (SOLUSI ANTI NABRAK) ---
+    // Hapus semua class active dari sidebar
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+    
+    // Cari menu kemenangan (id: menu-win) dan kasih class active
+    const menuKemenangan = document.getElementById('menu-win');
+    if (menuKemenangan) menuKemenangan.classList.add('active');
+
+    // Paksa ganti judul header agar tidak tertulis 'Generator Syair'
     const headerTitle = document.querySelector('.header h2') || document.querySelector('#header-container h2');
     if (headerTitle) {
         headerTitle.innerText = "GENERATOR POSTINGAN KEMENANGAN";
     }
 
+    // --- 2. TAMPILAN DASHBOARD ---
     const grid = document.getElementById('main-grid');
-    
-    // 2. Tampilan Menu Input dengan Fitur Paste (CTRL+V)
     grid.innerHTML = `
         <div id="mesin-jp" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; font-family: sans-serif;">
             <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; box-shadow: 0 0 20px rgba(255, 235, 59, 0.3); text-align: center;">
@@ -846,7 +854,6 @@ function loadKemenangan() {
         <canvas id="canvas-download" width="950" height="500" style="display:none;"></canvas>
     `;
 
-    // Pasang fungsi penangkap Paste
     setupPasteHandler('box-bg', 'prev-bg', 'bg');
     setupPasteHandler('box-bukti', 'prev-bukti', 'bukti');
 }
@@ -860,8 +867,8 @@ function setupPasteHandler(boxId, imgId, type) {
             reader.onload = (event) => {
                 document.getElementById(imgId).src = event.target.result;
                 document.getElementById(imgId).style.display = 'block';
-                gambarPaste[type] = event.target.result; // Simpan data gambar
-                box.style.borderColor = "#ffeb3b";
+                gambarPaste[type] = event.target.result;
+                box.style.borderColor = "#4caf50";
             };
             reader.readAsDataURL(item.getAsFile());
         }
@@ -883,11 +890,9 @@ function mulaiRakitGambar() {
         const areaHasil = document.getElementById('hasil-jadi');
         areaHasil.style.display = 'block';
 
-        // HASIL AKHIR
         areaHasil.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
                 <div id="capture-area" style="position: relative; width: 950px; height: 500px; border-radius: 20px; border: 4px solid #ffeb3b; overflow: hidden; background: url('${gambarPaste.bg}') center/cover; box-shadow: 0 0 40px rgba(0,0,0,0.8);">
-                    
                     <div style="position: absolute; left: 60px; top: 160px; color: white; text-shadow: 4px 4px 15px #000; font-family: sans-serif; z-index: 10;">
                         <h1 style="font-size: 85px; color: #ffeb3b; margin: 0; font-weight: 900; line-height: 0.8;">BIG WIN!</h1>
                         <h2 style="font-size: 35px; margin: 10px 0; color: #fff; font-weight: bold;">MEMBER DANATOTO</h2>
@@ -895,23 +900,17 @@ function mulaiRakitGambar() {
                             <span style="color: #00ff9d; font-weight: bold; font-size: 20px;">TRANSFER BERHASIL ✅</span>
                         </div>
                     </div>
-
                     <div style="position: absolute; right: 80px; top: 35px; width: 220px; height: 430px; background: #000; border: 10px solid #1a1a1a; border-radius: 35px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.9); z-index: 5;">
-                        <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 20px; background: #1a1a1a; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 6;"></div>
                         <img src="${gambarPaste.bukti}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-
                     <div style="position: absolute; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, transparent 60%); z-index: 1;"></div>
                 </div>
-
                 <div style="margin-top: 25px; display: flex; gap: 15px;">
                     <button onclick="unduhSekarang()" style="padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px;">📥 DOWNLOAD GAMBAR</button>
                     <button onclick="loadKemenangan()" style="padding: 15px 20px; background: #ff5252; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">🔄 RESET</button>
                 </div>
             </div>
         `;
-        
-        // Render ke canvas tersembunyi supaya bisa di-download
         renderKeCanvas();
     }, 800);
 }
@@ -921,34 +920,17 @@ function renderKeCanvas() {
     const ctx = canvas.getContext('2d');
     const imgBG = new Image();
     const imgBukti = new Image();
-
     imgBG.onload = () => {
         ctx.drawImage(imgBG, 0, 0, 950, 500);
-        // Shadow kiri
         const grd = ctx.createLinearGradient(0, 0, 600, 0);
         grd.addColorStop(0, "rgba(0,0,0,0.8)");
         grd.addColorStop(1, "transparent");
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, 950, 500);
-        
-        // Teks
-        ctx.fillStyle = "#ffeb3b";
-        ctx.font = "bold 80px sans-serif";
-        ctx.fillText("BIG WIN!", 60, 220);
-        
-        // Frame HP & Bukti
-        ctx.fillStyle = "#111";
-        ctx.beginPath();
-        ctx.roundRect(650, 40, 230, 420, 35);
-        ctx.fill();
-
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, 950, 500);
+        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 80px sans-serif"; ctx.fillText("BIG WIN!", 60, 220);
+        ctx.fillStyle = "#111"; ctx.beginPath(); ctx.roundRect(650, 40, 230, 420, 35); ctx.fill();
         imgBukti.onload = () => {
-            ctx.save();
-            ctx.beginPath();
-            ctx.roundRect(662, 52, 206, 396, 25);
-            ctx.clip();
-            ctx.drawImage(imgBukti, 662, 52, 206, 396);
-            ctx.restore();
+            ctx.save(); ctx.beginPath(); ctx.roundRect(662, 52, 206, 396, 25); ctx.clip();
+            ctx.drawImage(imgBukti, 662, 52, 206, 396); ctx.restore();
         };
         imgBukti.src = gambarPaste.bukti;
     };
