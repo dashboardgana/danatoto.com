@@ -849,7 +849,7 @@ function loadKemenangan() {
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; color: white;">
             
             <div id="mesin-input" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
-                <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
+                <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP HD</h3>
                 
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
@@ -862,27 +862,12 @@ function loadKemenangan() {
                 </div>
                 
                 <button onclick="prosesRakitFinal()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
-                    🚀 PROSES EDIT SEKARANG
+                    🚀 PROSES RAKIT SEKARANG
                 </button>
             </div>
 
             <div id="area-hasil" style="display: none; text-align: center;">
-                
-                <div id="poster-container" style="position: relative; width: 360px; height: 640px; border: 10px solid #333; border-radius: 30px; overflow: hidden; background: #000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
-                    
-                    <img id="final-bg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0.8;">
-                    
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"></div>
-                    
-                    <div style="position: absolute; top: 10%; width: 100%; text-align: center; color: #ffeb3b; font-family: sans-serif; text-shadow: 2px 2px 4px #000;">
-                        <h1 style="margin: 0; font-size: 36px; letter-spacing: 2px;">BIG WIN!🚀</h1>
-                        <p style="margin: 5px 0 0; color: #fff; font-size: 14px; letter-spacing: 4px;">DANATOTO MEMBER</p>
-                    </div>
-
-                    <div style="position: absolute; bottom: 5%; left: 10%; right: 10%; height: 60%; background: #fff; border-radius: 20px; overflow: hidden; border: 4px solid #ffeb3b; box-shadow: 0 0 20px #ffeb3b;">
-                        <img id="final-bukti" src="" style="width: 100%; height: 100%; object-fit: contain;">
-                    </div>
-                </div>
+                <canvas id="canvas-gabung" width="1080" height="1920" style="width: 320px; height: auto; border: 5px solid #333; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
 
                 <div style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
                     <button onclick="downloadPosterPNG()" style="padding: 15px 30px; background: #2ecc71; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
@@ -893,15 +878,11 @@ function loadKemenangan() {
                     </button>
                 </div>
             </div>
-
-            <canvas id="canvas-gabung" width="720" height="1280" style="display: none;"></canvas>
-
         </div>`;
 
     initPasteKemenangan();
 }
 
-// Fungsi Paste (Tidak diubah, hanya ID disesuaikan)
 function initPasteKemenangan() {
     const setup = (id, imgId, key) => {
         const el = document.getElementById(id);
@@ -913,7 +894,7 @@ function initPasteKemenangan() {
                 reader.onload = (ev) => {
                     document.getElementById(imgId).src = ev.target.result;
                     document.getElementById(imgId).style.display = 'block';
-                    window['rakitan_' + key] = ev.target.result; // Simpan data base64
+                    window['rakitan_' + key] = ev.target.result;
                     el.style.borderColor = "#4caf50";
                 };
                 reader.readAsDataURL(item.getAsFile());
@@ -924,144 +905,72 @@ function initPasteKemenangan() {
     setup('box-bukti', 'v-bukti', 'bukti');
 }
 
-// Fungsi Utama: Proses Rakit Gambar Persegi Panjang
-function prosesRakitFinal() {
+async function prosesRakitFinal() {
     const bgData = window.rakitan_bg;
     const buktiData = window.rakitan_bukti;
 
     if (!bgData || !buktiData) {
-        alert("Bos, gambar belum lengkap! Tempel dulu Background dan Bukti Transfernya.");
+        alert("Bos, gambar belum lengkap!");
         return;
     }
 
-    // Tampilkan Area Hasil, Sembunyikan Input
     document.getElementById('mesin-input').style.display = 'none';
     document.getElementById('area-hasil').style.display = 'block';
 
-    // Masukkan gambar ke dalam preview HTML
-    document.getElementById('final-bg').src = bgData;
-    document.getElementById('final-bukti').src = buktiData;
-
-    // --- PROSES GABUNG KE CANVAS UNTUK DOWNLOAD ---
     const canvas = document.getElementById('canvas-gabung');
     const ctx = canvas.getContext('2d');
     
-    // Ukuran Canvas Tinggi (Persegi Panjang/HP)
-    const cw = canvas.width;
-    const ch = canvas.height;
+    // Load images
+    const loadImg = (src) => new Promise(res => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = src;
+        img.onload = () => res(img);
+    });
 
-    // Load Gambar
-    const imgBg = new Image();
-    const imgBukti = new Image();
+    const imgBg = await loadImg(bgData);
+    const imgBukti = await loadImg(buktiData);
+    const imgFrame = await loadImg("https://i.ibb.co/Y76NfS7/phone-frame.png"); // Frame HP PNG Cantik
 
-    imgBg.onload = () => {
-        // 1. Gambar Background (Cover penuh)
-        ctx.drawImage(imgBg, 0, 0, cw, ch);
+    // 1. Gambar Background full 1080x1920
+    ctx.drawImage(imgBg, 0, 0, 1080, 1920);
 
-        // Overlay Gelap & Teks
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
-        ctx.fillRect(cw/2 - 250, 100, 500, 150); // Box teks atas
+    // Overlay Gradient Gelap biar fokus ke HP
+    let grad = ctx.createLinearGradient(0, 0, 0, 1920);
+    grad.addColorStop(0, 'rgba(0,0,0,0.5)');
+    grad.addColorStop(0.5, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.5)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1080, 1920);
 
-        ctx.fillStyle = "#ffeb3b";
-        ctx.font = "bold 70px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("BIG WIN!🚀", cw/2, 180);
+    // 2. Gambar Bukti di area Layar HP dulu (biar tertutup frame)
+    // Posisi disesuaikan agar pas di lubang layar frame HP
+    ctx.drawImage(imgBukti, 155, 285, 770, 1430); 
 
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "30px sans-serif";
-        ctx.fillText("DANATOTO MEMBER", cw/2, 230);
+    // 3. Gambar Frame HP di atas Bukti
+    ctx.drawImage(imgFrame, 90, 200, 900, 1600);
 
-        imgBukti.onload = () => {
-            // 2. Gambar Frame HP PNG di atas Background
-            // Untuk canvas, kita gambar kotak putih dulu sebagai frame
-            const fx = cw * 0.1;
-            const fy = ch * 0.35;
-            const fw = cw * 0.8;
-            const fh = ch * 0.6;
-
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.roundRect(fx, fy, fw, fh, cw * 0.05);
-            ctx.fill();
-            ctx.strokeStyle = "#ffeb3b";
-            ctx.lineWidth = 10;
-            ctx.stroke();
-
-            // 3. Gambar Bukti Transfer di dalam Frame (Contain)
-            const padding = cw * 0.02;
-            const bx = fx + padding;
-            const by = fy + padding;
-            const bw = fw - (padding * 2);
-            const bh = fh - (padding * 2);
-
-            // Hitung skala contain
-            const imgRatio = imgBukti.width / imgBukti.height;
-            const targetRatio = bw / bh;
-            let drawW, drawH, drawX, drawY;
-
-            if (imgRatio > targetRatio) {
-                drawW = bw;
-                drawH = bw / imgRatio;
-                drawX = bx;
-                drawY = by + (bh - drawH) / 2;
-            } else {
-                drawW = bh * imgRatio;
-                drawH = bh;
-                drawX = bx + (bw - drawW) / 2;
-                drawY = by;
-            }
-
-            ctx.drawImage(imgBukti, drawX, drawY, drawW, drawH);
-
-            // Siapkan URL Download
-            if (currentDownloadUrl) URL.revokeObjectURL(currentDownloadUrl);
-            canvas.toBlob((blob) => {
-                currentDownloadUrl = URL.createObjectURL(blob);
-            }, 'image/png');
-        };
-        imgBukti.src = buktiData;
-    };
-    imgBg.src = bgData;
+    // Siapkan URL Download
+    canvas.toBlob((blob) => {
+        if (currentDownloadUrl) URL.revokeObjectURL(currentDownloadUrl);
+        currentDownloadUrl = URL.createObjectURL(blob);
+    }, 'image/png');
 }
 
-// Fungsi Download Gambar
 function downloadPosterPNG() {
-    if (!currentDownloadUrl) {
-        alert("Gambar sedang diproses, silakan tunggu sebentar.");
-        return;
-    }
+    if (!currentDownloadUrl) return alert("Sabar Bos, lagi proses...");
     const a = document.createElement('a');
     a.href = currentDownloadUrl;
-    a.download = 'Danatoto_BigWin_' + new Date().getTime() + '.png'; // Nama file unik
-    document.body.appendChild(a);
+    a.download = 'JP_DANATOTO_' + new Date().getTime() + '.png';
     a.click();
-    document.body.removeChild(a);
 }
 
-// Fungsi Hapus / Reset
 function hapusHasilRautan() {
-    // Kosongkan data gambar
     window.rakitan_bg = null;
     window.rakitan_bukti = null;
     if (currentDownloadUrl) URL.revokeObjectURL(currentDownloadUrl);
     currentDownloadUrl = null;
-
-    // Reset Tampilan Input
-    document.getElementById('v-bg').src = '';
-    document.getElementById('v-bg').style.display = 'none';
-    document.getElementById('box-bg').style.borderColor = "#00f2ff";
-
-    document.getElementById('v-bukti').src = '';
-    document.getElementById('v-bukti').style.display = 'none';
-    document.getElementById('box-bukti').style.borderColor = "#00f2ff";
-
-    // Tampilkan kembali input, sembunyikan hasil
-    document.getElementById('mesin-input').style.display = 'block';
-    document.getElementById('area-hasil').style.display = 'none';
-    
-    // Bersihkan canvas
-    const canvas = document.getElementById('canvas-gabung');
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    loadKemenangan();
 }
 </script>
 </body>
