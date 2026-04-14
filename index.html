@@ -814,13 +814,31 @@ function copyAllPrediksi() {
 let gambarPaste = { bg: null, bukti: null };
 
 function loadKemenangan() {
-    // --- 2. UPDATE TAMPILAN HEADER (HANYA JUDUL) ---
-    const topHeader = document.querySelector('.header h2') || document.querySelector('.top-bar h2');
-    if (topHeader) {
-        topHeader.innerText = "GENERATOR POSTINGAN KEMENANGAN";
+    // --- 2. PAKSA PINDAH WARNA SIDEBAR (BIAR GAK NYANGKUT DI SYAIR) ---
+    // Cari semua elemen menu
+    const semuaMenu = document.querySelectorAll('.sidebar a, .menu-item, .nav-link');
+    semuaMenu.forEach(item => {
+        item.classList.remove('active'); // Hapus class active dari manapun
+        item.style.backgroundColor = "transparent"; // Reset warna manual
+    });
+
+    // Cari menu Postingan dan nyalakan birunya
+    semuaMenu.forEach(item => {
+        if (item.innerText.includes("POSTINGAN")) {
+            item.classList.add('active');
+            item.style.backgroundColor = "#00f2ff"; // Warna biru sesuai SS Bos
+            item.style.color = "#000";
+        }
+    });
+
+    // --- 3. PAKSA GANTI JUDUL (BIAR GAK TULISAN "SYAIR") ---
+    const judulAtas = document.querySelector('.header h2') || document.querySelector('.top-bar h2');
+    if (judulAtas) {
+        judulAtas.innerText = "GENERATOR POSTINGAN KEMENANGAN";
+        judulAtas.style.textShadow = "0 0 10px #00f2ff"; // Biar makin keren
     }
 
-    // --- 3. TAMPILAN DASHBOARD TENGAH ---
+    // --- 4. TAMPILAN DASHBOARD TENGAH ---
     const grid = document.getElementById('main-grid');
     grid.innerHTML = `
         <div id="mesin-jp" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; font-family: sans-serif;">
@@ -846,11 +864,11 @@ function loadKemenangan() {
         <canvas id="canvas-download" width="950" height="500" style="display:none;"></canvas>
     `;
 
-    // Pasang fungsi penangkap paste
     setupPasteHandler('box-bg', 'prev-bg', 'bg');
     setupPasteHandler('box-bukti', 'prev-bukti', 'bukti');
 }
 
+// Fungsi bantu (Copy Paste & Rakit)
 function setupPasteHandler(boxId, imgId, type) {
     const box = document.getElementById(boxId);
     box.addEventListener('paste', (e) => {
@@ -870,10 +888,9 @@ function setupPasteHandler(boxId, imgId, type) {
 
 function mulaiRakitGambar() {
     if (!gambarPaste.bg || !gambarPaste.bukti) {
-        alert("Bos, isi Background & Bukti dulu pakai CTRL+V!");
+        alert("Bos, isi dulu fotonya!");
         return;
     }
-
     document.getElementById('mesin-jp').style.display = 'none';
     const areaHasil = document.getElementById('hasil-jadi');
     areaHasil.style.display = 'block';
@@ -881,7 +898,7 @@ function mulaiRakitGambar() {
     areaHasil.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
             <div id="capture-area" style="position: relative; width: 950px; height: 500px; border-radius: 20px; border: 4px solid #ffeb3b; overflow: hidden; background: url('${gambarPaste.bg}') center/cover;">
-                <div style="position: absolute; left: 60px; top: 160px; color: white; text-shadow: 4px 4px 15px #000; font-family: sans-serif;">
+                <div style="position: absolute; left: 60px; top: 160px; color: white; text-shadow: 4px 4px 15px #000;">
                     <h1 style="font-size: 85px; color: #ffeb3b; margin: 0; font-weight: 900;">BIG WIN!</h1>
                     <h2 style="font-size: 35px; margin: 10px 0;">MEMBER DANATOTO</h2>
                     <div style="background: rgba(0, 255, 157, 0.2); border: 2px solid #00ff9d; padding: 10px 20px; border-radius: 10px; display: inline-block;">
@@ -893,7 +910,7 @@ function mulaiRakitGambar() {
                 </div>
             </div>
             <div style="margin-top: 25px; display: flex; gap: 15px;">
-                <button onclick="unduhSekarang()" style="padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px;">📥 DOWNLOAD GAMBAR</button>
+                <button onclick="unduhSekarang()" style="padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">📥 DOWNLOAD</button>
                 <button onclick="loadKemenangan()" style="padding: 15px 20px; background: #ff5252; color: white; border: none; border-radius: 8px; cursor: pointer;">🔄 RESET</button>
             </div>
         </div>
@@ -904,9 +921,7 @@ function mulaiRakitGambar() {
 function renderKeCanvas() {
     const canvas = document.getElementById('canvas-download');
     const ctx = canvas.getContext('2d');
-    const imgBG = new Image();
-    const imgBukti = new Image();
-
+    const imgBG = new Image(); const imgBukti = new Image();
     imgBG.onload = () => {
         ctx.drawImage(imgBG, 0, 0, 950, 500);
         ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(0, 0, 950, 500);
