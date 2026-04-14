@@ -810,155 +810,174 @@ function copyAllPrediksi() {
     });
 }
 function loadKemenangan() {
-    // Reset Judul agar tidak bentrok
-    const headerTitle = document.querySelector('.header h2') || document.querySelector('#header-container h2');
-    if (headerTitle) headerTitle.innerText = "GENERATOR POSTINGAN JP";
+    // 1. PAKSA JUDUL BERUBAH (Biar nggak muncul 'Generator Syair')
+    const semuaJudul = document.querySelectorAll('h2');
+    semuaJudul.forEach(judul => {
+        if (judul.innerText.includes("SYAIR") || judul.parentElement.id === "header-container") {
+            judul.innerText = "GENERATOR POSTINGAN KEMENANGAN";
+        }
+    });
+
+    // 2. PINDAHKAN WARNA BIRU DI MENU SAMPING
+    document.querySelectorAll('.menu-item').forEach(m => {
+        m.style.background = "transparent"; // Reset semua menu
+        m.classList.remove('active'); 
+    });
+    const menuWin = document.getElementById('menu-win');
+    if (menuWin) {
+        menuWin.style.background = "#00f2ff"; // Kasih warna biru ke menu ini
+        menuWin.style.color = "#000";
+    }
 
     const grid = document.getElementById('main-grid');
     
+    // TAMPILAN PANEL INPUT (Sesuai keinginan Bos)
     grid.innerHTML = `
-        <div id="mesin-jp" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; font-family: sans-serif;">
-            <div id="input-panel" style="background: #111; padding: 25px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center; box-shadow: 0 0 20px rgba(255, 235, 59, 0.2);">
-                <h2 style="color: #ffeb3b; margin-bottom: 20px;">🛠️ MESIN PASTE GAMBAR</h2>
+        <div id="container-jp" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; font-family: sans-serif;">
+            
+            <div id="panel-input-jp" style="background: #111; padding: 25px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center; box-shadow: 0 0 20px rgba(255, 235, 59, 0.3);">
+                <h2 style="color: #ffeb3b; margin-bottom: 20px; font-size: 20px;">🛠️ MESIN PASTE GAMBAR</h2>
                 
-                <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 15px; margin-bottom: 10px; cursor: pointer; background: #000; outline: none;">
-                    <p style="color: #00f2ff; font-size: 13px;">1. Klik & **CTRL+V** BACKGROUND</p>
-                    <img id="prev-bg" style="max-width: 80px; display: none; margin: 10px auto; border: 1px solid #fff;">
+                <div id="area-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none;">
+                    <p style="color: #00f2ff; font-size: 14px; margin: 0;">1. Klik di sini & **CTRL+V**<br>Untuk BACKGROUND</p>
+                    <img id="p-bg" style="max-width: 100px; display: none; margin: 10px auto; border: 1px solid #fff;">
                 </div>
 
-                <div id="box-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 15px; margin-bottom: 20px; cursor: pointer; background: #000; outline: none;">
-                    <p style="color: #00f2ff; font-size: 13px;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
-                    <img id="prev-bukti" style="max-width: 50px; display: none; margin: 10px auto; border: 1px solid #fff;">
+                <div id="area-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 20px; cursor: pointer; background: #000; outline: none;">
+                    <p style="color: #00f2ff; font-size: 14px; margin: 0;">2. Klik di sini & **CTRL+V**<br>Untuk BUKTI TRANSFER</p>
+                    <img id="p-bukti" style="max-width: 60px; display: none; margin: 10px auto; border: 1px solid #fff;">
                 </div>
 
-                <button id="btn-proses-jp" onclick="generasiPratinjau()" style="width: 100%; padding: 12px; background: #ffeb3b; color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                <button onclick="prosesSekarangBos()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
                     🚀 PROSES SEKARANG
                 </button>
             </div>
 
-            <div id="hasil-container" style="display: none; margin-top: 30px; text-align: center;">
-                <div id="canvas-wrapper" style="position: relative; width: 950px; height: 500px; border-radius: 15px; border: 4px solid #ffeb3b; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.8);">
-                    <canvas id="final-canvas" width="950" height="500"></canvas>
+            <div id="panel-hasil-jp" style="display: none; margin-top: 20px; text-align: center;">
+                <div id="bingkai-hasil" style="position: relative; width: 950px; height: 500px; border-radius: 20px; border: 5px solid #ffeb3b; overflow: hidden; background: #000;">
+                    <canvas id="canvas-final" width="950" height="500"></canvas>
                 </div>
                 
-                <button id="btn-download" onclick="unduhHasilJP()" style="margin-top: 20px; padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 4px 15px rgba(76,175,80,0.4);">
-                    📥 DOWNLOAD GAMBAR (PNG)
-                </button>
-                <p style="color: #aaa; margin-top: 10px; font-size: 12px;" onclick="loadKemenangan()">Ulangi / Ganti Gambar</p>
+                <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                    <button onclick="unduhGambarJP()" style="padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                        📥 DOWNLOAD GAMBAR
+                    </button>
+                    <button onclick="loadKemenangan()" style="padding: 15px 20px; background: #555; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        🔄 ULANGI
+                    </button>
+                </div>
             </div>
         </div>
     `;
 
-    setupPasteEvent('box-bg', 'prev-bg', 'bg');
-    setupPasteEvent('box-bukti', 'prev-bukti', 'bukti');
+    inisialisasiPaste('area-bg', 'p-bg', 'bg');
+    inisialisasiPaste('area-bukti', 'p-bukti', 'bukti');
 }
 
-let storeImg = { bg: null, bukti: null };
+// VARIABEL PENYIMPAN GAMBAR
+let gambarTemp = { bg: null, bukti: null };
 
-function setupPasteEvent(boxId, prevId, type) {
+function inisialisasiPaste(boxId, imgId, tipe) {
     const box = document.getElementById(boxId);
     box.addEventListener('paste', (e) => {
         const item = e.clipboardData.items[0];
         if (item && item.type.indexOf("image") !== -1) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                document.getElementById(prevId).src = event.target.result;
-                document.getElementById(prevId).style.display = 'block';
-                storeImg[type] = event.target.result;
-                box.style.borderColor = "#4caf50";
+                document.getElementById(imgId).src = event.target.result;
+                document.getElementById(imgId).style.display = 'block';
+                gambarTemp[tipe] = event.target.result;
+                box.style.borderColor = "#ffeb3b";
+                box.style.background = "#1a1a1a";
             };
             reader.readAsDataURL(item.getAsFile());
         }
     });
 }
 
-function generasiPratinjau() {
-    if (!storeImg.bg || !storeImg.bukti) {
-        alert("Bos, tempel dulu Background dan Buktinya!");
+function prosesSekarangBos() {
+    if (!gambarTemp.bg || !gambarTemp.bukti) {
+        alert("Waduh Bos, belum ada gambar yang di-Paste!");
         return;
     }
 
-    const btn = document.getElementById('btn-proses-jp');
-    btn.innerHTML = "⌛ SEDANG MEMPROSES...";
+    document.getElementById('panel-input-jp').style.display = 'none';
+    document.getElementById('panel-hasil-jp').style.display = 'block';
+
+    const canvas = document.getElementById('canvas-final');
+    const ctx = canvas.getContext('2d');
     
-    setTimeout(() => {
-        document.getElementById('input-panel').style.display = 'none';
-        document.getElementById('hasil-container').style.display = 'block';
+    const imgBG = new Image();
+    const imgBukti = new Image();
+
+    imgBG.onload = () => {
+        ctx.drawImage(imgBG, 0, 0, 950, 500);
         
-        const canvas = document.getElementById('final-canvas');
-        const ctx = canvas.getContext('2d');
+        // Overlay Gradasi Kiri
+        const g = ctx.createLinearGradient(0, 0, 700, 0);
+        g.addColorStop(0, "rgba(0,0,0,0.9)");
+        g.addColorStop(1, "transparent");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, 950, 500);
+
+        // Teks JP
+        ctx.fillStyle = "#ffeb3b";
+        ctx.font = "bold 90px Arial";
+        ctx.fillText("BIG WIN!", 60, 230);
         
-        const imgBG = new Image();
-        const imgBukti = new Image();
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 35px Arial";
+        ctx.fillText("MEMBER DANATOTO", 60, 285);
 
-        imgBG.onload = () => {
-            // 1. Gambar Background
-            ctx.drawImage(imgBG, 0, 0, 950, 500);
-            
-            // 2. Overlay Gelap Kiri
-            const grd = ctx.createLinearGradient(0, 0, 600, 0);
-            grd.addColorStop(0, "rgba(0,0,0,0.85)");
-            grd.addColorStop(1, "transparent");
-            ctx.fillStyle = grd;
-            ctx.fillRect(0, 0, 950, 500);
+        // Tombol Sukses
+        ctx.fillStyle = "#00ff9d";
+        roundRect(ctx, 60, 320, 300, 55, 12);
+        ctx.fill();
+        ctx.fillStyle = "#000";
+        ctx.font = "bold 22px Arial";
+        ctx.fillText("TRANSFER BERHASIL ✅", 85, 355);
 
-            // 3. Teks BIG WIN
-            ctx.fillStyle = "#ffeb3b";
-            ctx.font = "bold 80px sans-serif";
-            ctx.fillText("BIG WIN!", 60, 220);
-            
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 35px sans-serif";
-            ctx.fillText("MEMBER DANATOTO", 60, 275);
-            
-            // Tombol Transfer Berhasil
-            ctx.fillStyle = "#00ff9d";
-            ctx.roundRect(60, 310, 280, 50, 10).fill();
-            ctx.fillStyle = "#000";
-            ctx.font = "bold 20px sans-serif";
-            ctx.fillText("TRANSFER BERHASIL ✅", 85, 342);
+        // Frame HP di Kanan
+        ctx.fillStyle = "#1a1a1a";
+        roundRect(ctx, 640, 40, 240, 430, 40);
+        ctx.fill();
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 10;
+        ctx.stroke();
 
-            // 4. Frame HP
-            ctx.fillStyle = "#111";
-            ctx.roundRect(650, 40, 230, 420, 35).fill();
-            ctx.strokeStyle = "#222";
-            ctx.lineWidth = 8;
-            ctx.stroke();
-
-            imgBukti.onload = () => {
-                ctx.save();
-                ctx.roundRect(662, 52, 206, 396, 25);
-                ctx.clip();
-                ctx.drawImage(imgBukti, 662, 52, 206, 396);
-                ctx.restore();
-            };
-            imgBukti.src = storeImg.bukti;
+        imgBukti.onload = () => {
+            ctx.save();
+            roundRect(ctx, 655, 55, 210, 400, 25);
+            ctx.clip();
+            ctx.drawImage(imgBukti, 655, 55, 210, 400);
+            ctx.restore();
         };
-        imgBG.src = storeImg.bg;
-    }, 800);
+        imgBukti.src = gambarTemp.bukti;
+    };
+    imgBG.src = gambarTemp.bg;
 }
 
-function unduhHasilJP() {
-    const canvas = document.getElementById('final-canvas');
+function unduhGambarJP() {
+    const canvas = document.getElementById('canvas-final');
     const link = document.createElement('a');
-    link.download = 'Postingan_JP_Danatoto.png';
-    link.href = canvas.toDataURL("image/png");
+    link.download = 'JP_Danatoto_' + Date.now() + '.png';
+    link.href = canvas.toDataURL();
     link.click();
 }
 
-// Support browser lama untuk roundRect
-CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-  if (w < 2 * r) r = w / 2;
-  if (h < 2 * r) r = h / 2;
-  this.beginPath();
-  this.moveTo(x + r, y);
-  this.arcTo(x + w, y, x + w, y + h, r);
-  this.arcTo(x + w, y + h, x, y + h, r);
-  this.arcTo(x, y + h, x, y, r);
-  this.arcTo(x, y, x + w, y, r);
-  this.closePath();
-  return this;
-};
+function roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
 </script>
 </body>
 </html>
