@@ -575,6 +575,7 @@ async function renderSyair() {
     const daftarHarian = [
         { shio: "TIKUS", img: "https://i.ibb.co/6cQw1K8n/tikus.png", img2: "https://i.ibb.co/NdjPyrYh/rumah-tua.png", p1: "Tikus kecil berlari cepat, Masuk lubang saat malam,", p2: "Kalau ingin hidup hebat, Jangan takut terus melangkah" },
         { shio: "KERBAU", img: "https://i.ibb.co/VWnJhCVJ/kerbau.png", img2: "https://i.ibb.co/pBWDZqqV/sawah-berlumpur.png", p1: "Si kerbau turun ke sawah, Lumpur tebal penuh cerita,", p2: "Kalau hati sedang resah, Jangan lupa tetap tertawa" },
+        // LINK HARIMAU TERBARU (SUDAH TRANSPARAN & TIDAK PECAH)
         { shio: "HARIMAU", img: "https://i.ibb.co/3Wf2C7F/harimau-transparan.png", img2: "https://i.ibb.co/YsQW3CD/hutan-rimba.png", p1: "Harimau gagah di tengah rimba, Langkah pelan penuh wibawa,", p2: "Kalau hidup penuh usaha, Rezeki datang tanpa diduga" },
         { shio: "KELINCI", img: "https://i.ibb.co/JRRVCkgc/kelinci.png", img2: "https://i.ibb.co/Rk02hgFC/taman-bunga.png", p1: "Beli bunga di pagi hari, Bunganya indah warna-warni.", p2: "Kalau hidup ingin berarti, Jangan lupa berbagi hati" },
         { shio: "NAGA", img: "https://i.ibb.co/FbC1JRYq/naga.png", img2: "https://i.ibb.co/5x2TQBJ1/awan-mendung.png", p1: "Pergi ke laut melihat pinguin, Pinguin lucu berjalan pelan.", p2: "Kalau hati lagi dingin, Coba senyum biar hangat perlahan" },
@@ -594,7 +595,6 @@ async function renderSyair() {
     const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
     const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
 
-    // --- FUNGSI HAPUS BG SUPER HALUS (ANTI PECAH & ANTI KEPOTONG) ---
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -610,20 +610,17 @@ async function renderSyair() {
                 const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
                 const data = imgData.data;
 
-                // Logika hapus pixel putih super presisi (Hanya pixel > 250)
                 for (let i = 0; i < data.length; i += 4) {
                     if (data[i] > 250 && data[i+1] > 250 && data[i+2] > 250) {
-                        data[i+3] = 0; // Transparan
+                        data[i+3] = 0; 
                     }
                 }
                 tempCtx.putImageData(imgData, 0, 0);
 
-                // --- LOGIKA SKALA BARU: JAMINAN TIDAK KEPOTONG ---
                 const scale = Math.min(targetW / img.width, targetH / img.height);
                 const finalDrawW = img.width * scale;
                 const finalDrawH = img.height * scale;
                 
-                // Pusatkan otomatis di tengah-tengah frame shio
                 const offsetX = targetX + (targetW - finalDrawW) / 2;
                 const offsetY = targetY + (targetH - finalDrawH) / 2;
 
@@ -644,19 +641,16 @@ async function renderSyair() {
         });
     };
 
-    // Mulai Gambar
     ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100); // BG
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60); // Logo DANA
+    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100); 
+    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60); 
 
-    // TANGGAL (KOTAK HITAM SOLID)
     ctx.fillStyle = "black";
     ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
     ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // Kotak Angka
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -671,7 +665,6 @@ async function renderSyair() {
     drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
     drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // Bintang & Angka
     const cx = 400, cy = 520; 
     ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
     ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -684,20 +677,17 @@ async function renderSyair() {
     ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
     ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // --- REVISI AREA ASSET GAMBAR ---
-    // Gambar 2 (Hutan/Background Shio) dilebarkan dan dipanjangkan
-    await drawImg(hariIni.img2, 430, 480, 310, 410); // X geser kanan, Lebar 310 mepet kanan, Panjang 410 mepet pantun
+    // HUTAN DI KANAN (TIDAK MENUTUP BINTANG)
+    await drawImg(hariIni.img2, 430, 480, 310, 410); 
 
-    // Gambar Shio (Pake fungsi anti-kepotong yang baru)
-    await drawImgNoBg(hariIni.img, 30, 580, 280, 280); // Harimau Gagah, UTUH, Mulus!
+    // HARIMAU DI KIRI (LINK TERBARU)
+    await drawImgNoBg(hariIni.img, 30, 580, 280, 280); 
 
-    // LABEL SHIO (POSISI DINAIKKAN AGAR RAPI)
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 510, 180, 45, 10); ctx.fill(); // Y naik ke 510
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(70, 510, 180, 45, 10); ctx.fill(); 
     ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-    ctx.fillText("SHIO " + hariIni.shio, 160, 540); // Teks menyesuaikan
+    ctx.fillText("SHIO " + hariIni.shio, 160, 540); 
 
-    // Pantun
     const pY = 930, pW = 670, pH = 135, pX = 65;
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
     ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
