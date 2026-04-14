@@ -867,7 +867,7 @@ function loadKemenangan() {
             </div>
 
             <div id="area-hasil" style="display: none; text-align: center;">
-                <canvas id="canvas-gabung" width="1080" height="1920" style="width: 320px; height: auto; border: 5px solid #333; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
+                <canvas id="canvas-gabung" width="1080" height="1920" style="width: 300px; height: auto; border: 5px solid #333; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
 
                 <div style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
                     <button onclick="downloadPosterPNG()" style="padding: 15px 30px; background: #2ecc71; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
@@ -910,7 +910,7 @@ async function prosesRakitFinal() {
     const buktiData = window.rakitan_bukti;
 
     if (!bgData || !buktiData) {
-        alert("Bos, gambar belum lengkap!");
+        alert("Bos, gambar belum lengkap! Tempel dulu Background dan Bukti Transfernya.");
         return;
     }
 
@@ -920,7 +920,6 @@ async function prosesRakitFinal() {
     const canvas = document.getElementById('canvas-gabung');
     const ctx = canvas.getContext('2d');
     
-    // Load images
     const loadImg = (src) => new Promise(res => {
         const img = new Image();
         img.crossOrigin = "anonymous";
@@ -930,27 +929,27 @@ async function prosesRakitFinal() {
 
     const imgBg = await loadImg(bgData);
     const imgBukti = await loadImg(buktiData);
-    const imgFrame = await loadImg("https://i.ibb.co/Y76NfS7/phone-frame.png"); // Frame HP PNG Cantik
+    // Link Frame HP Modern
+    const imgFrame = await loadImg("https://i.ibb.co/Y76NfS7/phone-frame.png");
 
-    // 1. Gambar Background full 1080x1920
+    // 1. Gambar Background (Cover penuh 1080x1920)
     ctx.drawImage(imgBg, 0, 0, 1080, 1920);
 
-    // Overlay Gradient Gelap biar fokus ke HP
+    // Overlay Gradient (Biar HP lebih menonjol)
     let grad = ctx.createLinearGradient(0, 0, 0, 1920);
-    grad.addColorStop(0, 'rgba(0,0,0,0.5)');
+    grad.addColorStop(0, 'rgba(0,0,0,0.4)');
     grad.addColorStop(0.5, 'rgba(0,0,0,0)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.5)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.6)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 1080, 1920);
 
-    // 2. Gambar Bukti di area Layar HP dulu (biar tertutup frame)
-    // Posisi disesuaikan agar pas di lubang layar frame HP
+    // 2. Gambar Bukti (Diletakkan di area layar HP)
     ctx.drawImage(imgBukti, 155, 285, 770, 1430); 
 
-    // 3. Gambar Frame HP di atas Bukti
+    // 3. Gambar Frame HP (Menimpa di atas bukti biar rapi)
     ctx.drawImage(imgFrame, 90, 200, 900, 1600);
 
-    // Siapkan URL Download
+    // Generate link download
     canvas.toBlob((blob) => {
         if (currentDownloadUrl) URL.revokeObjectURL(currentDownloadUrl);
         currentDownloadUrl = URL.createObjectURL(blob);
@@ -958,10 +957,10 @@ async function prosesRakitFinal() {
 }
 
 function downloadPosterPNG() {
-    if (!currentDownloadUrl) return alert("Sabar Bos, lagi proses...");
+    if (!currentDownloadUrl) return alert("Sabar Bos, lagi proses rakit...");
     const a = document.createElement('a');
     a.href = currentDownloadUrl;
-    a.download = 'JP_DANATOTO_' + new Date().getTime() + '.png';
+    a.download = 'DANATOTO_JP_' + new Date().getTime() + '.png';
     a.click();
 }
 
