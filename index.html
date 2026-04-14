@@ -787,40 +787,39 @@ function copyAction(index) {
     });
 }
 
-// 1. Variabel Data (Pisahkan agar aman)
+// 1. Variabel Data
 let dataJP = { bg: null, bukti: null };
 
 function loadKemenangan() {
-    // --- 2. BERSIHKAN SIDEBAR (Hapus Biru dari Menu Lain) ---
+    // --- 2. PAKSA GANTI JUDUL DETIK INI JUGA ---
+    const h2 = document.querySelector('.header h2') || document.querySelector('.top-bar h2') || document.querySelector('h2');
+    const small = document.querySelector('.header small') || document.querySelector('.top-bar small') || document.querySelector('small');
+    
+    if (h2) h2.innerHTML = "GENERATOR POSTINGAN KEMENANGAN BESAR DANATOTO";
+    if (small) small.innerHTML = "OTOMATIS UPDATE & EXPORT GAMBAR";
+
+    // --- 3. NAVIGASI NORMAL (Biru hanya di menu yang diklik) ---
     const semuaMenu = document.querySelectorAll('.sidebar a, .nav-link, .menu-item');
     semuaMenu.forEach(m => {
-        m.style.backgroundColor = "transparent"; // Reset semua jadi bening
-        m.style.color = "#fff"; // Teks balik putih
+        // Reset semua menu dulu biar gak biru semua
+        m.style.backgroundColor = "transparent";
+        m.style.color = "#fff";
         m.classList.remove('active');
-    });
 
-    // --- 3. AKTIFKAN BIRU DI MENU YANG BENAR (Postingan) ---
-    semuaMenu.forEach(m => {
+        // Kasih biru hanya untuk menu Postingan yang sedang aktif
         if (m.innerText.toUpperCase().includes("POSTINGAN")) {
-            m.style.backgroundColor = "#00f2ff"; // Biru hanya di sini
+            m.style.backgroundColor = "#00f2ff"; 
             m.style.color = "#000";
             m.classList.add('active');
         }
     });
 
-    // --- 4. UPDATE HEADER (Hanya judul & sub-judul) ---
-    const h2 = document.querySelector('.header h2') || document.querySelector('.top-bar h2');
-    const small = document.querySelector('.header small') || document.querySelector('.top-bar small');
-    
-    if (h2) h2.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR DANATOTO";
-    if (small) small.innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
-
-    // --- 5. ISI MESIN JP DI TENGAH ---
+    // --- 4. TAMPILAN MESIN JP ---
     const mainGrid = document.getElementById('main-grid');
     mainGrid.innerHTML = `
-        <div id="container-rakit" style="display: flex; justify-content: center; align-items: center; min-height: 60vh; width: 100%;">
-            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
-                <h2 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h2>
+        <div id="box-mesin" style="display: flex; justify-content: center; align-items: center; min-height: 60vh; width: 100%;">
+            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center; box-shadow: 0 0 20px rgba(255, 235, 59, 0.3);">
+                <h2 style="color: #ffeb3b; margin-bottom: 25px;">⚙️ MESIN RAKIT JP</h2>
                 
                 <div id="drop-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
@@ -833,7 +832,7 @@ function loadKemenangan() {
                 </div>
                 
                 <button onclick="prosesPoster()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                    🚀 PROSES GAMBAR
+                    🚀 RAKIT GAMBAR
                 </button>
             </div>
         </div>
@@ -845,7 +844,7 @@ function loadKemenangan() {
     setupPasteAction('drop-bukti', 'v-bukti', 'bukti');
 }
 
-// Fungsi Paste (Tetap Sama)
+// Fungsi Paste
 function setupPasteAction(id, imgId, key) {
     const el = document.getElementById(id);
     el.addEventListener('paste', (e) => {
@@ -865,7 +864,7 @@ function setupPasteAction(id, imgId, key) {
 
 function prosesPoster() {
     if (!dataJP.bg || !dataJP.bukti) { alert("Isi gambarnya dulu Bos!"); return; }
-    document.getElementById('container-rakit').style.display = 'none';
+    document.getElementById('box-mesin').style.display = 'none';
     const area = document.getElementById('hasil-jadi');
     area.style.display = 'block';
     area.innerHTML = `
