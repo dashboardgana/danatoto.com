@@ -809,78 +809,147 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
- function loadKemenangan() {
+function loadKemenangan() {
+    // Reset Judul & Highlight Menu
+    const headerTitle = document.querySelector('.header h2') || document.querySelector('#header-container h2');
+    if (headerTitle) headerTitle.innerText = "GENERATOR POSTINGAN JP (PASTE MODE)";
+    
+    // Reset active menu di sidebar
+    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
+    document.getElementById('menu-win').classList.add('active-menu');
+
     const grid = document.getElementById('main-grid');
     
-    // 1. TAMPILAN HALAMAN INPUT
     grid.innerHTML = `
-        <div id="input-area" style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
-            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; box-shadow: 0 0 20px rgba(255, 235, 59, 0.2);">
-                <h2 style="color: #ffeb3b; text-align: center; margin-bottom: 25px; font-family: sans-serif;">🛠️ GENERATOR POSTINGAN JP</h2>
+        <div id="mesin-jp" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; font-family: sans-serif;">
+            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 500px; text-align: center; box-shadow: 0 0 20px rgba(255, 235, 59, 0.3);">
+                <h2 style="color: #ffeb3b; margin-bottom: 20px;">🛠️ MESIN PASTE GAMBAR</h2>
                 
-                <p style="color: #00f2ff; margin-bottom: 5px;">1. PASTE LINK BACKGROUND :</p>
-                <input type="text" id="link-bg" placeholder="Contoh: https://gambar-naga-emas.jpg" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 20px;">
-                
-                <p style="color: #00f2ff; margin-bottom: 5px;">2. PASTE LINK BUKTI TRANSFER :</p>
-                <input type="text" id="link-bukti" placeholder="Contoh: https://bukti-transfer-livin.jpg" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 25px;">
-                
-                <button id="btn-gas" onclick="prosesGaskeun()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
-                    🚀 PROSES SEKARANG
+                <div id="drop-bg" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 15px; cursor: pointer; background: #000;">
+                    <p style="color: #00f2ff;">1. Klik di sini & **CTRL+V**<br>Untuk BACKGROUND</p>
+                    <img id="preview-bg" style="max-width: 100px; display: none; margin-top: 10px; border: 1px solid white;">
+                </div>
+
+                <div id="drop-bukti" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 20px; cursor: pointer; background: #000;">
+                    <p style="color: #00f2ff;">2. Klik di sini & **CTRL+V**<br>Untuk BUKTI TRANSFER</p>
+                    <img id="preview-bukti" style="max-width: 50px; display: none; margin-top: 10px; border: 1px solid white;">
+                </div>
+
+                <button id="btn-proses" onclick="rakitDanDownload()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                    🚀 PROSES & DOWNLOAD
                 </button>
             </div>
         </div>
-        <div id="display-area" style="display: none;"></div>
+        <canvas id="canvas-jp" style="display:none;"></canvas>
     `;
+
+    // Logika Paste Gambar
+    setupPaste('drop-bg', 'preview-bg');
+    setupPaste('drop-bukti', 'preview-bukti');
 }
 
-function prosesGaskeun() {
-    const bg = document.getElementById('link-bg').value;
-    const bukti = document.getElementById('link-bukti').value;
-    const btn = document.getElementById('btn-gas');
+let dataGambar = { bg: null, bukti: null };
 
-    if (!bg || !bukti) {
-        alert("Waduh Bos, linknya diisi dulu dua-duanya!");
+function setupPaste(divId, imgId) {
+    const div = document.getElementById(divId);
+    div.addEventListener('paste', (e) => {
+        const items = e.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+                const blob = items[i].getAsFile();
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    document.getElementById(imgId).src = event.target.result;
+                    document.getElementById(imgId).style.display = 'inline-block';
+                    if(divId === 'drop-bg') dataGambar.bg = event.target.result;
+                    else dataGambar.bukti = event.target.result;
+                    div.style.borderColor = "#ffeb3b";
+                };
+                reader.readAsDataURL(blob);
+            }
+        }
+    });
+}
+
+function rakitDanDownload() {
+    if (!dataGambar.bg || !dataGambar.bukti) {
+        alert("Bos, dua-duanya harus di-Paste dulu gambarnya!");
         return;
     }
 
-    // EFEK LOADING KILAT
-    btn.innerHTML = "🔄 SEDANG MERAKIT GAMBAR...";
+    const btn = document.getElementById('btn-proses');
+    btn.innerHTML = "⏳ MEMPROSES...";
     btn.style.background = "#00f2ff";
-    btn.style.boxShadow = "0 0 15px #00f2ff";
 
-    setTimeout(() => {
-        document.getElementById('input-area').style.display = 'none';
-        const display = document.getElementById('display-area');
-        display.style.display = 'block';
+    const canvas = document.getElementById('canvas-jp');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1200;
+    canvas.height = 630;
 
-        // 2. TAMPILAN HASIL JADI (OTOMATIS RAPI)
-        display.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; padding: 30px;">
-                <div style="position: relative; width: 950px; height: 500px; border-radius: 20px; border: 5px solid #ffeb3b; overflow: hidden; background: url('${bg}') center/cover; box-shadow: 0 0 40px rgba(0,0,0,0.7);">
-                    
-                    <div style="position: absolute; left: 60px; top: 160px; color: white; text-shadow: 4px 4px 15px #000; font-family: 'Arial Black', sans-serif; z-index: 10;">
-                        <h1 style="font-size: 80px; color: #ffeb3b; margin: 0; line-height: 0.9;">BIG WIN!</h1>
-                        <h2 style="font-size: 35px; margin: 10px 0; color: #fff; letter-spacing: 2px;">MEMBER DANATOTO</h2>
-                        <div style="background: rgba(0, 255, 157, 0.2); border: 2px solid #00ff9d; padding: 12px 25px; border-radius: 12px; margin-top: 25px; display: inline-block;">
-                            <span style="color: #00ff9d; font-weight: bold; font-size: 22px;">TRANSFER BERHASIL ✅</span>
-                        </div>
-                    </div>
+    const imgBG = new Image();
+    const imgBukti = new Image();
 
-                    <div style="position: absolute; right: 70px; top: 35px; width: 230px; height: 430px; background: #000; border: 12px solid #1a1a1a; border-radius: 40px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.8); z-index: 5;">
-                        <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 110px; height: 25px; background: #1a1a1a; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 6;"></div>
-                        
-                        <img src="${bukti}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                    </div>
+    imgBG.onload = () => {
+        // 1. Gambar Background
+        ctx.drawImage(imgBG, 0, 0, 1200, 630);
+        
+        // 2. Overlay Gelap Kiri
+        const grad = ctx.createLinearGradient(0, 0, 800, 0);
+        grad.addColorStop(0, 'rgba(0,0,0,0.8)');
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1200, 630);
 
-                    <div style="position: absolute; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 60%); pointer-events: none; z-index: 1;"></div>
-                </div>
+        // 3. Gambar Teks
+        ctx.fillStyle = "#ffeb3b";
+        ctx.font = "bold 100px Arial";
+        ctx.fillText("BIG WIN!", 80, 250);
+        
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 40px Arial";
+        ctx.fillText("MEMBER DANATOTO", 80, 310);
 
-                <button onclick="loadKemenangan()" style="margin-top: 30px; padding: 12px 30px; background: #ff5252; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                    🔙 BUAT LAGI YANG BARU
-                </button>
-            </div>
-        `;
-    }, 1200); // Jeda 1.2 detik buat gaya-gayaan loading
+        // 4. Frame HP & Bukti (Posisi Kanan)
+        ctx.fillStyle = "#1a1a1a";
+        ctx.roundRect(850, 50, 280, 530, 40);
+        ctx.fill();
+
+        imgBukti.onload = () => {
+            // Gambar bukti di dalam frame
+            ctx.save();
+            ctx.roundRect(865, 65, 250, 500, 30);
+            ctx.clip();
+            ctx.drawImage(imgBukti, 865, 65, 250, 500);
+            ctx.restore();
+
+            // 5. AUTO DOWNLOAD
+            const link = document.createElement('a');
+            link.download = 'Kemenangan_Danatoto.png';
+            link.href = canvas.toDataURL();
+            link.click();
+
+            btn.innerHTML = "✅ BERHASIL DI-DOWNLOAD!";
+            btn.style.background = "#4caf50";
+            
+            setTimeout(() => loadKemenangan(), 2000);
+        };
+        imgBukti.src = dataGambar.bukti;
+    };
+    imgBG.src = dataGambar.bg;
+}
+
+// Helper untuk Round Rect (Biar Support Browser Lama)
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+  if (w < 2 * r) r = w / 2;
+  if (h < 2 * r) r = h / 2;
+  this.beginPath();
+  this.moveTo(x + r, y);
+  this.arcTo(x + w, y, x + w, y + h, r);
+  this.arcTo(x + w, y + h, x, y + h, r);
+  this.arcTo(x, y + h, x, y, r);
+  this.arcTo(x, y, x + w, y, r);
+  this.closePath();
+  return this;
 }
 </script>
 </body>
