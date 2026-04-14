@@ -294,9 +294,9 @@ function doLogin() {
         <div id="menu-syair" class="menu-item" onclick="loadSyairGenerator()">
             <i class="fas fa-book-open"></i> SYAIR HARIAN
         </div>
-        <div id="menu-win" class="menu-item" onclick="loadKemenangan()">
-    <i class="fas fa-trophy"></i> POSTINGAN KEMENANGAN BESAR
-</div>
+        <div id="menu-win" class="menu-item" onclick="alert('Menu Postingan Kemenangan Segera Hadir')">
+            <i class="fas fa-trophy"></i> POSTINGAN KEMENANGAN BESAR
+        </div>
 
         <div class="menu-item" onclick="doLogout()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
@@ -787,17 +787,28 @@ function copyAction(index) {
     });
 }
 
-let dataJP = { bg: null, bukti: null };
+// FUNGSI UNTUK COPY SEMUA (PASTIKAN SUDAH ADA)
+function copyAllPrediksi() {
+    if (!masterData || masterData.length === 0) {
+        alert("Data belum tersedia!");
+        return;
+    }
 
-let dataPostingan = { background: null, bukti: null };
-
-let dataPostingan = { background: null, bukti: null };
-
-let dataPostingan = { background: null, bukti: null };
-
-let dataPostingan = { background: null, bukti: null };
-
-
+    const semuaTeks = masterData.map((d) => {
+        return `--- PREDIKSI ${d.name} ---\n` +
+               `BBFS : ${d.bbfs}\n` +
+               `ANGKA MAIN : ${d.am}\n` +
+               `COLOK BEBAS : ${d.cb1} / ${d.cb2}\n` +
+               `SHIO : ${d.shioUtama}\n` +
+               `Selalu Utamakan Prediksi Sendiri`;
+    }).join('\n\n====================\n\n');
+    
+    navigator.clipboard.writeText(semuaTeks).then(() => {
+        alert("SEMUA PREDIKSI BERHASIL DI COPY!");
+    }).catch(err => {
+        console.error('Gagal menyalin semua: ', err);
+    });
+}
 </script>
 </body>
 </html>
