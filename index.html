@@ -809,6 +809,83 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
+  let rakitanJP = { background: null, bukti: null };
+
+function loadKemenangan() {
+    // 1. Ambil area utama dashboard
+    const container = document.getElementById('main-grid');
+    if (!container) return;
+
+    // 2. Tampilkan box untuk Paste Background dan Bukti Transfer
+    container.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 60vh; width: 100%;">
+            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
+                <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
+                
+                <div id="drop-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
+                    <p id="txt-bg" style="color: #00f2ff; margin: 0;">1. Klik di sini & **CTRL+V** BACKGROUND</p>
+                    <img id="v-bg" style="max-width: 120px; display: none; margin: 10px auto;">
+                </div>
+
+                <div id="drop-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
+                    <p id="txt-bukti" style="color: #00f2ff; margin: 0;">2. Klik di sini & **CTRL+V** BUKTI TRANSFER</p>
+                    <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto;">
+                </div>
+                
+                <button onclick="prosesGabung()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                    🚀 PROSES EDIT SEKARANG
+                </button>
+            </div>
+        </div>
+        <div id="area-hasil" style="display: none; text-align: center; padding: 20px;"></div>
+        <canvas id="canvas-rakit" width="450" height="800" style="display:none;"></canvas>
+    `;
+
+    // 3. Logika Menangkap Paste (CTRL+V)
+    const setupPaste = (id, imgId, txtId, key) => {
+        const box = document.getElementById(id);
+        box.addEventListener('paste', (e) => {
+            const item = Array.from(e.clipboardData.items).find(x => x.type.indexOf('image') !== -1);
+            if (item) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById(imgId).src = ev.target.result;
+                    document.getElementById(imgId).style.display = 'block';
+                    document.getElementById(txtId).style.display = 'none';
+                    rakitanJP[key] = ev.target.result;
+                    box.style.borderColor = "#4caf50"; // Berubah hijau jika berhasil
+                };
+                reader.readAsDataURL(item.getAsFile());
+            }
+        });
+    };
+
+    setupPaste('drop-bg', 'v-bg', 'txt-bg', 'background');
+    setupPaste('drop-bukti', 'v-bukti', 'txt-bukti', 'bukti');
+}
+
+function prosesGabung() {
+    if (!rakitanJP.background || !rakitanJP.bukti) {
+        alert("Bos, gambar belum lengkap! Tempel Background dan Bukti dulu.");
+        return;
+    }
+
+    // Tampilkan preview hasil edit
+    const area = document.getElementById('area-hasil');
+    area.style.display = 'block';
+    area.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+            <div style="position: relative; width: 350px; height: 622px; border-radius: 20px; overflow: hidden; border: 5px solid #ffeb3b;">
+                <img src="${rakitanJP.background}" style="width: 100%; height: 100%; object-fit: cover;">
+                <div style="position: absolute; bottom: 50px; left: 25px; right: 25px; height: 350px; background: #fff; border-radius: 10px; overflow: hidden;">
+                    <img src="${rakitanJP.bukti}" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+            </div>
+            <p style="color: #fff; margin-top: 15px;">✅ Gambar Berhasil Digabung!</p>
+        </div>
+    `;
+    alert("Sistem berhasil mengedit gambar!");
+}
 </script>
 </body>
 </html>
