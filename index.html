@@ -810,33 +810,34 @@ function copyAllPrediksi() {
     });
 }
 
-// 1. VARIABEL GLOBAL (Penyimpan data gambar agar tidak hilang)
+// 1. Variabel Global untuk simpan data gambar
 let gambarPaste = { bg: null, bukti: null };
 
 function loadKemenangan() {
-    // --- 2. FITUR ANTI-NABRAK (PAKSA PINDAH MENU & JUDUL) ---
-    // Hapus warna biru (active) dari menu lain (terutama Syair Harian)
+    // --- 2. SISTEM RESET SIDEBAR (ANTI NABRAK) ---
+    // Cari semua menu, hapus class 'active' dan kembalikan warnanya
     document.querySelectorAll('.menu-item').forEach(el => {
         el.classList.remove('active');
-        el.style.background = "transparent";
+        el.style.backgroundColor = "transparent"; 
         el.style.color = "#fff";
     });
-    
-    // Paksa menu Kemenangan jadi Biru
-    const menuWin = document.getElementById('menu-win');
+
+    // Cari menu Postingan Kemenangan dan paksa jadi biru (Active)
+    const menuWin = document.querySelector('.menu-item i.fa-trophy')?.parentElement || 
+                    document.getElementById('menu-win');
     if (menuWin) {
         menuWin.classList.add('active');
-        menuWin.style.background = "#00f2ff";
+        menuWin.style.backgroundColor = "#00f2ff"; // Warna biru sesuai SS Bos
         menuWin.style.color = "#000";
     }
 
-    // Paksa Judul Atas berubah total
-    const headerTitle = document.querySelector('.header h2') || document.querySelector('#header-container h2');
-    if (headerTitle) {
-        headerTitle.innerText = "GENERATOR POSTINGAN KEMENANGAN";
+    // Paksa ganti judul header atas agar tidak tertulis 'SYAIR'
+    const topHeader = document.querySelector('.header h2');
+    if (topHeader) {
+        topHeader.innerText = "GENERATOR POSTINGAN KEMENANGAN";
     }
 
-    // --- 3. TAMPILAN PANEL INPUT ---
+    // --- 3. RENDER TAMPILAN MESIN JP ---
     const grid = document.getElementById('main-grid');
     grid.innerHTML = `
         <div id="mesin-jp" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; font-family: sans-serif;">
@@ -858,17 +859,15 @@ function loadKemenangan() {
                 </button>
             </div>
         </div>
-
-        <div id="hasil-jadi" style="display: none; text-align: center; padding-bottom: 50px;"></div>
-        
+        <div id="hasil-jadi" style="display: none;"></div>
         <canvas id="canvas-download" width="950" height="500" style="display:none;"></canvas>
     `;
 
-    // Pasang fungsi penangkap CTRL+V
     setupPasteHandler('box-bg', 'prev-bg', 'bg');
     setupPasteHandler('box-bukti', 'prev-bukti', 'bukti');
 }
 
+// Fungsi tangkap Paste Gambar
 function setupPasteHandler(boxId, imgId, type) {
     const box = document.getElementById(boxId);
     box.addEventListener('paste', (e) => {
@@ -878,22 +877,23 @@ function setupPasteHandler(boxId, imgId, type) {
             reader.onload = (event) => {
                 document.getElementById(imgId).src = event.target.result;
                 document.getElementById(imgId).style.display = 'block';
-                gambarPaste[type] = event.target.result; 
-                box.style.borderColor = "#ffeb3b";
+                gambarPaste[type] = event.target.result;
+                box.style.borderColor = "#4caf50";
             };
             reader.readAsDataURL(item.getAsFile());
         }
     });
 }
 
+// Fungsi Rakit Gambar
 function mulaiRakitGambar() {
     if (!gambarPaste.bg || !gambarPaste.bukti) {
-        alert("Bos, klik kotak lalu CTRL+V gambarnya dulu!");
+        alert("Bos, isi Background & Bukti dulu pakai CTRL+V!");
         return;
     }
 
     const btn = document.getElementById('btn-proses');
-    btn.innerHTML = "⌛ SEDANG MEMPROSES...";
+    btn.innerHTML = "⌛ MEMPROSES...";
     btn.style.background = "#00f2ff";
 
     setTimeout(() => {
@@ -903,35 +903,29 @@ function mulaiRakitGambar() {
 
         areaHasil.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
-                <div id="capture-area" style="position: relative; width: 950px; height: 500px; border-radius: 20px; border: 4px solid #ffeb3b; overflow: hidden; background: url('${gambarPaste.bg}') center/cover; box-shadow: 0 0 40px rgba(0,0,0,0.8);">
-                    
-                    <div style="position: absolute; left: 60px; top: 160px; color: white; text-shadow: 4px 4px 15px #000; font-family: sans-serif; z-index: 10;">
-                        <h1 style="font-size: 85px; color: #ffeb3b; margin: 0; font-weight: 900; line-height: 0.8;">BIG WIN!</h1>
-                        <h2 style="font-size: 35px; margin: 10px 0; color: #fff; font-weight: bold;">MEMBER DANATOTO</h2>
-                        <div style="background: rgba(0, 255, 157, 0.2); border: 2px solid #00ff9d; padding: 10px 20px; border-radius: 10px; margin-top: 20px; display: inline-block;">
-                            <span style="color: #00ff9d; font-weight: bold; font-size: 20px;">TRANSFER BERHASIL ✅</span>
+                <div id="capture-area" style="position: relative; width: 950px; height: 500px; border-radius: 20px; border: 4px solid #ffeb3b; overflow: hidden; background: url('${gambarPaste.bg}') center/cover;">
+                    <div style="position: absolute; left: 60px; top: 160px; color: white; text-shadow: 4px 4px 15px #000; font-family: sans-serif;">
+                        <h1 style="font-size: 85px; color: #ffeb3b; margin: 0; font-weight: 900;">BIG WIN!</h1>
+                        <h2 style="font-size: 35px; margin: 10px 0;">MEMBER DANATOTO</h2>
+                        <div style="background: rgba(0, 255, 157, 0.2); border: 2px solid #00ff9d; padding: 10px 20px; border-radius: 10px; display: inline-block;">
+                            <span style="color: #00ff9d; font-weight: bold;">TRANSFER BERHASIL ✅</span>
                         </div>
                     </div>
-
-                    <div style="position: absolute; right: 80px; top: 35px; width: 220px; height: 430px; background: #000; border: 10px solid #1a1a1a; border-radius: 35px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.9); z-index: 5;">
+                    <div style="position: absolute; right: 80px; top: 35px; width: 220px; height: 430px; background: #000; border: 10px solid #1a1a1a; border-radius: 35px; overflow: hidden;">
                         <img src="${gambarPaste.bukti}" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-
-                    <div style="position: absolute; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, transparent 60%); z-index: 1;"></div>
                 </div>
-
                 <div style="margin-top: 25px; display: flex; gap: 15px;">
-                    <button onclick="unduhSekarang()" style="padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">📥 DOWNLOAD GAMBAR</button>
-                    <button onclick="loadKemenangan()" style="padding: 15px 20px; background: #ff5252; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">🔄 BUAT BARU</button>
+                    <button onclick="unduhSekarang()" style="padding: 15px 40px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 18px;">📥 DOWNLOAD GAMBAR</button>
+                    <button onclick="loadKemenangan()" style="padding: 15px 20px; background: #ff5252; color: white; border: none; border-radius: 8px; cursor: pointer;">🔄 RESET</button>
                 </div>
             </div>
         `;
-        
-        // Rakit ke canvas agar bisa didownload
         renderKeCanvas();
-    }, 1000);
+    }, 800);
 }
 
+// Render ke Canvas (Penting untuk Download)
 function renderKeCanvas() {
     const canvas = document.getElementById('canvas-download');
     const ctx = canvas.getContext('2d');
@@ -940,33 +934,12 @@ function renderKeCanvas() {
 
     imgBG.onload = () => {
         ctx.drawImage(imgBG, 0, 0, 950, 500);
-        const grd = ctx.createLinearGradient(0, 0, 600, 0);
-        grd.addColorStop(0, "rgba(0,0,0,0.85)");
-        grd.addColorStop(1, "transparent");
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, 950, 500);
+        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(0, 0, 950, 500);
+        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 80px sans-serif"; ctx.fillText("BIG WIN!", 60, 220);
         
-        ctx.fillStyle = "#ffeb3b";
-        ctx.font = "bold 80px sans-serif";
-        ctx.fillText("BIG WIN!", 60, 220);
-
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 30px sans-serif";
-        ctx.fillText("MEMBER DANATOTO", 60, 270);
-        
-        // Frame HP
-        ctx.fillStyle = "#111";
-        ctx.beginPath();
-        ctx.roundRect(650, 40, 230, 420, 35);
-        ctx.fill();
-
         imgBukti.onload = () => {
-            ctx.save();
-            ctx.beginPath();
-            ctx.roundRect(662, 52, 206, 396, 25);
-            ctx.clip();
-            ctx.drawImage(imgBukti, 662, 52, 206, 396);
-            ctx.restore();
+            ctx.fillStyle = "#111"; ctx.fillRect(650, 40, 230, 420); // Frame HP sederhana
+            ctx.drawImage(imgBukti, 660, 50, 210, 400);
         };
         imgBukti.src = gambarPaste.bukti;
     };
@@ -976,24 +949,10 @@ function renderKeCanvas() {
 function unduhSekarang() {
     const canvas = document.getElementById('canvas-download');
     const link = document.createElement('a');
-    link.download = 'Kemenangan_Danatoto_' + Date.now() + '.png';
-    link.href = canvas.toDataURL("image/png");
+    link.download = 'Kemenangan_Danatoto.png';
+    link.href = canvas.toDataURL();
     link.click();
 }
-
-// Fungsi pembantu untuk membuat kotak tumpul di canvas
-CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
-    this.beginPath();
-    this.moveTo(x + r, y);
-    this.arcTo(x + w, y, x + w, y + h, r);
-    this.arcTo(x + w, y + h, x, y + h, r);
-    this.arcTo(x, y + h, x, y, r);
-    this.arcTo(x, y, x + w, y, r);
-    this.closePath();
-    return this;
-};
 </script>
 </body>
 </html>
