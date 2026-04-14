@@ -839,7 +839,7 @@ function loadKemenangan() {
         txtTgl.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR";
     }
     if (subTxt) {
-        subTxt.innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
+        subTxt.innerText = "FORMAT PERSEGI PANJANG (LANDSCAPE)";
         subTxt.style.display = 'block';
     }
 
@@ -849,10 +849,10 @@ function loadKemenangan() {
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; color: white;">
             
             <div id="mesin-input" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
-                <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP HD</h3>
+                <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP PERSEGI PANJANG</h3>
                 
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
-                    <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
+                    <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND (Lebar)</p>
                     <img id="v-bg" style="max-width: 150px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
 
@@ -867,13 +867,13 @@ function loadKemenangan() {
             </div>
 
             <div id="area-hasil" style="display: none; text-align: center;">
-                <canvas id="canvas-gabung" width="1080" height="1920" style="width: 300px; height: auto; border: 5px solid #333; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
+                <canvas id="canvas-gabung" width="1280" height="720" style="width: 600px; height: auto; border: 5px solid #333; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
 
                 <div style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
-                    <button onclick="downloadPosterPNG()" style="padding: 15px 30px; background: #2ecc71; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <button onclick="downloadPosterPNG()" style="padding: 15px 30px; background: #2ecc71; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
                         📥 DOWNLOAD PNG
                     </button>
-                    <button onclick="hapusHasilRautan()" style="padding: 15px 30px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <button onclick="hapusHasilRautan()" style="padding: 15px 30px; background: #e74c3c; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
                         🗑️ HAPUS / RESET
                     </button>
                 </div>
@@ -910,7 +910,7 @@ async function prosesRakitFinal() {
     const buktiData = window.rakitan_bukti;
 
     if (!bgData || !buktiData) {
-        alert("Bos, gambar belum lengkap! Tempel dulu Background dan Bukti Transfernya.");
+        alert("Bos, gambar belum lengkap!");
         return;
     }
 
@@ -929,25 +929,23 @@ async function prosesRakitFinal() {
 
     const imgBg = await loadImg(bgData);
     const imgBukti = await loadImg(buktiData);
-    // Link Frame HP Modern
     const imgFrame = await loadImg("https://i.ibb.co/Y76NfS7/phone-frame.png");
 
-    // 1. Gambar Background (Cover penuh 1080x1920)
-    ctx.drawImage(imgBg, 0, 0, 1080, 1920);
+    // 1. Gambar Background (PERSEGI PANJANG 1280x720)
+    ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-    // Overlay Gradient (Biar HP lebih menonjol)
-    let grad = ctx.createLinearGradient(0, 0, 0, 1920);
-    grad.addColorStop(0, 'rgba(0,0,0,0.4)');
-    grad.addColorStop(0.5, 'rgba(0,0,0,0)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.6)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 1080, 1920);
+    // 2. Gambar Bukti di SUDUT KIRI (Di dalam area layar HP)
+    // Posisi X diatur ke 50 agar mepet ke kiri
+    const hpX = 50;
+    const hpY = 40;
+    const hpW = 380; // Lebar frame HP
+    const hpH = 640; // Tinggi frame HP
 
-    // 2. Gambar Bukti (Diletakkan di area layar HP)
-    ctx.drawImage(imgBukti, 155, 285, 770, 1430); 
+    // Gambar Bukti di dalam layar (koordinat disesuaikan dengan frame)
+    ctx.drawImage(imgBukti, hpX + 27, hpY + 35, 326, 570); 
 
-    // 3. Gambar Frame HP (Menimpa di atas bukti biar rapi)
-    ctx.drawImage(imgFrame, 90, 200, 900, 1600);
+    // 3. Gambar Frame HP di SUDUT KIRI (Menimpa bukti)
+    ctx.drawImage(imgFrame, hpX, hpY, hpW, hpH);
 
     // Generate link download
     canvas.toBlob((blob) => {
@@ -957,10 +955,10 @@ async function prosesRakitFinal() {
 }
 
 function downloadPosterPNG() {
-    if (!currentDownloadUrl) return alert("Sabar Bos, lagi proses rakit...");
+    if (!currentDownloadUrl) return alert("Sabar Bos...");
     const a = document.createElement('a');
     a.href = currentDownloadUrl;
-    a.download = 'DANATOTO_JP_' + new Date().getTime() + '.png';
+    a.download = 'POSTER_LEBAR_JP_' + new Date().getTime() + '.png';
     a.click();
 }
 
