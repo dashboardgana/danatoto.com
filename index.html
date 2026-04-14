@@ -223,10 +223,66 @@
         <h2>SILAHKAN LOGIN</h2>
         <input type="text" id="user" placeholder="👤Username">
         <input type="password" id="pass" placeholder="🔑Password">
-        <button onclick="doLogin()">MASUK KE SISTEM</button>
+        <button id="btn-login" onclick="doLogin()">MASUK KE SISTEM</button>
         <p id="err" style="color: #ff5252; margin-top: 15px;"></p>
     </div>
 </div>
+
+<style>
+/* CSS UNTUK EFEK LAMPU MEMPROSES */
+.loading-lampu {
+    background: #00f2ff !important; /* Warna cyan neon */
+    color: white !important;
+    box-shadow: 0 0 20px #00f2ff, 0 0 40px #00f2ff; /* Efek cahaya lampu */
+    border: none;
+    font-weight: bold;
+    animation: kedip 0.3s infinite alternate;
+    cursor: wait;
+}
+
+@keyframes kedip {
+    from { opacity: 0.7; filter: brightness(1); }
+    to { opacity: 1; filter: brightness(1.8); }
+}
+</style>
+
+<script>
+// 1. FITUR ENTER (Langsung Masuk Tanpa Mouse)
+document.getElementById('pass').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        doLogin();
+    }
+});
+
+function doLogin() {
+    const u = document.getElementById('user').value;
+    const p = document.getElementById('pass').value;
+    const btn = document.getElementById('btn-login');
+    const err = document.getElementById('err');
+
+    if (u === "admin" && p === "admin123") { // Ganti sesuai user/pass Anda
+        
+        // EFEK LAMPU MEMPROSES
+        btn.innerHTML = "MEMPROSES...";
+        btn.classList.add('loading-lampu');
+        btn.disabled = true;
+
+        // PROSES CEPAT (Cuma 0.4 detik langsung pindah)
+        setTimeout(() => {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-dashboard').style.display = 'flex';
+            
+            // Balikin tombol ke awal buat nanti kalau logout
+            btn.innerHTML = "MASUK KE SISTEM";
+            btn.classList.remove('loading-lampu');
+            btn.disabled = false;
+        }, 400);
+
+    } else {
+        err.innerHTML = "❌ Login Gagal!";
+    }
+}
+</script>
 
 <div id="main-dashboard">
     <div class="sidebar">
