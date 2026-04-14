@@ -809,83 +809,96 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
-let rakitanJP = { background: null, bukti: null };
-
 function loadKemenangan() {
-    // 1. CARI TEMPAT UTAMA DASHBOARD
-    const mainArea = document.getElementById('main-grid');
-    if (!mainArea) return;
-
-    // 2. BERSIHKAN LAYAR TOTAL (Penting! Agar menu lain seperti Jadwal Bank/Syair hilang)
-    mainArea.innerHTML = ""; 
-
-    // 3. PAKSA GANTI JUDUL HEADER AGAR TIDAK SALAH
-    const headerTitle = document.querySelector('.header h2, .top-bar h2, h2');
-    if (headerTitle) {
-        headerTitle.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR";
+    // 1. BERSIHKAN MENU LAIN (Sama seperti Syair)
+    if (typeof resetMenu === "function") resetMenu();
+    
+    // 2. ATUR TAMPILAN HEADER (Sama seperti Syair)
+    document.getElementById('main-grid').style.display = "block";
+    if(document.getElementById('txt-jalan')) document.getElementById('txt-jalan').style.display = 'none';
+    
+    const txtTgl = document.getElementById('txt-tanggal');
+    const subTxt = document.getElementById('sub-txt-tanggal');
+    
+    if (txtTgl) {
+        txtTgl.style.display = 'block';
+        txtTgl.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR";
+    }
+    if (subTxt) {
+        subTxt.innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
+        subTxt.style.display = 'block';
     }
 
-    // 4. MASUKKAN TAMPILAN MESIN RAKIT YANG BERSIH
-    mainArea.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 60vh; width: 100%;">
-            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+    // 3. AKTIFKAN MENU (Ganti ke ID menu kemenangan Bos)
+    // document.getElementById('menu-kemenangan').classList.add('active-menu');
+
+    // 4. ISI KONTEN (Gaya Wrapper Syair)
+    const grid = document.getElementById('main-grid');
+    grid.innerHTML = `
+        <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
+            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
                 <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
                 
-                <div id="p-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
-                    <p style="color: #00f2ff; margin: 0; font-size: 14px;">1. Klik & **CTRL+V** BACKGROUND</p>
-                    <img id="view-bg" style="max-width: 120px; display: none; margin: 10px auto;">
+                <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
+                    <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
+                    <img id="v-bg" style="max-width: 120px; display: none; margin: 10px auto;">
                 </div>
 
-                <div id="p-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
-                    <p style="color: #00f2ff; margin: 0; font-size: 14px;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
-                    <img id="view-bukti" style="max-width: 80px; display: none; margin: 10px auto;">
+                <div id="box-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
+                    <p style="color: #00f2ff; margin: 0;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
+                    <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto;">
                 </div>
                 
-                <button onclick="prosesEditSistem()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                <button onclick="prosesRakitHP()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
                     🚀 PROSES EDIT SEKARANG
                 </button>
             </div>
-        </div>
-        <div id="container-hasil" style="display: none; text-align: center; padding: 20px;"></div>
-    `;
+            <div id="hasil-rakitan" style="display: none; margin-top: 20px;"></div>
+        </div>`;
 
-    // 5. SETUP FITUR TEMPEL (PASTE)
-    const aktifkanPaste = (id, imgId, key) => {
-        const box = document.getElementById(id);
-        box.addEventListener('paste', (e) => {
+    // 5. JALANKAN FUNGSI PASTE
+    initPasteSistem();
+}
+
+// Fungsi Paste Mandiri
+function initPasteSistem() {
+    const setup = (id, imgId, key) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener('paste', (e) => {
             const item = Array.from(e.clipboardData.items).find(x => x.type.indexOf('image') !== -1);
             if (item) {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     document.getElementById(imgId).src = ev.target.result;
                     document.getElementById(imgId).style.display = 'block';
-                    rakitanJP[key] = ev.target.result;
-                    box.style.borderColor = "#4caf50";
+                    window['dataJP_' + key] = ev.target.result;
+                    el.style.borderColor = "#4caf50";
                 };
                 reader.readAsDataURL(item.getAsFile());
             }
         });
     };
-
-    aktifkanPaste('p-bg', 'view-bg', 'background');
-    aktifkanPaste('p-bukti', 'view-bukti', 'bukti');
+    setup('box-bg', 'v-bg', 'bg');
+    setup('box-bukti', 'v-bukti', 'bukti');
 }
 
-function prosesEditSistem() {
-    if (!rakitanJP.background || !rakitanJP.bukti) return alert("Tempel kedua gambar dulu Bos!");
-    
-    const hasil = document.getElementById('container-hasil');
-    hasil.style.display = 'block';
-    hasil.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-            <div style="position: relative; width: 350px; height: 600px; border: 5px solid #ffeb3b; border-radius: 20px; overflow: hidden; background: #000;">
-                <img src="${rakitanJP.background}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
-                <div style="position: absolute; bottom: 40px; left: 20px; right: 20px; height: 350px; background: #fff; border-radius: 10px; overflow: hidden; border: 3px solid #ffeb3b;">
-                    <img src="${rakitanJP.bukti}" style="width: 100%; height: 100%; object-fit: contain;">
-                </div>
+// Fungsi Gabung Gambar
+function prosesRakitHP() {
+    const bg = window.dataJP_bg;
+    const bukti = window.dataJP_bukti;
+    if (!bg || !bukti) return alert("Paste dulu gambar Background dan Bukti Bos!");
+
+    const area = document.getElementById('hasil-rakitan');
+    area.style.display = "block";
+    area.innerHTML = `
+        <div style="position: relative; width: 350px; height: 600px; border: 5px solid #ffeb3b; border-radius: 20px; overflow: hidden; background: #000;">
+            <img src="${bg}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">
+            <div style="position: absolute; bottom: 40px; left: 20px; right: 20px; height: 350px; background: #fff; border-radius: 10px; overflow: hidden; border: 3px solid #ffeb3b;">
+                <img src="${bukti}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <p style="color: #fff; margin-top: 15px; font-weight: bold;">✅ EDIT BERHASIL!</p>
         </div>
+        <p style="color: #fff; font-weight: bold; margin-top: 10px;">✅ BERHASIL DIGABUNG!</p>
     `;
 }
 </script>
