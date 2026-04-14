@@ -813,6 +813,21 @@ function loadKemenangan() {
     // 1. BERSIHKAN MENU LAIN (Sama seperti Syair)
     if (typeof resetMenu === "function") resetMenu();
     
+    // --- TAMBAHAN LOGIKA WARNA BIRU (ACTIVE MENU) ---
+    // Mencari semua link di sidebar/menu untuk meriset warna
+    const semuaMenu = document.querySelectorAll('.sidebar a, .nav-link, .menu-item');
+    semuaMenu.forEach(menu => {
+        menu.classList.remove('active-menu'); // Hapus warna biru dari menu lain
+    });
+
+    // Menambah warna biru ke menu Kemenangan (berdasarkan teks-nya)
+    semuaMenu.forEach(menu => {
+        if (menu.innerText.includes("KEMENANGAN BESAR")) {
+            menu.classList.add('active-menu');
+        }
+    });
+    // ------------------------------------------------
+
     // 2. ATUR TAMPILAN HEADER (Sama seperti Syair)
     document.getElementById('main-grid').style.display = "block";
     if(document.getElementById('txt-jalan')) document.getElementById('txt-jalan').style.display = 'none';
@@ -828,9 +843,6 @@ function loadKemenangan() {
         subTxt.innerText = "OTOMATIS UPDATE & EXPORT GAMBAR";
         subTxt.style.display = 'block';
     }
-
-    // 3. AKTIFKAN MENU (Ganti ke ID menu kemenangan Bos)
-    // document.getElementById('menu-kemenangan').classList.add('active-menu');
 
     // 4. ISI KONTEN (Gaya Wrapper Syair)
     const grid = document.getElementById('main-grid');
@@ -860,7 +872,7 @@ function loadKemenangan() {
     initPasteSistem();
 }
 
-// Fungsi Paste Mandiri
+// Fungsi Paste Mandiri (TIDAK BERUBAH)
 function initPasteSistem() {
     const setup = (id, imgId, key) => {
         const el = document.getElementById(id);
@@ -883,7 +895,7 @@ function initPasteSistem() {
     setup('box-bukti', 'v-bukti', 'bukti');
 }
 
-// Fungsi Gabung Gambar
+// Fungsi Gabung Gambar (TIDAK BERUBAH)
 function prosesRakitHP() {
     const bg = window.dataJP_bg;
     const bukti = window.dataJP_bukti;
