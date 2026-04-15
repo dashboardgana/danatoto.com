@@ -922,22 +922,32 @@ async function prosesRakitHP() {
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-// --- 3. CARIKAN ID (SUPER TAJAM, CANTIK & MOJOK KANAN) ---
+// --- 2. LOGO DANATOTO (TENGAH & PALING ATAS BANGET) ---
+if (imgLogo) {
+    const lW = 200; // Lebar rata biar gak peang
+    const lH = 80;  
+    const lX = (1280 / 2) - (lW / 2); // Presisi Tengah (540)
+    const lY = -35; // NAIKKAN LAGI BIAR MENTOK HABIS KE ATAS
+    
+    ctx.drawImage(imgLogo, lX, lY, lW, lH);
+}
+
+// --- 3. CARIKAN ID (DIJAMIN MUNCUL, TAJAM, & MOJOK) ---
 if (imgCarikan) {
-    // Ukuran dibuat besar (380px) agar tulisan di dalamnya terbaca jelas (HD)
-    const cW = 380; 
-    const cH = 130;  
+    // Pakai lebar 320 biar tulisan "CARIKANID DANATOTO" nampak jelas
+    const cW = 320; 
+    const cH = 110;  
     
-    // Geser X ke 950 agar nampak, tajam, tapi mepet kanan
-    const cX = 950; 
+    // Titik X di 940 biar logo masuk ke dalam canvas (Gak Hilang/Terpotong)
+    const cX = 940; 
     
-    // Y di -30 agar sela putih/ungu di atasnya hilang
-    const cY = -30; 
+    // Y di -25 biar nempel ke sudut atas
+    const cY = -25; 
     
-    // Tambahkan shadow sedikit biar tulisan putihnya lebih kontras/jelas
+    // Efek Shadow biar tulisan putihnya tajam (Cantik)
     ctx.save();
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "rgba(0,0,0,0.6)";
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "rgba(0,0,0,0.7)";
     ctx.drawImage(imgCarikan, cX, cY, cW, cH);
     ctx.restore();
 }
