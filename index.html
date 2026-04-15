@@ -809,15 +809,33 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
-// Variable Global untuk simpan data
+// Variable Global tetap aman
 window.dataJP_bg = window.dataJP_bg || null;
 window.dataJP_bukti = window.dataJP_bukti || null;
 
 function loadKemenangan() {
-    // 1. BERSIHKAN MENU LAIN
+    // --- 1. LOGIKA RESET MENU & WARNA (MENIRU CONTOH SGP TOTO) ---
     if (typeof resetMenu === "function") resetMenu();
     
-    // 2. ATUR TAMPILAN HEADER
+    // Hapus class active-menu dari semua menu sidebar dulu
+    document.querySelectorAll('.sidebar-menu-item, .nav-link, li').forEach(el => {
+        el.classList.remove('active-menu');
+        el.style.backgroundColor = "transparent"; // Pastikan putih/transparan lagi
+        el.style.color = ""; 
+    });
+
+    // Tambahkan warna biru cerah ke menu ini (Postingan Kemenangan Besar)
+    const menuIni = Array.from(document.querySelectorAll('div, li, span, a')).find(el => 
+        el.innerText && el.innerText.includes("POSTINGAN KEMENANGAN")
+    );
+    if (menuIni) {
+        menuIni.style.backgroundColor = "#00c3ff"; // Biru cerah sesuai contoh SGP Toto
+        menuIni.style.color = "black";
+        menuIni.style.fontWeight = "bold";
+        menuIni.style.borderRadius = "8px";
+    }
+
+    // --- 2. ATUR TAMPILAN HEADER ---
     document.getElementById('main-grid').style.display = "block";
     if(document.getElementById('txt-jalan')) document.getElementById('txt-jalan').style.display = 'none';
     
@@ -833,28 +851,24 @@ function loadKemenangan() {
         subTxt.style.display = 'block';
     }
 
-    // 4. ISI KONTEN (Gaya Wrapper Syair)
+    // --- 3. ISI KONTEN (GAYA WRAPPER SYAIR) ---
     const grid = document.getElementById('main-grid');
     grid.innerHTML = `
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
             <div id="mesin-input-jp" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
                 <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
-                
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
                     <img id="v-bg" style="max-width: 120px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
-
                 <div id="box-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
                     <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
-                
                 <button onclick="prosesRakitHP()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
                     🚀 PROSES EDIT SEKARANG
                 </button>
             </div>
-
             <div id="hasil-rakitan" style="display: none; margin-top: 20px; text-align: center;">
                 <canvas id="canvasJP" style="max-width: 100%; border: 5px solid #333; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
                 <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
@@ -866,12 +880,11 @@ function loadKemenangan() {
 
     initPasteSistem();
 
-    // LOGIKA ANTI-HILANG: Cek jika ada data lama di memory browser
+    // Logika Anti-Hilang: Load gambar dari memory jika ada
     const savedImg = localStorage.getItem('last_jp_result');
     if (savedImg) {
         document.getElementById('mesin-input-jp').style.display = 'none';
-        const area = document.getElementById('hasil-rakitan');
-        area.style.display = "block";
+        document.getElementById('hasil-rakitan').style.display = "block";
         const canvas = document.getElementById('canvasJP');
         const ctx = canvas.getContext('2d');
         const img = new Image();
@@ -882,126 +895,6 @@ function loadKemenangan() {
         };
         img.src = savedImg;
     }
-}
-
-function initPasteSistem() {
-    const setup = (id, imgId, key) => {
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.addEventListener('paste', (e) => {
-            const item = Array.from(e.clipboardData.items).find(x => x.type.indexOf('image') !== -1);
-            if (item) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    document.getElementById(imgId).src = ev.target.result;
-                    document.getElementById(imgId).style.display = 'block';
-                    window['dataJP_' + key] = ev.target.result;
-                    el.style.borderColor = "#4caf50";
-                };
-                reader.readAsDataURL(item.getAsFile());
-            }
-        });
-    };
-    setup('box-bg', 'v-bg', 'bg');
-    setup('box-bukti', 'v-bukti', 'bukti');
-}
-
-async function prosesRakitHP() {
-    const bgSrc = window.dataJP_bg;
-    const buktiSrc = window.dataJP_bukti;
-    if (!bgSrc || !buktiSrc) return alert("Paste dulu gambar Background dan Bukti Bos!");
-
-    document.getElementById('mesin-input-jp').style.display = 'none';
-    const area = document.getElementById('hasil-rakitan');
-    area.style.display = "block";
-    
-    const canvas = document.getElementById('canvasJP');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 1280;
-    canvas.height = 720;
-
-    const loadImg = (src) => new Promise(res => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => res(img);
-        img.src = src;
-    });
-
-    try {
-        const imgBg = await loadImg(bgSrc);
-        const imgBukti = await loadImg(buktiSrc);
-        // Link yang Bos berikan
-        const imgLogoDana = await loadImg('https://i.ibb.co/nTJxx04/danatoto.png'); 
-        const imgLogoCarikan = await loadImg('https://i.ibb.co/k2W1VbDm/carikan.png');
-        const imgDollar = await loadImg('https://apimeme.com/meme?meme=Money-On-Fire&top='); 
-
-        // 1. GAMBAR BACKGROUND
-        ctx.drawImage(imgBg, 0, 0, 1280, 720);
-
-        // 2. LOGO DANATOTO (TENGAH ATAS)
-        ctx.drawImage(imgLogoDana, (1280/2) - 150, 20, 300, 100);
-
-        // 3. LOGO CARIKAN ID (KANAN ATAS KECIL)
-        ctx.drawImage(imgLogoCarikan, 1100, 20, 140, 45);
-
-        // 4. DEKORASI DOLLAR (BAWAH)
-        ctx.drawImage(imgDollar, 400, 520, 850, 200);
-
-        // 5. POSISI HP MENTOK KIRI
-        const hp = { x: 25, y: 40, w: 340, h: 640, r: 45, b: 12 };
-
-        ctx.save();
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = "rgba(0,0,0,0.8)";
-        ctx.fillStyle = "#111";
-        drawRoundedJP(ctx, hp.x, hp.y, hp.w, hp.h, hp.r);
-        ctx.fill();
-        ctx.restore();
-
-        // 6. MASKING BUKTI
-        ctx.save();
-        drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2), hp.r - 10);
-        ctx.clip(); 
-        ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2));
-        ctx.restore();
-
-        // Kamera
-        ctx.fillStyle = "#000";
-        ctx.beginPath();
-        ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2);
-        ctx.fill();
-
-        // SIMPAN KE MEMORY (Agar klik menu lain ga hilang)
-        localStorage.setItem('last_jp_result', canvas.toDataURL());
-
-    } catch (e) {
-        alert("Gagal memuat asset gambar. Pastikan link gambar benar.");
-    }
-}
-
-function drawRoundedJP(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-}
-
-function downloadHasilJP() {
-    const canvas = document.getElementById('canvasJP');
-    const link = document.createElement('a');
-    link.download = 'POSTER_JP_LANDSCAPE.png';
-    link.href = canvas.toDataURL();
-    link.click();
-}
-
-function hapusHasilJP() {
-    window.dataJP_bg = null;
-    window.dataJP_bukti = null;
-    localStorage.removeItem('last_jp_result'); // Hapus memory
-    loadKemenangan();
 }
 </script>
 </body>
