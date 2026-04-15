@@ -817,11 +817,11 @@ function loadKemenangan() {
     // BERSIHKAN MENU LAIN & AKTIFKAN MENU INI
     if (typeof resetMenu === "function") resetMenu();
     
-    // SEMBUNYIKAN BOX SELAMAT DATANG / TEKS JALAN (Biar tidak numpuk di atas)
+    // SEMBUNYIKAN BOX SELAMAT DATANG
     const welcomeBox = document.getElementById('txt-jalan') || document.querySelector('.welcome-box');
     if (welcomeBox) welcomeBox.style.display = 'none';
 
-    // Logika Menu Biru (Gaya Syair Bos)
+    // Logika Menu Aktif
     const semuaMenu = document.querySelectorAll('.sidebar-menu-item, .nav-link, li');
     semuaMenu.forEach(m => m.classList.remove('active-menu'));
     
@@ -843,28 +843,23 @@ function loadKemenangan() {
     if (txtTgl) { txtTgl.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR"; txtTgl.style.display = 'block'; }
     if (subTxt) { subTxt.innerText = "OTOMATIS UPDATE & EXPORT GAMBAR"; subTxt.style.display = 'block'; }
 
-    // ISI KONTEN (DIBERSIHKAN STRUKTURNYA)
+    // ISI KONTEN
     mainGrid.innerHTML = `
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; position: relative; z-index: 999;">
-            
             <div id="mesin-input-jp" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
                 <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
-                
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
                     <img id="v-bg" style="max-width: 100px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
-                
                 <div id="box-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
                     <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
-                
                 <button id="btn-proses-jp" onclick="prosesRakitHP()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
                     🚀 PROSES EDIT SEKARANG
                 </button>
             </div>
-
             <div id="hasil-rakitan" style="display: none; text-align: center;">
                 <canvas id="canvasJP" style="max-width: 100%; border: 4px solid #333; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);"></canvas>
                 <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
@@ -872,12 +867,10 @@ function loadKemenangan() {
                     <button onclick="hapusHasilJP()" style="padding: 12px 25px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">🗑️ DELETE / RESET</button>
                 </div>
             </div>
-            
         </div>`;
 
     initPasteSistem();
 
-    // FITUR ANTI-NGILANG (Cek LocalStorage saat F5)
     const savedData = localStorage.getItem('last_jp_result');
     if (savedData) {
         document.getElementById('mesin-input-jp').style.display = 'none';
@@ -906,43 +899,34 @@ async function prosesRakitHP() {
     });
 
     try {
+        // PERBAIKAN: Kita load semua gambar sekaligus di sini agar tidak bentrok
         const [imgBg, imgBukti, imgLogo, imgCarikan] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            loadImg('https://i.ibb.co/nTJxx04/danatoto.png'), // Logo Danatoto
-            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')  // Logo Carikan
+            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto Bos
+            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')      // Logo Carikan ID
         ]);
 
         // 1. DRAW BACKGROUND
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-// --- 2. BAGIAN DRAW LOGO DANATOTO (TENGAH ATAS) ---
-// Pakai link dari script Syair Bos biar aman ga kepotong
-const imgLogo = await loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD');
+        // 2. LOGO DANATOTO (TENGAH ATAS - DIPERKECIL & RAPI)
+        if (imgLogo) {
+            const lW = 220; 
+            const lH = 60;  
+            const lX = (1280 / 2) - (lW / 2); // Senter Tengah
+            ctx.drawImage(imgLogo, lX, 25, lW, lH);
+        }
 
-if (imgLogo) {
-    const lW = 200; // Ukuran diperkecil (sebelumnya 300)
-    const lH = 55;  // Tinggi proporsional
-    
-    // RUMUS SENTER TENGAH: (1280 / 2) - (200 / 2) = 540
-    const lX = (1280 / 2) - (lW / 2); 
-    const lY = 30; // Jarak dari atas pas (tidak terlalu mepet)
-    
-    ctx.drawImage(imgLogo, lX, lY, lW, lH);
-}
+        // 3. LOGO CARIKAN ID (KANAN ATAS)
+        if (imgCarikan) {
+            const cW = 160;
+            const cH = 50;
+            ctx.drawImage(imgCarikan, 1080, 30, cW, cH);
+        }
 
-// --- 3. BAGIAN DRAW CARIKAN ID (KANAN ATAS) ---
-const imgCarikan = await loadImg('https://i.ibb.co/k2W1VbDm/carikan.png');
-if (imgCarikan) {
-    const cW = 150;
-    const cH = 45;
-    // Posisikan di pojok kanan (X: 1100)
-    ctx.drawImage(imgCarikan, 1100, 35, cW, cH);
-}
-
-        // 4. FRAME HP CANTIK (DI SUDUT KIRI PAS)
+        // 4. FRAME HP
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
-        
         ctx.save();
         ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
         ctx.fillStyle = "#111"; 
@@ -951,24 +935,22 @@ if (imgCarikan) {
         ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
         ctx.restore();
 
-        // 5. MASKING BUKTI KE DALAM HP
+        // 5. MASKING BUKTI
         ctx.save();
         drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
         ctx.clip();
         ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
         ctx.restore();
 
-        // 6. KAMERA DEPAN HP
+        // 6. KAMERA DEPAN
         ctx.fillStyle = "#000"; ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
 
-        // SIMPAN KE LOCALSTORAGE (AGAR TIDAK HILANG SAAT F5)
         localStorage.setItem('last_jp_result', canvas.toDataURL());
-        
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { alert("Gagal memuat gambar logo, cek link gambar Bos!"); }
+    } catch (e) { alert("Gagal memuat gambar, pastikan link benar!"); }
 }
 
 function hapusHasilJP() {
