@@ -833,7 +833,7 @@ function loadKemenangan() {
         subTxt.style.display = 'block';
     }
 
-    // 4. ISI KONTEN (Gaya Wrapper Syair)
+    // 4. ISI KONTEN
     const grid = document.getElementById('main-grid');
     grid.innerHTML = `
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
@@ -866,7 +866,7 @@ function loadKemenangan() {
 
     initPasteSistem();
 
-    // LOGIKA ANTI-HILANG: Cek jika ada data lama di memory browser
+    // ANTI-HILANG
     const savedImg = localStorage.getItem('last_jp_result');
     if (savedImg) {
         document.getElementById('mesin-input-jp').style.display = 'none';
@@ -911,41 +911,49 @@ async function prosesRakitHP() {
     const buktiSrc = window.dataJP_bukti;
     if (!bgSrc || !buktiSrc) return alert("Paste dulu gambar Background dan Bukti Bos!");
 
-    document.getElementById('mesin-input-jp').style.display = 'none';
-    const area = document.getElementById('hasil-rakitan');
-    area.style.display = "block";
-    
-    const canvas = document.getElementById('canvasJP');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 1280;
-    canvas.height = 720;
-
+    // Menghindari canvas macet jika gambar luar gagal dimuat
     const loadImg = (src) => new Promise(res => {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => res(img);
+        img.onerror = () => res(null); // Jika gagal, kirim null agar script tetap jalan
         img.src = src;
     });
 
     try {
         const imgBg = await loadImg(bgSrc);
         const imgBukti = await loadImg(buktiSrc);
-        // Link yang Bos berikan
         const imgLogoDana = await loadImg('https://i.ibb.co/nTJxx04/danatoto.png'); 
         const imgLogoCarikan = await loadImg('https://i.ibb.co/k2W1VbDm/carikan.png');
-        const imgDollar = await loadImg('https://apimeme.com/meme?meme=Money-On-Fire&top='); 
+        // Gunakan link baru untuk dollar agar lebih stabil
+        const imgDollar = await loadImg('https://i.ibb.co/5GByY98/dollar-pile.png'); 
+
+        document.getElementById('mesin-input-jp').style.display = 'none';
+        const area = document.getElementById('hasil-rakitan');
+        area.style.display = "block";
+        
+        const canvas = document.getElementById('canvasJP');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1280;
+        canvas.height = 720;
 
         // 1. GAMBAR BACKGROUND
-        ctx.drawImage(imgBg, 0, 0, 1280, 720);
+        if(imgBg) ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
         // 2. LOGO DANATOTO (TENGAH ATAS)
-        ctx.drawImage(imgLogoDana, (1280/2) - 150, 20, 300, 100);
+        if(imgLogoDana) {
+            ctx.drawImage(imgLogoDana, (1280/2) - 150, 20, 300, 100);
+        }
 
         // 3. LOGO CARIKAN ID (KANAN ATAS KECIL)
-        ctx.drawImage(imgLogoCarikan, 1100, 20, 140, 45);
+        if(imgLogoCarikan) {
+            ctx.drawImage(imgLogoCarikan, 1100, 25, 150, 50);
+        }
 
         // 4. DEKORASI DOLLAR (BAWAH)
-        ctx.drawImage(imgDollar, 400, 520, 850, 200);
+        if(imgDollar) {
+            ctx.drawImage(imgDollar, 400, 520, 850, 200);
+        }
 
         // 5. POSISI HP MENTOK KIRI
         const hp = { x: 25, y: 40, w: 340, h: 640, r: 45, b: 12 };
@@ -959,23 +967,26 @@ async function prosesRakitHP() {
         ctx.restore();
 
         // 6. MASKING BUKTI
-        ctx.save();
-        drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2), hp.r - 10);
-        ctx.clip(); 
-        ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2));
-        ctx.restore();
+        if(imgBukti) {
+            ctx.save();
+            drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2), hp.r - 10);
+            ctx.clip(); 
+            ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2));
+            ctx.restore();
+        }
 
-        // Kamera
+        // Kamera HP
         ctx.fillStyle = "#000";
         ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2);
         ctx.fill();
 
-        // SIMPAN KE MEMORY (Agar klik menu lain ga hilang)
+        // SIMPAN KE LOCALSTORAGE
         localStorage.setItem('last_jp_result', canvas.toDataURL());
 
     } catch (e) {
-        alert("Gagal memuat asset gambar. Pastikan link gambar benar.");
+        console.error(e);
+        alert("Terjadi kesalahan teknis saat merakit gambar.");
     }
 }
 
@@ -1000,7 +1011,7 @@ function downloadHasilJP() {
 function hapusHasilJP() {
     window.dataJP_bg = null;
     window.dataJP_bukti = null;
-    localStorage.removeItem('last_jp_result'); // Hapus memory
+    localStorage.removeItem('last_jp_result');
     loadKemenangan();
 }
 </script>
