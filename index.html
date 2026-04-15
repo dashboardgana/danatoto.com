@@ -906,33 +906,29 @@ async function prosesRakitHP() {
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
-            loadImg('https://lh3.googleusercontent.com/d/1CqVCF6RFtpJH0oIvVysG-0uvXwNlZ2np')  // Carikan ID
+            loadImg('https://lh3.googleusercontent.com/d/1CqVCF6RFtpJH0oIvVysG-0uvXwNlZ2np')  // Carikan ID (Link Drive Bos)
         ]);
 
         // 1. Gambar Background
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // --- 2. LOGO DANATOTO (PALING ATAS, TENGAH, ANTI-PEANG) ---
+        // --- 2. LOGO DANATOTO (MENTOK PALING ATAS & SENTER TENGAH) ---
         if (imgLogo) {
-            // Lebar 240px dan Tinggi 90px biar proporsinya tegak dan rata
-            const lW = 240; 
-            const lH = 90;  
-            // RUMUS TENGAH: (1280 / 2) - (240 / 2) = 520
-            const lX = 520; 
-            // Y = -5 biar bener-bener nempel mentok ke atas
-            const lY = -5; 
+            const lW = 230; // Lebar ideal biar ga peang
+            const lH = 85;  
+            // HITUNGAN TENGAH MATI: (1280 / 2) - (230 / 2) = 525
+            const lX = 525; 
+            const lY = -10; // Minus biar bener-bener mepet ke paling atas
             
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. CARIKAN ID (SUDUT KANAN ATAS - JELAS & BESAR) ---
+        // --- 3. CARIKAN ID (SUDUT KANAN ATAS - JELAS & TEGAS) ---
         if (imgCarikan) {
-            // Ukuran diperbesar ke 220px agar tulisan terbaca jelas (ga buram)
-            const cW = 220; 
-            const cH = 75;  
-            // Pojok kanan mentok
-            const cX = 1050;
-            const cY = 5; 
+            const cW = 240; // Besarkan biar tulisan "Carikan" terbaca jelas
+            const cH = 80;  
+            const cX = 1040; // Geser mentok kanan
+            const cY = 0;    // Mentok atas
             
             ctx.drawImage(imgCarikan, cX, cY, cW, cH);
         }
@@ -947,14 +943,14 @@ async function prosesRakitHP() {
         ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
         ctx.restore();
 
-        // 5. ISI BUKTI
+        // 5. ISI BUKTI (MASKING)
         ctx.save();
         drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
         ctx.clip();
         ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
         ctx.restore();
 
-        // 6. KAMERA DEPAN HP
+        // 6. KAMERA DEPAN
         ctx.fillStyle = "#000"; ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
 
@@ -964,7 +960,7 @@ async function prosesRakitHP() {
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal muat logo! Pastikan link gambar Bos masih aktif."); 
+        alert("Gagal ambil logo Bos, pastikan linknya masih aktif!"); 
     }
 }
 
