@@ -922,19 +922,24 @@ async function prosesRakitHP() {
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. CARIKAN ID TERBARU (REVISI: KECIL, TAJAM, MOJOK KANAN) ---
+// --- 3. CARIKAN ID (SUPER TAJAM, CANTIK & MOJOK KANAN) ---
 if (imgCarikan) {
-    // Ukuran dikecilkan dari 350 ke 250 biar tidak menutupi background
-    const cW = 250; 
-    const cH = 90;  
+    // Ukuran dibuat besar (380px) agar tulisan di dalamnya terbaca jelas (HD)
+    const cW = 380; 
+    const cH = 130;  
     
-    // Posisi cX di 1010 agar mepet kanan
-    const cX = 1010; 
+    // Geser X ke 950 agar nampak, tajam, tapi mepet kanan
+    const cX = 950; 
     
-    // Posisi cY di -25 agar benar-benar naik mentok ke atas
-    const cY = -25; 
+    // Y di -30 agar sela putih/ungu di atasnya hilang
+    const cY = -30; 
     
+    // Tambahkan shadow sedikit biar tulisan putihnya lebih kontras/jelas
+    ctx.save();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "rgba(0,0,0,0.6)";
     ctx.drawImage(imgCarikan, cX, cY, cW, cH);
+    ctx.restore();
 }
 
         // 4. FRAME HP (SUDUT KIRI)
