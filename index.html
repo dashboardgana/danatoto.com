@@ -833,7 +833,7 @@ function loadKemenangan() {
     const grid = document.getElementById('main-grid');
     grid.innerHTML = `
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
-            <div style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
+            <div id="mesin-input-jp" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
                 <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
                 
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
@@ -850,17 +850,19 @@ function loadKemenangan() {
                     🚀 PROSES EDIT SEKARANG
                 </button>
             </div>
+
             <div id="hasil-rakitan" style="display: none; margin-top: 20px; text-align: center;">
-                <canvas id="canvasJP" style="max-width: 100%; border: 5px solid #333; border-radius: 10px;"></canvas>
-                <br>
-                <button onclick="downloadHasilJP()" style="margin-top:10px; padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 DOWNLOAD PNG</button>
+                <canvas id="canvasJP" style="max-width: 100%; border: 5px solid #333; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></canvas>
+                <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="downloadHasilJP()" style="padding: 12px 25px; background: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 DOWNLOAD PNG</button>
+                    <button onclick="hapusHasilJP()" style="padding: 12px 25px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">🗑️ DELETE / RESET</button>
+                </div>
             </div>
         </div>`;
 
     initPasteSistem();
 }
 
-// Fungsi Paste Mandiri
 function initPasteSistem() {
     const setup = (id, imgId, key) => {
         const el = document.getElementById(id);
@@ -883,12 +885,12 @@ function initPasteSistem() {
     setup('box-bukti', 'v-bukti', 'bukti');
 }
 
-// FUNGSI GABUNG GAMBAR (REVISI PERSEGI PANJANG & HP DI KIRI)
 async function prosesRakitHP() {
     const bgSrc = window.dataJP_bg;
     const buktiSrc = window.dataJP_bukti;
     if (!bgSrc || !buktiSrc) return alert("Paste dulu gambar Background dan Bukti Bos!");
 
+    document.getElementById('mesin-input-jp').style.display = 'none';
     const area = document.getElementById('hasil-rakitan');
     area.style.display = "block";
     
@@ -908,37 +910,36 @@ async function prosesRakitHP() {
     const imgBg = await loadImg(bgSrc);
     const imgBukti = await loadImg(buktiSrc);
 
-    // 1. GAMBAR BACKGROUND
+    // 1. GAMBAR BACKGROUND PENUH (LANDSCAPE)
     ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-    // 2. SETTING POSISI HP (SUDUT KIRI)
-    const hp = { x: 60, y: 50, w: 330, h: 620, r: 40, bezel: 12 };
+    // 2. POSISI HP DI KIRI SUDUT
+    const hp = { x: 50, y: 40, w: 340, h: 640, r: 45, b: 12 };
 
-    // BODY HP (Body Hitam)
+    // Body HP Hitam
     ctx.save();
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = "rgba(0,0,0,0.5)";
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = "rgba(0,0,0,0.8)";
     ctx.fillStyle = "#111";
-    drawRoundedRectPath(ctx, hp.x, hp.y, hp.w, hp.h, hp.r);
+    drawRoundedJP(ctx, hp.x, hp.y, hp.w, hp.h, hp.r);
     ctx.fill();
     ctx.restore();
 
-    // 3. MASKING BUKTI TRANSFER (Masuk ke dalam HP Rapi)
+    // 3. MASKING BUKTI (RAPI DI DALAM HP)
     ctx.save();
-    drawRoundedRectPath(ctx, hp.x + hp.bezel, hp.y + hp.bezel, hp.w - (hp.bezel*2), hp.h - (hp.bezel*2), hp.r - 10);
+    drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2), hp.r - 10);
     ctx.clip(); 
-    ctx.drawImage(imgBukti, hp.x + hp.bezel, hp.y + hp.bezel, hp.w - (hp.bezel*2), hp.h - (hp.bezel*2));
+    ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2));
     ctx.restore();
 
-    // 4. DETAIL HP (Kamera)
+    // Kamera Atas
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2);
     ctx.fill();
 }
 
-// Fungsi bantu lengkungan
-function drawRoundedRectPath(ctx, x, y, w, h, r) {
+function drawRoundedJP(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -951,9 +952,15 @@ function drawRoundedRectPath(ctx, x, y, w, h, r) {
 function downloadHasilJP() {
     const canvas = document.getElementById('canvasJP');
     const link = document.createElement('a');
-    link.download = 'postingan_jp_rapi.png';
+    link.download = 'POSTINGAN_JP_LANDSCAPE.png';
     link.href = canvas.toDataURL();
     link.click();
+}
+
+function hapusHasilJP() {
+    window.dataJP_bg = null;
+    window.dataJP_bukti = null;
+    loadKemenangan();
 }
 </script>
 </body>
