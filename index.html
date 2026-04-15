@@ -912,24 +912,26 @@ async function prosesRakitHP() {
         // 1. Gambar Background
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // --- 2. LOGO DANATOTO (FIX: TENGAH, PALING ATAS, RATA) ---
+        // --- 2. LOGO DANATOTO (PALING ATAS, TENGAH, ANTI-PEANG) ---
         if (imgLogo) {
-            // Lebar dikurangi sikit biar ga peyang/lebar kali, Tinggi ditambah biar rata
-            const lW = 260; 
-            const lH = 85;  
-            // RUMUS TENGAH MATI: (1280 / 2) - (260 / 2) = 510
-            const lX = 510; 
-            const lY = 0; // MENEPEL PALING ATAS (Y=0)
+            // Lebar 240px dan Tinggi 90px biar proporsinya tegak dan rata
+            const lW = 240; 
+            const lH = 90;  
+            // RUMUS TENGAH: (1280 / 2) - (240 / 2) = 520
+            const lX = 520; 
+            // Y = -5 biar bener-bener nempel mentok ke atas
+            const lY = -5; 
             
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. CARIKAN ID (SUDUT KANAN PALING ATAS) ---
+        // --- 3. CARIKAN ID (SUDUT KANAN ATAS - JELAS & BESAR) ---
         if (imgCarikan) {
-            const cW = 180; // Diperbesar biar jelas nampak
-            const cH = 60;  
-            // Pojok kanan atas mentok (X=1090)
-            const cX = 1090;
+            // Ukuran diperbesar ke 220px agar tulisan terbaca jelas (ga buram)
+            const cW = 220; 
+            const cH = 75;  
+            // Pojok kanan mentok
+            const cX = 1050;
             const cY = 5; 
             
             ctx.drawImage(imgCarikan, cX, cY, cW, cH);
@@ -952,7 +954,7 @@ async function prosesRakitHP() {
         ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
         ctx.restore();
 
-        // 6. KAMERA DEPAN
+        // 6. KAMERA DEPAN HP
         ctx.fillStyle = "#000"; ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
 
@@ -962,7 +964,7 @@ async function prosesRakitHP() {
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal muat logo! Cek link atau koneksi Bos."); 
+        alert("Gagal muat logo! Pastikan link gambar Bos masih aktif."); 
     }
 }
 
