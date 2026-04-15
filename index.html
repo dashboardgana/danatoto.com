@@ -887,45 +887,55 @@ function loadKemenangan() {
 }
 
 async function prosesRakitHP() {
-    if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Paste dulu dua gambarnya Bos!");
+    if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Paste dulu BACKGROUND dan BUKTI Bos!");
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
     canvas.width = 1280; canvas.height = 720;
 
     const loadImg = (src) => new Promise((res, rej) => {
-        const img = new Image(); img.crossOrigin = "anonymous";
-        img.onload = () => res(img); img.onerror = rej; img.src = src;
+        const img = new Image(); 
+        img.crossOrigin = "anonymous"; // Biar ga error cross-origin
+        img.onload = () => res(img); 
+        img.onerror = rej; 
+        img.src = src;
     });
 
     try {
-        // PERBAIKAN: Kita load semua gambar sekaligus di sini agar tidak bentrok
+        // Ambil semua gambar sekaligus
         const [imgBg, imgBukti, imgLogo, imgCarikan] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto Bos
-            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')      // Logo Carikan ID
+            // INI LINK TERBARU DARI BOS (PASTI UTUH)
+            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
+            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')
         ]);
 
-        // 1. DRAW BACKGROUND
+        // 1. Gambar Background Bos
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // 2. LOGO DANATOTO (TENGAH ATAS - DIPERKECIL & RAPI)
+        // --- 2. LOGO DANATOTO (TENGAH ATAS - FIX GA KEPOTONG) ---
         if (imgLogo) {
+            // Ukuran kita perkecil dikit biar manis (Proporsional)
             const lW = 220; 
             const lH = 60;  
-            const lX = (1280 / 2) - (lW / 2); // Senter Tengah
-            ctx.drawImage(imgLogo, lX, 25, lW, lH);
+            
+            // RUMUS SENTER TENGAH: (Lebar Canvas / 2) - (Lebar Logo / 2)
+            const lX = (1280 / 2) - (lW / 2); 
+            const lY = 30; // Jarak dari atas pas (tidak terlalu mepet)
+            
+            ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // 3. LOGO CARIKAN ID (KANAN ATAS)
+        // --- 3. LOGO CARIKAN ID (KANAN ATAS - RAPI) ---
         if (imgCarikan) {
             const cW = 160;
             const cH = 50;
+            // Posisikan di pojok kanan (X: 1080) dengan jarak aman
             ctx.drawImage(imgCarikan, 1080, 30, cW, cH);
         }
 
-        // 4. FRAME HP
+        // 4. FRAME HP CANTIK (SUDUT KIRI)
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
         ctx.save();
         ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
@@ -935,7 +945,7 @@ async function prosesRakitHP() {
         ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
         ctx.restore();
 
-        // 5. MASKING BUKTI
+        // 5. MASKING BUKTI KE LAYAR HP
         ctx.save();
         drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
         ctx.clip();
@@ -950,7 +960,10 @@ async function prosesRakitHP() {
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { alert("Gagal memuat gambar, pastikan link benar!"); }
+    } catch (e) { 
+        console.error(e);
+        alert("Gagal ambil logo, pastikan linknya aktif Bos!"); 
+    }
 }
 
 function hapusHasilJP() {
