@@ -891,8 +891,6 @@ async function prosesRakitHP() {
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
-    
-    // Canvas Landscape Standar (JANGAN DIGANTI)
     canvas.width = 1280; canvas.height = 720;
 
     const loadImg = (src) => new Promise((res, rej) => {
@@ -904,42 +902,36 @@ async function prosesRakitHP() {
     });
 
     try {
-        // Ambil semua gambar sekaligus
+        // PERBAIKAN LINK: Menggunakan format direct download untuk link Drive Bos
         const [imgBg, imgBukti, imgLogo, imgCarikan] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            // Link Logo Asli dari Bos
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
-            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')
+            loadImg('https://lh3.googleusercontent.com/d/1CqVCF6RFtpJH0oIvVysG-0uvXwNlZ2np')
         ]);
 
-        // 1. Gambar Background Bos
+        // 1. Gambar Background
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // --- 2. LOGO DANATOTO (FIX: PALING TENGAH ATAS) ---
+        // --- 2. LOGO DANATOTO (RATA, TIDAK PEANG, TENGAH ATAS) ---
         if (imgLogo) {
-            // Ukuran manis (Proporsional ga gepeng)
+            // Kita pakai ukuran rata (280x70) supaya tidak terlihat ketarik ke bawah (peang)
             const lW = 280; 
-            const lH = 90;  
-            
-            // RUMUS FIX TENGAH BANGET: (1280 / 2) - (280 / 2) = 500
-            const lX = (1280 / 2) - (lW / 2); 
-            
-            // Y dinaikkan ke 10 agar nempel paling atas dengan jarak aman sikit
-            const lY = 10; 
+            const lH = 70;  
+            const lX = (1280 / 2) - (lW / 2); // Senter Tengah
+            const lY = 5; // Paling Atas
             
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. LOGO CARIKAN ID (DI KANAN ATAS - RAPI) ---
+        // --- 3. CARIKAN ID (KECIL & RAPI DI KANAN) ---
         if (imgCarikan) {
-            const cW = 160;
-            const cH = 55;
-            // Posisikan di pojok kanan (X: 1060) dengan tinggi sama (Y: 10)
-            ctx.drawImage(imgCarikan, 1060, 10, cW, cH);
+            const cW = 140; // Ukuran kecil sesuai permintaan
+            const cH = 45;  // Tinggi proporsional
+            ctx.drawImage(imgCarikan, 1100, 15, cW, cH);
         }
 
-        // 4. FRAME HP CANTIK (SUDUT KIRI)
+        // 4. FRAME HP (SUDUT KIRI)
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
         ctx.save();
         ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
@@ -949,14 +941,14 @@ async function prosesRakitHP() {
         ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
         ctx.restore();
 
-        // 5. MASKING BUKTI KE LAYAR HP
+        // 5. ISI BUKTI
         ctx.save();
         drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
         ctx.clip();
         ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
         ctx.restore();
 
-        // 6. KAMERA DEPAN HP
+        // 6. KAMERA
         ctx.fillStyle = "#000"; ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
 
@@ -966,7 +958,7 @@ async function prosesRakitHP() {
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal ambil logo, pastikan linknya aktif Bos!"); 
+        alert("Gagal ambil logo! Pastikan link Google Drive sudah di-share 'Anyone with the link'."); 
     }
 }
 
