@@ -912,23 +912,23 @@ async function prosesRakitHP() {
         // 1. Gambar Background
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & TENGAH) ---
+        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER) ---
         if (imgLogo) {
-            const lW = 220; // Lebar ideal biar GA PEANG
-            const lH = 80;  
-            const lX = (1280 / 2) - (lW / 2); // 530 (Tengah Mati)
-            const lY = -15; // MINUS BIAR MENTOK KE ATAS BANGET
+            const lW = 210; // Kecilkan dikit lebarnya biar RATA & GAK PEANG
+            const lH = 85;  
+            const lX = (1280 / 2) - (lW / 2); // 535 (Tengah Pas)
+            const lY = -22; // NAIKKAN LAGI BIAR MENTOK ATAS
             
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. CARIKAN ID (SUDUT KANAN ATAS - PALING JELAS) ---
+        // --- 3. CARIKAN ID (SUPER TAJAM - SUDUT KANAN ATAS) ---
         if (imgCarikan) {
-            // Ukuran diledakkan ke 300px biar TULISANNYA NAMPAK JELAS
-            const cW = 300; 
-            const cH = 100;  
-            const cX = 980; // Mentok Sudut Kanan
-            const cY = -10; // Mentok Sudut Atas
+            // Ukuran diledakkan ke 350px biar RESOLUSI TULISAN TAJAM
+            const cW = 350; 
+            const cH = 120;  
+            const cX = 930; // Mentok Sudut Kanan
+            const cY = -15; // Mentok Sudut Atas
             
             ctx.drawImage(imgCarikan, cX, cY, cW, cH);
         }
@@ -960,7 +960,7 @@ async function prosesRakitHP() {
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal muat logo! Pastikan linknya masih aktif Bos."); 
+        alert("Gagal muat logo Bos! Pastikan linknya masih aktif."); 
     }
 }
 
