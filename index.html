@@ -817,41 +817,53 @@ function loadKemenangan() {
     // BERSIHKAN MENU LAIN & AKTIFKAN MENU INI
     if (typeof resetMenu === "function") resetMenu();
     
+    // SEMBUNYIKAN BOX SELAMAT DATANG / TEKS JALAN (Biar tidak numpuk di atas)
+    const welcomeBox = document.getElementById('txt-jalan') || document.querySelector('.welcome-box');
+    if (welcomeBox) welcomeBox.style.display = 'none';
+
     // Logika Menu Biru (Gaya Syair Bos)
+    const semuaMenu = document.querySelectorAll('.sidebar-menu-item, .nav-link, li');
+    semuaMenu.forEach(m => m.classList.remove('active-menu'));
+    
     const menuKemenangan = document.getElementById('menu-kemenangan');
     if (menuKemenangan) {
         menuKemenangan.classList.add('active-menu');
     } else {
-        document.querySelectorAll('.sidebar-menu-item, .nav-link, li').forEach(m => {
+        semuaMenu.forEach(m => {
             if (m.innerText.includes("POSTINGAN KEMENANGAN")) m.classList.add('active-menu');
         });
     }
 
     // ATUR HEADER
-    document.getElementById('main-grid').style.display = "block";
-    if(document.getElementById('txt-jalan')) document.getElementById('txt-jalan').style.display = 'none';
+    const mainGrid = document.getElementById('main-grid');
+    mainGrid.style.display = "block";
+    
     const txtTgl = document.getElementById('txt-tanggal');
     const subTxt = document.getElementById('sub-txt-tanggal');
     if (txtTgl) { txtTgl.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR"; txtTgl.style.display = 'block'; }
     if (subTxt) { subTxt.innerText = "OTOMATIS UPDATE & EXPORT GAMBAR"; subTxt.style.display = 'block'; }
 
-    // ISI KONTEN
-    const grid = document.getElementById('main-grid');
-    grid.innerHTML = `
-        <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
+    // ISI KONTEN (DIBERSIHKAN STRUKTURNYA)
+    mainGrid.innerHTML = `
+        <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; position: relative; z-index: 999;">
+            
             <div id="mesin-input-jp" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
                 <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
+                
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
                     <img id="v-bg" style="max-width: 100px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
+                
                 <div id="box-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 20px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
                     <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
-               <button id="btn-proses-jp" onclick="prosesRakitHP()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-    🚀 PROSES EDIT SEKARANG
-</button>
+                
+                <button id="btn-proses-jp" onclick="prosesRakitHP()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                    🚀 PROSES EDIT SEKARANG
+                </button>
+            </div>
 
             <div id="hasil-rakitan" style="display: none; text-align: center;">
                 <canvas id="canvasJP" style="max-width: 100%; border: 4px solid #333; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);"></canvas>
@@ -860,6 +872,7 @@ function loadKemenangan() {
                     <button onclick="hapusHasilJP()" style="padding: 12px 25px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">🗑️ DELETE / RESET</button>
                 </div>
             </div>
+            
         </div>`;
 
     initPasteSistem();
@@ -887,18 +900,17 @@ async function prosesRakitHP() {
     const ctx = canvas.getContext('2d');
     canvas.width = 1280; canvas.height = 720;
 
-    const loadImg = (src) => new Promise(res => {
+    const loadImg = (src) => new Promise((res, rej) => {
         const img = new Image(); img.crossOrigin = "anonymous";
-        img.onload = () => res(img); img.src = src;
+        img.onload = () => res(img); img.onerror = rej; img.src = src;
     });
 
     try {
-        const [imgBg, imgBukti, imgLogo, imgCarikan, imgDollar] = await Promise.all([
+        const [imgBg, imgBukti, imgLogo, imgCarikan] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            loadImg('https://i.ibb.co/nTJxx04/danatoto.png'),
-            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png'),
-            loadImg('https://apimeme.com/meme?meme=Money-On-Fire&top=')
+            loadImg('https://i.ibb.co/nTJxx04/danatoto.png'), // Logo Danatoto
+            loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')  // Logo Carikan
         ]);
 
         // 1. DRAW BACKGROUND
@@ -910,29 +922,25 @@ async function prosesRakitHP() {
         // 3. LOGO CARIKAN ID (KANAN ATAS)
         ctx.drawImage(imgCarikan, 1080, 40, 150, 50);
 
-        // 4. DOLLAR DEKORASI (BAWAH)
-        ctx.drawImage(imgDollar, 450, 520, 800, 200);
-
-        // 5. FRAME HP CANTIK (DI SUDUT KIRI PAS)
+        // 4. FRAME HP CANTIK (DI SUDUT KIRI PAS)
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
         
-        // Shadow & Body HP
         ctx.save();
         ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
-        ctx.fillStyle = "#111"; // Warna body hp gelap elegan
+        ctx.fillStyle = "#111"; 
         drawRoundedJP(ctx, hp.x, hp.y, hp.w, hp.h, hp.r);
         ctx.fill();
         ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
         ctx.restore();
 
-        // 6. MASKING BUKTI KE DALAM HP
+        // 5. MASKING BUKTI KE DALAM HP
         ctx.save();
         drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
         ctx.clip();
         ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
         ctx.restore();
 
-        // 7. KAMERA DEPAN HP
+        // 6. KAMERA DEPAN HP
         ctx.fillStyle = "#000"; ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
 
@@ -942,28 +950,22 @@ async function prosesRakitHP() {
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { alert("Gagal memuat gambar, cek koneksi Bos!"); }
+    } catch (e) { alert("Gagal memuat gambar logo, cek link gambar Bos!"); }
 }
 
-// FUNGSI HAPUS (RESET DARI AWAL)
 function hapusHasilJP() {
     if (confirm("Hapus hasil edit dan ulang dari awal?")) {
         localStorage.removeItem('last_jp_result');
-        window.dataJP_bg = null;
-        window.dataJP_bukti = null;
-        loadKemenangan(); // Refresh tampilan ke input lagi
+        window.dataJP_bg = null; window.dataJP_bukti = null;
+        loadKemenangan(); 
     }
 }
 
-// FUNGSI DRAW ROUNDED (HELPER)
 function drawRoundedJP(ctx, x, y, w, h, r) {
     ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
 }
 
 function initPasteSistem() {
