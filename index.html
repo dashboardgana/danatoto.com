@@ -891,11 +891,13 @@ async function prosesRakitHP() {
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
+    
+    // Canvas Landscape Standar (JANGAN DIGANTI)
     canvas.width = 1280; canvas.height = 720;
 
     const loadImg = (src) => new Promise((res, rej) => {
         const img = new Image(); 
-        img.crossOrigin = "anonymous"; // Biar ga error cross-origin
+        img.crossOrigin = "anonymous";
         img.onload = () => res(img); 
         img.onerror = rej; 
         img.src = src;
@@ -906,7 +908,7 @@ async function prosesRakitHP() {
         const [imgBg, imgBukti, imgLogo, imgCarikan] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            // INI LINK TERBARU DARI BOS (PASTI UTUH)
+            // Link Logo Asli dari Bos
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
             loadImg('https://i.ibb.co/k2W1VbDm/carikan.png')
         ]);
@@ -914,25 +916,27 @@ async function prosesRakitHP() {
         // 1. Gambar Background Bos
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // --- 2. LOGO DANATOTO (TENGAH ATAS - FIX GA KEPOTONG) ---
+        // --- 2. LOGO DANATOTO (FIX: PALING TENGAH ATAS) ---
         if (imgLogo) {
-            // Ukuran kita perkecil dikit biar manis (Proporsional)
-            const lW = 220; 
-            const lH = 60;  
+            // Ukuran manis (Proporsional ga gepeng)
+            const lW = 280; 
+            const lH = 90;  
             
-            // RUMUS SENTER TENGAH: (Lebar Canvas / 2) - (Lebar Logo / 2)
+            // RUMUS FIX TENGAH BANGET: (1280 / 2) - (280 / 2) = 500
             const lX = (1280 / 2) - (lW / 2); 
-            const lY = 30; // Jarak dari atas pas (tidak terlalu mepet)
+            
+            // Y dinaikkan ke 10 agar nempel paling atas dengan jarak aman sikit
+            const lY = 10; 
             
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. LOGO CARIKAN ID (KANAN ATAS - RAPI) ---
+        // --- 3. LOGO CARIKAN ID (DI KANAN ATAS - RAPI) ---
         if (imgCarikan) {
             const cW = 160;
-            const cH = 50;
-            // Posisikan di pojok kanan (X: 1080) dengan jarak aman
-            ctx.drawImage(imgCarikan, 1080, 30, cW, cH);
+            const cH = 55;
+            // Posisikan di pojok kanan (X: 1060) dengan tinggi sama (Y: 10)
+            ctx.drawImage(imgCarikan, 1060, 10, cW, cH);
         }
 
         // 4. FRAME HP CANTIK (SUDUT KIRI)
@@ -952,7 +956,7 @@ async function prosesRakitHP() {
         ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
         ctx.restore();
 
-        // 6. KAMERA DEPAN
+        // 6. KAMERA DEPAN HP
         ctx.fillStyle = "#000"; ctx.beginPath();
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
 
