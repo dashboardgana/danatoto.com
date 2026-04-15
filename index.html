@@ -916,27 +916,28 @@ async function prosesRakitHP() {
         // 1. DRAW BACKGROUND
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-       // 2. GANTI BAGIAN LOGO DANATOTO (TENGAH ATAS)
-if(imgLogoDana) {
-    // Kita buat ukurannya proporsional biar nggak gepeng
-    const lW = 280; // Lebar logo (silakan sesuaikan sikit kalau mau lebih besar)
-    const lH = 90;  // Tinggi logo (silakan sesuaikan sikit kalau mau lebih tinggi)
+// --- 2. BAGIAN DRAW LOGO DANATOTO (TENGAH ATAS) ---
+// Pakai link dari script Syair Bos biar aman ga kepotong
+const imgLogo = await loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD');
+
+if (imgLogo) {
+    const lW = 200; // Ukuran diperkecil (sebelumnya 300)
+    const lH = 55;  // Tinggi proporsional
     
-    // RUMUS FIX TENGAH: (Lebar Canvas / 2) - (Lebar Logo / 2)
-    const centerX = (1280 / 2) - (lW / 2);
+    // RUMUS SENTER TENGAH: (1280 / 2) - (200 / 2) = 540
+    const lX = (1280 / 2) - (lW / 2); 
+    const lY = 30; // Jarak dari atas pas (tidak terlalu mepet)
     
-    // Y kita kasih jarak 35 pixel dari atas biar nggak nempel banget
-    ctx.drawImage(imgLogoDana, centerX, 35, lW, lH);
+    ctx.drawImage(imgLogo, lX, lY, lW, lH);
 }
 
-// 3. GANTI BAGIAN LOGO CARIKAN ID (KANAN ATAS)
-if(imgLogoCarikan) {
-    const cW = 160; // Ukuran proporsional biar cantik
-    const cH = 55;
-    
-    // Posisikan di koordinat X: 1050 (agak ke kanan tapi ada jarak dari pinggir)
-    // Dan koordinat Y: 35 (sama tinggi dengan Danatoto)
-    ctx.drawImage(imgLogoCarikan, 1050, 35, cW, cH);
+// --- 3. BAGIAN DRAW CARIKAN ID (KANAN ATAS) ---
+const imgCarikan = await loadImg('https://i.ibb.co/k2W1VbDm/carikan.png');
+if (imgCarikan) {
+    const cW = 150;
+    const cH = 45;
+    // Posisikan di pojok kanan (X: 1100)
+    ctx.drawImage(imgCarikan, 1100, 35, cW, cH);
 }
 
         // 4. FRAME HP CANTIK (DI SUDUT KIRI PAS)
