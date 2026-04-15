@@ -906,29 +906,29 @@ async function prosesRakitHP() {
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
-            loadImg('https://lh3.googleusercontent.com/d/1CqVCF6RFtpJH0oIvVysG-0uvXwNlZ2np')  // Carikan ID (Link Drive Bos)
+            loadImg('https://lh3.googleusercontent.com/d/1CqVCF6RFtpJH0oIvVysG-0uvXwNlZ2np')  // Carikan ID
         ]);
 
         // 1. Gambar Background
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // --- 2. LOGO DANATOTO (MENTOK PALING ATAS & SENTER TENGAH) ---
+        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & TENGAH) ---
         if (imgLogo) {
-            const lW = 230; // Lebar ideal biar ga peang
-            const lH = 85;  
-            // HITUNGAN TENGAH MATI: (1280 / 2) - (230 / 2) = 525
-            const lX = 525; 
-            const lY = -10; // Minus biar bener-bener mepet ke paling atas
+            const lW = 220; // Lebar ideal biar GA PEANG
+            const lH = 80;  
+            const lX = (1280 / 2) - (lW / 2); // 530 (Tengah Mati)
+            const lY = -15; // MINUS BIAR MENTOK KE ATAS BANGET
             
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. CARIKAN ID (SUDUT KANAN ATAS - JELAS & TEGAS) ---
+        // --- 3. CARIKAN ID (SUDUT KANAN ATAS - PALING JELAS) ---
         if (imgCarikan) {
-            const cW = 240; // Besarkan biar tulisan "Carikan" terbaca jelas
-            const cH = 80;  
-            const cX = 1040; // Geser mentok kanan
-            const cY = 0;    // Mentok atas
+            // Ukuran diledakkan ke 300px biar TULISANNYA NAMPAK JELAS
+            const cW = 300; 
+            const cH = 100;  
+            const cX = 980; // Mentok Sudut Kanan
+            const cY = -10; // Mentok Sudut Atas
             
             ctx.drawImage(imgCarikan, cX, cY, cW, cH);
         }
@@ -960,7 +960,7 @@ async function prosesRakitHP() {
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal ambil logo Bos, pastikan linknya masih aktif!"); 
+        alert("Gagal muat logo! Pastikan linknya masih aktif Bos."); 
     }
 }
 
