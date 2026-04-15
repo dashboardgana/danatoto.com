@@ -916,11 +916,28 @@ async function prosesRakitHP() {
         // 1. DRAW BACKGROUND
         ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-        // 2. LOGO DANATOTO (TENGAH ATAS)
-        ctx.drawImage(imgLogo, (1280/2) - 150, 40, 300, 100);
+       // 2. GANTI BAGIAN LOGO DANATOTO (TENGAH ATAS)
+if(imgLogoDana) {
+    // Kita buat ukurannya proporsional biar nggak gepeng
+    const lW = 280; // Lebar logo (silakan sesuaikan sikit kalau mau lebih besar)
+    const lH = 90;  // Tinggi logo (silakan sesuaikan sikit kalau mau lebih tinggi)
+    
+    // RUMUS FIX TENGAH: (Lebar Canvas / 2) - (Lebar Logo / 2)
+    const centerX = (1280 / 2) - (lW / 2);
+    
+    // Y kita kasih jarak 35 pixel dari atas biar nggak nempel banget
+    ctx.drawImage(imgLogoDana, centerX, 35, lW, lH);
+}
 
-        // 3. LOGO CARIKAN ID (KANAN ATAS)
-        ctx.drawImage(imgCarikan, 1080, 40, 150, 50);
+// 3. GANTI BAGIAN LOGO CARIKAN ID (KANAN ATAS)
+if(imgLogoCarikan) {
+    const cW = 160; // Ukuran proporsional biar cantik
+    const cH = 55;
+    
+    // Posisikan di koordinat X: 1050 (agak ke kanan tapi ada jarak dari pinggir)
+    // Dan koordinat Y: 35 (sama tinggi dengan Danatoto)
+    ctx.drawImage(imgLogoCarikan, 1050, 35, cW, cH);
+}
 
         // 4. FRAME HP CANTIK (DI SUDUT KIRI PAS)
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
