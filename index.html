@@ -932,49 +932,42 @@ if (imgLogo) {
     ctx.drawImage(imgLogo, lX, lY, lW, lH);
 }
 
-// --- 3. MENU DAFTAR & SEARCH (PENGGANTI CARIKANID) ---
-const rX = 960; // Posisi sudut kanan
-const rY = 15;  // Jarak dari atas
-const rW = 280; // Lebar kotak
+// --- 3. MENU DAFTAR & SEARCH (ELEGANT & BERLAMPU) ---
+        const rX = 960; 
+        const rY = 20;  
+        const rW = 280; 
 
-// A. KOTAK DAFTAR SEKARANG (ELEGANT GOLD)
-ctx.save();
-let grad = ctx.createLinearGradient(rX, rY, rX + rW, rY + 45);
-grad.addColorStop(0, '#FFD700'); // Gold
-grad.addColorStop(1, '#B8860B'); // Dark Gold
-ctx.fillStyle = grad;
-ctx.shadowBlur = 15;
-ctx.shadowColor = "rgba(255, 215, 0, 0.5)"; // Efek Lampu Emas
-drawRoundedJP(ctx, rX, rY, rW, 45, 10);
-ctx.fill();
+        // A. TOMBOL DAFTAR SEKARANG (GRADASI EMAS)
+        ctx.save();
+        let grad = ctx.createLinearGradient(rX, rY, rX + rW, rY + 45);
+        grad.addColorStop(0, '#FFD700'); 
+        grad.addColorStop(1, '#B8860B'); 
+        ctx.fillStyle = grad;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(255, 215, 0, 0.6)"; // Efek Lampu Menyala
+        drawRoundedJP(ctx, rX, rY, rW, 45, 10);
+        ctx.fill();
 
-// Tulisan Daftar Sekarang
-ctx.fillStyle = "#000";
-ctx.font = "bold 22px Arial";
-ctx.textAlign = "center";
-ctx.fillText("DAFTAR SEKARANG", rX + (rW / 2), rY + 30);
-ctx.restore();
+        ctx.fillStyle = "#000";
+        ctx.font = "bold 22px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("DAFTAR SEKARANG", rX + (rW / 2), rY + 30);
+        ctx.restore();
 
-// B. BOX PENCARIAN GOOGLE (DIBAWAHNYA)
-const sY = rY + 55;
-ctx.save();
-ctx.fillStyle = "rgba(255, 255, 255, 0.9)"; // Putih Glossy
-ctx.shadowBlur = 10;
-ctx.shadowColor = "rgba(255, 255, 255, 0.3)";
-drawRoundedJP(ctx, rX, sY, rW, 40, 20); // Bentuk Kapsul
-ctx.fill();
+        // B. BOX PENCARIAN GOOGLE (DIBAWAHNYA)
+        const sY = rY + 55;
+        ctx.save();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; 
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(255, 255, 255, 0.4)";
+        drawRoundedJP(ctx, rX + 10, sY, rW - 20, 35, 18); 
+        ctx.fill();
 
-// Icon Kaca Pembesar (Sederhana)
-ctx.fillStyle = "#ff4444";
-ctx.font = "bold 18px Arial";
-ctx.textAlign = "left";
-ctx.fillText("🔍", rX + 15, sY + 27);
-
-// Tulisan Pencarian
-ctx.fillStyle = "#555";
-ctx.font = "italic 18px Arial";
-ctx.fillText("DANATOTO", rX + 45, sY + 27);
-ctx.restore();
+        ctx.fillStyle = "#555";
+        ctx.font = "italic 16px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("🔍 DANATOTO", rX + 30, sY + 23);
+        ctx.restore();
 
         // 4. FRAME HP (SUDUT KIRI)
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
