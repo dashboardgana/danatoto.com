@@ -810,10 +810,10 @@ function copyAllPrediksi() {
     });
 }
 function loadKemenangan() {
-    // 1. BERSIHKAN MENU LAIN (Sama seperti Syair)
+    // 1. BERSIHKAN MENU LAIN
     if (typeof resetMenu === "function") resetMenu();
     
-    // 2. ATUR TAMPILAN HEADER (Sama seperti Syair)
+    // 2. ATUR TAMPILAN HEADER
     document.getElementById('main-grid').style.display = "block";
     if(document.getElementById('txt-jalan')) document.getElementById('txt-jalan').style.display = 'none';
     
@@ -838,12 +838,12 @@ function loadKemenangan() {
                 
                 <div id="box-bg" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 15px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">1. Klik & **CTRL+V** BACKGROUND</p>
-                    <img id="v-bg" style="max-width: 120px; display: none; margin: 10px auto;">
+                    <img id="v-bg" style="max-width: 120px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
 
                 <div id="box-bukti" tabindex="0" style="border: 2px dashed #00f2ff; padding: 25px; margin-bottom: 25px; cursor: pointer; background: #000; outline: none; border-radius: 10px;">
                     <p style="color: #00f2ff; margin: 0;">2. Klik & **CTRL+V** BUKTI TRANSFER</p>
-                    <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto;">
+                    <img id="v-bukti" style="max-width: 80px; display: none; margin: 10px auto; border-radius: 5px;">
                 </div>
                 
                 <button onclick="prosesRakitHP()" style="width: 100%; padding: 15px; background: #ffeb3b; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
@@ -897,7 +897,7 @@ async function prosesRakitHP() {
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
 
-    // KUNCI UKURAN PERSEGI PANJANG (1280x720)
+    // UKURAN LANDSCAPE
     canvas.width = 1280;
     canvas.height = 720;
 
@@ -910,13 +910,13 @@ async function prosesRakitHP() {
     const imgBg = await loadImg(bgSrc);
     const imgBukti = await loadImg(buktiSrc);
 
-    // 1. GAMBAR BACKGROUND PENUH (LANDSCAPE)
+    // 1. GAMBAR BACKGROUND
     ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
-    // 2. POSISI HP DI KIRI SUDUT
-    const hp = { x: 50, y: 40, w: 340, h: 640, r: 45, b: 12 };
+    // 2. POSISI HP MENTOK KIRI (x dikurangi jadi 30)
+    const hp = { x: 30, y: 40, w: 340, h: 640, r: 45, b: 12 };
 
-    // Body HP Hitam
+    // Body HP
     ctx.save();
     ctx.shadowBlur = 30;
     ctx.shadowColor = "rgba(0,0,0,0.8)";
@@ -925,14 +925,14 @@ async function prosesRakitHP() {
     ctx.fill();
     ctx.restore();
 
-    // 3. MASKING BUKTI (RAPI DI DALAM HP)
+    // 3. MASKING BUKTI
     ctx.save();
     drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2), hp.r - 10);
     ctx.clip(); 
     ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2));
     ctx.restore();
 
-    // Kamera Atas
+    // Lubang Kamera
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2);
@@ -952,7 +952,7 @@ function drawRoundedJP(ctx, x, y, w, h, r) {
 function downloadHasilJP() {
     const canvas = document.getElementById('canvasJP');
     const link = document.createElement('a');
-    link.download = 'POSTINGAN_JP_LANDSCAPE.png';
+    link.download = 'POSTER_JP_LANDSCAPE.png';
     link.href = canvas.toDataURL();
     link.click();
 }
