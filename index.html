@@ -809,7 +809,7 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
-// Variable Global untuk simpan data
+// Variable Global untuk simpan data - TETAP AMAN
 window.dataJP_bg = window.dataJP_bg || null;
 window.dataJP_bukti = window.dataJP_bukti || null;
 
@@ -833,7 +833,7 @@ function loadKemenangan() {
         subTxt.style.display = 'block';
     }
 
-    // 4. ISI KONTEN
+    // 4. ISI KONTEN (Gaya Wrapper Syair)
     const grid = document.getElementById('main-grid');
     grid.innerHTML = `
         <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
@@ -866,7 +866,7 @@ function loadKemenangan() {
 
     initPasteSistem();
 
-    // ANTI-HILANG
+    // LOGIKA ANTI-HILANG
     const savedImg = localStorage.getItem('last_jp_result');
     if (savedImg) {
         document.getElementById('mesin-input-jp').style.display = 'none';
@@ -911,51 +911,45 @@ async function prosesRakitHP() {
     const buktiSrc = window.dataJP_bukti;
     if (!bgSrc || !buktiSrc) return alert("Paste dulu gambar Background dan Bukti Bos!");
 
-    // Menghindari canvas macet jika gambar luar gagal dimuat
+    document.getElementById('mesin-input-jp').style.display = 'none';
+    const area = document.getElementById('hasil-rakitan');
+    area.style.display = "block";
+    
+    const canvas = document.getElementById('canvasJP');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1280;
+    canvas.height = 720;
+
     const loadImg = (src) => new Promise(res => {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => res(img);
-        img.onerror = () => res(null); // Jika gagal, kirim null agar script tetap jalan
+        img.onerror = () => res(null); // Biar tidak macet kalau link bermasalah
         img.src = src;
     });
 
     try {
         const imgBg = await loadImg(bgSrc);
         const imgBukti = await loadImg(buktiSrc);
+        
+        // Link asset stabil
         const imgLogoDana = await loadImg('https://i.ibb.co/nTJxx04/danatoto.png'); 
         const imgLogoCarikan = await loadImg('https://i.ibb.co/k2W1VbDm/carikan.png');
-        // Gunakan link baru untuk dollar agar lebih stabil
         const imgDollar = await loadImg('https://i.ibb.co/5GByY98/dollar-pile.png'); 
-
-        document.getElementById('mesin-input-jp').style.display = 'none';
-        const area = document.getElementById('hasil-rakitan');
-        area.style.display = "block";
-        
-        const canvas = document.getElementById('canvasJP');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 1280;
-        canvas.height = 720;
 
         // 1. GAMBAR BACKGROUND
         if(imgBg) ctx.drawImage(imgBg, 0, 0, 1280, 720);
 
         // 2. LOGO DANATOTO (TENGAH ATAS)
-        if(imgLogoDana) {
-            ctx.drawImage(imgLogoDana, (1280/2) - 150, 20, 300, 100);
-        }
+        if(imgLogoDana) ctx.drawImage(imgLogoDana, (1280/2) - 150, 20, 300, 100);
 
-        // 3. LOGO CARIKAN ID (KANAN ATAS KECIL)
-        if(imgLogoCarikan) {
-            ctx.drawImage(imgLogoCarikan, 1100, 25, 150, 50);
-        }
+        // 3. LOGO CARIKAN ID (KANAN ATAS)
+        if(imgLogoCarikan) ctx.drawImage(imgLogoCarikan, 1100, 25, 150, 50);
 
         // 4. DEKORASI DOLLAR (BAWAH)
-        if(imgDollar) {
-            ctx.drawImage(imgDollar, 400, 520, 850, 200);
-        }
+        if(imgDollar) ctx.drawImage(imgDollar, 400, 520, 850, 200);
 
-        // 5. POSISI HP MENTOK KIRI
+        // 5. POSISI HP (SUDUT KIRI SESUAI PERINTAH)
         const hp = { x: 25, y: 40, w: 340, h: 640, r: 45, b: 12 };
 
         ctx.save();
@@ -966,7 +960,7 @@ async function prosesRakitHP() {
         ctx.fill();
         ctx.restore();
 
-        // 6. MASKING BUKTI
+        // 6. MASKING BUKTI DALAM LAYAR HP
         if(imgBukti) {
             ctx.save();
             drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b * 2), hp.h - (hp.b * 2), hp.r - 10);
@@ -981,12 +975,11 @@ async function prosesRakitHP() {
         ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2);
         ctx.fill();
 
-        // SIMPAN KE LOCALSTORAGE
+        // Simpan Hasil
         localStorage.setItem('last_jp_result', canvas.toDataURL());
 
     } catch (e) {
-        console.error(e);
-        alert("Terjadi kesalahan teknis saat merakit gambar.");
+        console.log("Error rakit:", e);
     }
 }
 
@@ -1003,7 +996,7 @@ function drawRoundedJP(ctx, x, y, w, h, r) {
 function downloadHasilJP() {
     const canvas = document.getElementById('canvasJP');
     const link = document.createElement('a');
-    link.download = 'POSTER_JP_LANDSCAPE.png';
+    link.download = 'POSTER_JP_DANATOTO.png';
     link.href = canvas.toDataURL();
     link.click();
 }
