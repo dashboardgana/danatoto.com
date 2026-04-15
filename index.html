@@ -922,16 +922,20 @@ async function prosesRakitHP() {
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 3. CARIKAN ID (SUPER TAJAM - SUDUT KANAN ATAS) ---
-        if (imgCarikan) {
-            // Ukuran diledakkan ke 350px biar RESOLUSI TULISAN TAJAM
-            const cW = 350; 
-            const cH = 120;  
-            const cX = 930; // Mentok Sudut Kanan
-            const cY = -15; // Mentok Sudut Atas
-            
-            ctx.drawImage(imgCarikan, cX, cY, cW, cH);
-        }
+        // --- 3. CARIKAN ID TERBARU (REVISI: KECIL, TAJAM, MOJOK KANAN) ---
+if (imgCarikan) {
+    // Ukuran dikecilkan dari 350 ke 250 biar tidak menutupi background
+    const cW = 250; 
+    const cH = 90;  
+    
+    // Posisi cX di 1010 agar mepet kanan
+    const cX = 1010; 
+    
+    // Posisi cY di -25 agar benar-benar naik mentok ke atas
+    const cY = -25; 
+    
+    ctx.drawImage(imgCarikan, cX, cY, cW, cH);
+}
 
         // 4. FRAME HP (SUDUT KIRI)
         const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
