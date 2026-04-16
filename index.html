@@ -1022,53 +1022,49 @@ async function prosesRakitHP() {
         ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
 
-       // 4. RENDER HP (FIX ANTI-PEANG & TETAP JERNIH)
+      // 4. RENDER HP (VERSI FINAL: ANTI-PEANG & TIDAK TERPOTONG)
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
         const renderHP = (x, img) => {
             if (!img) return;
             
-            // --- BAGIAN 1: FRAME HP & SHADOW ---
+            // 1. Gambar Frame HP & Shadow
             ctx.save();
             ctx.shadowBlur = 30; ctx.shadowColor = "rgba(0,0,0,0.5)";
             ctx.fillStyle = "#111"; 
             drawRoundedJP(ctx, x, hp.y, hp.w, hp.h, hp.r); ctx.fill();
             ctx.restore();
 
-            // --- BAGIAN 2: LOGIKA ANTI-PEANG (OBJECT-FIT COVER) ---
+            // 2. Area Layar Dalam
             ctx.save();
             const innerW = hp.w - (hp.b * 2);
             const innerH = hp.h - (hp.b * 2);
             const innerX = x + hp.b;
             const innerY = hp.y + hp.b;
             
-            // Kliping biar gambar gak keluar jalur
+            // Potong area layar HP
             drawRoundedJP(ctx, innerX, innerY, innerW, innerH, hp.r - 10);
             ctx.clip();
+            
+            // Background Layar Putih (Biar kalau gambar bukti transfer Bos beda ukuran, gak ada bolong hitam)
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(innerX, innerY, innerW, innerH);
 
-            // Hitung rasio biar gak peang
-            const imgRatio = img.width / img.height;
-            const canvasRatio = innerW / innerH;
-            let drawW, drawH, drawX, drawY;
+            // --- LOGIKA ANTI-POTONG (CONTAIN) ---
+            // Kita cari skala terkecil supaya seluruh gambar muat
+            const scale = Math.min(innerW / img.width, innerH / img.height);
+            
+            const newWidth = img.width * scale;
+            const newHeight = img.height * scale;
+            
+            // Taruh di tengah-tengah layar HP
+            const offX = innerX + (innerW - newWidth) / 2;
+            const offY = innerY + (innerH - newHeight) / 2;
 
-            if (imgRatio > canvasRatio) {
-                // Gambar terlalu lebar
-                drawH = innerH;
-                drawW = innerH * imgRatio;
-                drawX = innerX + (innerW - drawW) / 2;
-                drawY = innerY;
-            } else {
-                // Gambar terlalu tinggi
-                drawW = innerW;
-                drawH = innerW / imgRatio;
-                drawX = innerX;
-                drawY = innerY + (innerH - drawH) / 2;
-            }
-
-            // Gambar dipasang (Smoothing otomatis aktif dari settingan atas)
-            ctx.drawImage(img, drawX, drawY, drawW, drawH);
+            // Gambar dipasang utuh, tidak peang, dan tidak terpotong!
+            ctx.drawImage(img, offX, offY, newWidth, newHeight);
             ctx.restore();
 
-            // --- BAGIAN 3: AKSESORIS HP (CAMERA LENS) ---
+            // 3. Lubang Kamera Atas
             ctx.fillStyle = "#000"; ctx.beginPath();
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
