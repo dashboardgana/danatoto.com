@@ -935,6 +935,21 @@ function loadKemenangan() {
         img.src = savedData;
     }
 }
+  function downloadHasilJP() {
+    // 1. Ambil elemen canvas tempat gambar kemenangan berada
+    const canvas = document.getElementById('canvasJP');
+    
+    if (!canvas) {
+        alert("Waduh Bos, gambar kemenangannya belum siap/belum dirakit!");
+        return;
+    }
+
+    // 2. Proses download langsung dari canvas
+    const link = document.createElement('a');
+    link.download = 'KEMENANGAN_BESAR_DANATOTO.png'; // Nama file pas di download
+    link.href = canvas.toDataURL("image/png"); // Ubah canvas jadi link gambar
+    link.click(); // Otomatis klik download
+}
 
 async function prosesRakitHP() {
     if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Paste dulu BACKGROUND dan BUKTI Bos!");
