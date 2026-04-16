@@ -966,15 +966,11 @@ function initPasteSistem() {
 }
 
 async function prosesRakitHP() {
-    // Pastikan input minimal ada background dan bukti 1
     if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Background dan Bukti 1 wajib diisi!");
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
-    
-    // 1. SET CANVAS LEBAR (2200px) - Agar HP tidak menabrak gambar utama
-    canvas.width = 2200; 
-    canvas.height = 900;
+    canvas.width = 1600; canvas.height = 900;
 
     const loadImg = (src) => new Promise((res) => {
         const img = new Image(); img.crossOrigin = "anonymous";
@@ -983,55 +979,49 @@ async function prosesRakitHP() {
     });
 
     try {
-        // PERBAIKAN: Memasukkan imgBukti2 ke dalam list load agar tidak error
         const [imgBg, imgBukti, imgBukti2, imgLogo, imgG] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
-            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
-            loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')
+            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
+            loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')  // Logo Google Drive
         ]);
 
-        const bgW = 1600; 
-        const offsetX = (canvas.width - bgW) / 2; // Posisi tengah (300px)
+        // 1. Gambar Background
+        if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
-        if (imgBg) {
-            // --- 2. LOGIKA STRETCH BACKGROUND (Anti Kotak Hitam) ---
-            // Tarik sisi kiri background ke ujung canvas
-            ctx.drawImage(imgBg, 0, 0, 15, imgBg.height, 0, 0, offsetX + 15, canvas.height);
-            // Tarik sisi kanan background ke ujung canvas
-            ctx.drawImage(imgBg, imgBg.width - 15, 0, 15, imgBg.height, offsetX + bgW - 15, 0, offsetX + 15, canvas.height);
-            // Gambar Background Utama di tengah (1600px)
-            ctx.drawImage(imgBg, offsetX, 0, bgW, 900);
-        }
-
-        // 3. LOGO DANATOTO (SENTER TENGAH)
+        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER PAS) ---
         if (imgLogo) {
-            const lW = 210; const lH = 85;  
-            const lX = (canvas.width / 2) - (lW / 2); 
-            ctx.drawImage(imgLogo, lX, -22, lW, lH);
+            const lW = 210; 
+            const lH = 85;  
+            const lX = (1600 / 2) - (lW / 2); // 695 (Senter di Canvas 1600)
+            const lY = -22; 
+            ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
       
-        // 4. SEARCH BOX & DAFTAR SEKARANG
-        const rX = offsetX + 1300; 
+        // 3. DAFTAR SEKARANG & SEARCH BOX (KANAN ATAS)
+        const rX = 1300; const rY = 20;
         ctx.save();
-        let grad = ctx.createLinearGradient(rX, 20, rX + 280, 65);
+        let grad = ctx.createLinearGradient(rX, rY, rX + 280, rY + 45);
         grad.addColorStop(0, '#FFD700'); grad.addColorStop(1, '#B8860B'); 
         ctx.fillStyle = grad;
-        drawRoundedJP(ctx, rX, 20, 280, 45, 10); ctx.fill();
+        drawRoundedJP(ctx, rX, rY, 280, 45, 10); ctx.fill();
         ctx.fillStyle = "#000"; ctx.font = "bold 22px Arial"; ctx.textAlign = "center";
-        ctx.fillText("DAFTAR SEKARANG", rX + 140, 50);
+        ctx.fillText("DAFTAR SEKARANG", rX + 140, rY + 30);
         
-        drawRoundedJP(ctx, rX + 10, 75, 260, 35, 18);
+        drawRoundedJP(ctx, rX + 10, rY + 55, 260, 35, 18);
         ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
-        if (imgG) ctx.drawImage(imgG, rX + 25, 83, 18, 18);
+        
+        // Logo Google & Teks Pencarian
+        if (imgG) {
+            ctx.drawImage(imgG, rX + 25, rY + 63, 18, 18);
+        }
         ctx.fillStyle = "#555"; ctx.font = "italic 16px Arial"; ctx.textAlign = "left";
         ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
 
-        // 5. RENDER HP (OTOMATIS 1 ATAU 2 BUKTI)
+        // 4. RENDER HP
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
-        
         const renderHP = (x, img) => {
             if (!img) return;
             ctx.save();
@@ -1048,23 +1038,15 @@ async function prosesRakitHP() {
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        // HP KIRI (Bukti 1) - Tetap di area stretch kiri
-        renderHP(offsetX - 280, imgBukti); 
+        renderHP(30, imgBukti); 
+        if (imgBukti2) renderHP(1600 - hp.w - 30, imgBukti2);
 
-        // HP KANAN (Bukti 2) - Muncul otomatis jika ada data
-        if (imgBukti2) {
-            renderHP(offsetX + bgW - 60, imgBukti2);
-        }
-
-        // SIMPAN DAN TAMPILKAN
+        // SIMPAN HASIL
         localStorage.setItem('last_jp_result', canvas.toDataURL());
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { 
-        console.error(e);
-        alert("Terjadi kesalahan saat merakit gambar.");
-    }
+    } catch (e) { console.error(e); }
 }
 
 function downloadHasilJP() {
@@ -1091,7 +1073,7 @@ function hapusHasilJP() {
     if (confirm("Reset ulang?")) {
         localStorage.removeItem('last_jp_result');
         window.dataJP_bg = null; window.dataJP_bukti = null; window.dataJP_bukti2 = null;
-        location.reload(); // Refresh biar bersih semua
+        loadKemenangan();
     }
 }
 
