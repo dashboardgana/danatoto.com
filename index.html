@@ -973,16 +973,18 @@ async function prosesRakitHP() {
     canvas.width = 1600; canvas.height = 900;
 
     const loadImg = (src) => new Promise((res) => {
+        if (!src) return res(null);
         const img = new Image(); img.crossOrigin = "anonymous";
         img.onload = () => res(img); img.onerror = () => res(null);
         img.src = src;
     });
 
     try {
+        // PERBAIKAN: Menambahkan pengecekan window.dataJP_bukti2 agar tidak error
         const [imgBg, imgBukti, imgBukti2, imgLogo, imgG] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
+            window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : Promise.resolve(null),
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
             loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')  // Logo Google Drive
         ]);
@@ -990,16 +992,15 @@ async function prosesRakitHP() {
         // 1. Gambar Background
         if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
-        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER PAS) ---
+        // --- 2. LOGO DANATOTO ---
         if (imgLogo) {
-            const lW = 210; 
-            const lH = 85;  
-            const lX = (1600 / 2) - (lW / 2); // 695 (Senter di Canvas 1600)
+            const lW = 210; const lH = 85;  
+            const lX = (1600 / 2) - (lW / 2); 
             const lY = -22; 
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
       
-        // 3. DAFTAR SEKARANG & SEARCH BOX (KANAN ATAS)
+        // 3. DAFTAR SEKARANG & SEARCH BOX
         const rX = 1300; const rY = 20;
         ctx.save();
         let grad = ctx.createLinearGradient(rX, rY, rX + 280, rY + 45);
@@ -1012,10 +1013,7 @@ async function prosesRakitHP() {
         drawRoundedJP(ctx, rX + 10, rY + 55, 260, 35, 18);
         ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
         
-        // Logo Google & Teks Pencarian
-        if (imgG) {
-            ctx.drawImage(imgG, rX + 25, rY + 63, 18, 18);
-        }
+        if (imgG) ctx.drawImage(imgG, rX + 25, rY + 63, 18, 18);
         ctx.fillStyle = "#555"; ctx.font = "italic 16px Arial"; ctx.textAlign = "left";
         ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
