@@ -966,12 +966,13 @@ function initPasteSistem() {
 }
 
 async function prosesRakitHP() {
+    // Pastikan input minimal ada background dan bukti 1
     if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Background dan Bukti 1 wajib diisi!");
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
     
-    // 1. SET CANVAS LEBAR (2200px)
+    // 1. SET CANVAS LEBAR (2200px) - Agar HP tidak menabrak gambar utama
     canvas.width = 2200; 
     canvas.height = 900;
 
@@ -982,23 +983,25 @@ async function prosesRakitHP() {
     });
 
     try {
-        const [imgBg, imgBukti, imgLogo, imgG] = await Promise.all([
+        // PERBAIKAN: Memasukkan imgBukti2 ke dalam list load agar tidak error
+        const [imgBg, imgBukti, imgBukti2, imgLogo, imgG] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
+            window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
             loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')
         ]);
 
         const bgW = 1600; 
-        const offsetX = (canvas.width - bgW) / 2; // Titik tengah (300px)
+        const offsetX = (canvas.width - bgW) / 2; // Posisi tengah (300px)
 
         if (imgBg) {
-            // --- 2. LOGIKA STRETCH BACKGROUND ---
-            // Sisi Kiri ditarik ke ujung kiri canvas
+            // --- 2. LOGIKA STRETCH BACKGROUND (Anti Kotak Hitam) ---
+            // Tarik sisi kiri background ke ujung canvas
             ctx.drawImage(imgBg, 0, 0, 15, imgBg.height, 0, 0, offsetX + 15, canvas.height);
-            // Sisi Kanan ditarih ke ujung kanan canvas
+            // Tarik sisi kanan background ke ujung canvas
             ctx.drawImage(imgBg, imgBg.width - 15, 0, 15, imgBg.height, offsetX + bgW - 15, 0, offsetX + 15, canvas.height);
-            // Background Utama di tengah
+            // Gambar Background Utama di tengah (1600px)
             ctx.drawImage(imgBg, offsetX, 0, bgW, 900);
         }
 
@@ -1023,7 +1026,7 @@ async function prosesRakitHP() {
         ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
         if (imgG) ctx.drawImage(imgG, rX + 25, 83, 18, 18);
         ctx.fillStyle = "#555"; ctx.font = "italic 16px Arial"; ctx.textAlign = "left";
-        ctx.fillText("🔍 DANATOTO", rX + 48, 98);
+        ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
 
         // 5. RENDER HP (OTOMATIS 1 ATAU 2 BUKTI)
@@ -1045,19 +1048,23 @@ async function prosesRakitHP() {
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        // HP KIRI (Bukti 1) - Selalu Muncul
-        renderHP(offsetX - 260, imgBukti); 
+        // HP KIRI (Bukti 1) - Tetap di area stretch kiri
+        renderHP(offsetX - 280, imgBukti); 
 
-        // HP KANAN (Bukti 2) - HANYA MUNCUL KALAU BOS TEMPEL GAMBARNYA
+        // HP KANAN (Bukti 2) - Muncul otomatis jika ada data
         if (imgBukti2) {
-            renderHP(offsetX + 1600 - 80, imgBukti2);
+            renderHP(offsetX + bgW - 60, imgBukti2);
         }
 
+        // SIMPAN DAN TAMPILKAN
         localStorage.setItem('last_jp_result', canvas.toDataURL());
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+        console.error(e);
+        alert("Terjadi kesalahan saat merakit gambar.");
+    }
 }
 
 function downloadHasilJP() {
@@ -1084,7 +1091,7 @@ function hapusHasilJP() {
     if (confirm("Reset ulang?")) {
         localStorage.removeItem('last_jp_result');
         window.dataJP_bg = null; window.dataJP_bukti = null; window.dataJP_bukti2 = null;
-        loadKemenangan();
+        location.reload(); // Refresh biar bersih semua
     }
 }
 
