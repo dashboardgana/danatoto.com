@@ -978,106 +978,100 @@ function loadKemenangan() {
 }
 
 async function prosesRakitHP() {
-    if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Paste dulu BACKGROUND dan BUKTI Bos!");
+    // Validasi dasar tetap aman
+    if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Paste dulu BACKGROUND dan BUKTI 1 Bos!");
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
-    canvas.width = 1280; canvas.height = 720;
+    
+    // 1. MELEBARKAN CANVAS (1600x900) - SESUAI REVISI
+    canvas.width = 1600; 
+    canvas.height = 900;
 
-    const loadImg = (src) => new Promise((res, rej) => {
+    const loadImg = (src) => new Promise((res) => {
         const img = new Image(); 
         img.crossOrigin = "anonymous";
         img.onload = () => res(img); 
-        img.onerror = rej; 
+        img.onerror = () => res(null); 
         img.src = src;
     });
 
     try {
-        const [imgBg, imgBukti, imgLogo, imgCarikan] = await Promise.all([
+        const [imgBg, imgBukti, imgBukti2, imgLogo, imgCarikan] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
+            window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null, // Bukti ke-2 (Opsional)
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
             loadImg('https://lh3.googleusercontent.com/u/0/d/1Gsn52HlMQCAmdeJWucc6XuTxC65kO7mv')  // Carikan ID
         ]);
 
-        // 1. Gambar Background
-        ctx.drawImage(imgBg, 0, 0, 1280, 720);
+        // 2. GAMBAR BACKGROUND (FULL WIDE)
+        if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
-        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER) ---
+        // --- 3. LOGO DANATOTO (POSISI TENGAH) ---
         if (imgLogo) {
-            const lW = 210; // Kecilkan dikit lebarnya biar RATA & GAK PEANG
-            const lH = 85;  
-            const lX = (1280 / 2) - (lW / 2); // 535 (Tengah Pas)
-            const lY = -22; // NAIKKAN LAGI BIAR MENTOK ATAS
-            
+            const lW = 210; const lH = 85;  
+            const lX = (1600 / 2) - (lW / 2); 
+            const lY = -22;
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-// --- 3. MENU DAFTAR & SEARCH (ELEGANT & BERLAMPU) ---
-        const rX = 960; 
-        const rY = 20;  
-        const rW = 280; 
+        // --- 4. MENU DAFTAR & SEARCH (GESER KE KANAN ATAS) ---
+        const rX = 1300; // Geser agar tidak tertutup HP Kanan
+        const rY = 20; const rW = 280; 
 
-        // A. TOMBOL DAFTAR SEKARANG (GRADASI EMAS)
         ctx.save();
         let grad = ctx.createLinearGradient(rX, rY, rX + rW, rY + 45);
-        grad.addColorStop(0, '#FFD700'); 
-        grad.addColorStop(1, '#B8860B'); 
+        grad.addColorStop(0, '#FFD700'); grad.addColorStop(1, '#B8860B'); 
         ctx.fillStyle = grad;
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "rgba(255, 215, 0, 0.6)"; // Efek Lampu Menyala
+        ctx.shadowBlur = 20; ctx.shadowColor = "rgba(255, 215, 0, 0.6)";
         drawRoundedJP(ctx, rX, rY, rW, 45, 10);
         ctx.fill();
-
-        ctx.fillStyle = "#000";
-        ctx.font = "bold 22px Arial";
-        ctx.textAlign = "center";
+        ctx.fillStyle = "#000"; ctx.font = "bold 22px Arial"; ctx.textAlign = "center";
         ctx.fillText("DAFTAR SEKARANG", rX + (rW / 2), rY + 30);
         ctx.restore();
 
-        // B. BOX PENCARIAN GOOGLE (DIBAWAHNYA)
-        const sY = rY + 55;
-        ctx.save();
-        ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; 
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "rgba(255, 255, 255, 0.4)";
-        drawRoundedJP(ctx, rX + 10, sY, rW - 20, 35, 18); 
-        ctx.fill();
+        // --- 5. LOGIKA FRAME HP (KIRI & KANAN) ---
+        const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
 
-        ctx.fillStyle = "#555";
-        ctx.font = "italic 16px Arial";
-        ctx.textAlign = "left";
-        ctx.fillText("🔍 DANATOTO", rX + 30, sY + 23);
-        ctx.restore();
+        // FUNGSI INTERNAL GAMBAR HP
+        const randerHP = (xPos, imgSource) => {
+            if (!imgSource) return;
+            ctx.save();
+            ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.fillStyle = "#111"; 
+            drawRoundedJP(ctx, xPos, hp.y, hp.w, hp.h, hp.r);
+            ctx.fill();
+            ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
+            ctx.restore();
 
-        // 4. FRAME HP (SUDUT KIRI)
-        const hp = { x: 30, y: 40, w: 340, h: 640, r: 50, b: 12 };
-        ctx.save();
-        ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
-        ctx.fillStyle = "#111"; 
-        drawRoundedJP(ctx, hp.x, hp.y, hp.w, hp.h, hp.r);
-        ctx.fill();
-        ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
-        ctx.restore();
+            ctx.save();
+            drawRoundedJP(ctx, xPos + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
+            ctx.clip();
+            ctx.drawImage(imgSource, xPos + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
+            ctx.restore();
 
-        // 5. ISI BUKTI (MASKING)
-        ctx.save();
-        drawRoundedJP(ctx, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
-        ctx.clip();
-        ctx.drawImage(imgBukti, hp.x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
-        ctx.restore();
+            // Kamera
+            ctx.fillStyle = "#000"; ctx.beginPath();
+            ctx.arc(xPos + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
+        };
 
-        // 6. KAMERA DEPAN
-        ctx.fillStyle = "#000"; ctx.beginPath();
-        ctx.arc(hp.x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
+        // EKSEKUSI HP 1 (SUDUT KIRI)
+        randerHP(30, imgBukti);
 
+        // EKSEKUSI HP 2 (SUDUT KANAN - Hanya jika ada Bukti 2)
+        if (imgBukti2) {
+            randerHP(1600 - hp.w - 30, imgBukti2);
+        }
+
+        // SIMPAN HASIL
         localStorage.setItem('last_jp_result', canvas.toDataURL());
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal muat logo Bos! Pastikan linknya masih aktif."); 
+        alert("Gagal muat logo Bos! Cek koneksi."); 
     }
 }
 
