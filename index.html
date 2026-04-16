@@ -1036,26 +1036,30 @@ function initPasteSistem() {
     setup('box-bg', 'v-bg', 'bg'); setup('box-bukti', 'v-bukti', 'bukti');
 }
 
-function downloadHasilJP() {
-    const link = document.createElement('a');
-    link.download = 'HASIL_RAKIT_JP.png';
-    link.href = document.getElementById('canvasJP').toDataURL();
-    link.click();
-}
-// 1. FUNGSI UTAMA LOAD MENU ADD USER
+// ==========================================
+// SCRIPT UTAMA: MENU ADMIN (ADD USER & IP)
+// ==========================================
+
 function loadAddUser() {
-    // Proteksi: Hanya GANA yang bisa buka
+    // 1. Proteksi Akses
     const currentActive = document.getElementById('txt-username')?.innerText || "";
     if (currentActive.toUpperCase() !== "GANA" && typeof u !== 'undefined' && u.toUpperCase() !== "GANA") {
-        // Proteksi aktif
+        // Proteksi
     }
 
     if (typeof resetMenu === "function") resetMenu();
     
-    // --- PERBAIKAN DI SINI: SEMBUNYIKAN HEADER SELAMAT DATANG ---
-    const welcomeBox = document.querySelector('.header-box');
-    if (welcomeBox) welcomeBox.style.display = "none";
-    // ----------------------------------------------------------
+    // --- PERBAIKAN: KOTAK HEADER TETAP MUNCUL, HANYA TEKSNYA BERUBAH ---
+    const headerBox = document.querySelector('.header-box');
+    if (headerBox) {
+        headerBox.style.display = "block"; // Kotak biru tetap tampil gagah
+    }
+
+    // Ganti Header Dashboard menjadi Judul Menu
+    const txtTgl = document.getElementById('txt-tanggal');
+    if (txtTgl) { 
+        txtTgl.innerText = "SISTEM MANAJEMEN USER & IP WHITELIST"; 
+    }
 
     // Aktifkan visual menu di Sidebar
     const semuaMenu = document.querySelectorAll('.menu-item');
@@ -1064,18 +1068,13 @@ function loadAddUser() {
     const mainGrid = document.getElementById('main-grid');
     if(mainGrid) {
         mainGrid.style.display = "block";
-        mainGrid.style.marginTop = "0px"; // Biar mepet ke atas bersih
     }
-    
-    // Hilangkan teks judul lama agar tidak double
-    const txtTgl = document.getElementById('txt-tanggal');
-    if (txtTgl) { txtTgl.innerText = ""; }
 
-    // Render Tampilan Form & Area Tabel
+    // Render Tampilan Form & Area Tabel (Muncul di bawah kotak header)
     mainGrid.innerHTML = `
-        <div style="padding: 10px; color: white;">
+        <div style="padding: 20px; color: white;">
             <div style="background: #111; padding: 25px; border-radius: 15px; border: 2px solid #ffeb3b; max-width: 600px; margin-bottom: 20px;">
-                <h3 style="color: #ffeb3b; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px;">➕ DAFTARKAN USER BARU</h3>
+                <h3 style="color: #ffeb3b; margin-top: 0;">➕ DAFTARKAN USER BARU</h3>
                 <div style="margin-top: 15px;">
                     <label style="display:block; margin-bottom:5px;">Username:</label>
                     <input type="text" id="new-user" placeholder="Masukkan Username" style="width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: gold; margin-bottom: 10px; border-radius: 5px;">
@@ -1108,7 +1107,6 @@ function simpanUserBaru() {
     
     alert("User " + user + " Berhasil Didaftarkan!");
     
-    // Bersihkan form
     document.getElementById('new-user').value = "";
     document.getElementById('new-pass').value = "";
     document.getElementById('new-ip').value = "";
