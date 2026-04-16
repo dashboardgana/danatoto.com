@@ -941,21 +941,6 @@ function loadKemenangan() {
         </div>`;
 
     initPasteSistem();
-
-    // Load last result if exists
-    const savedData = localStorage.getItem('last_jp_result');
-    if (savedData) {
-        document.getElementById('mesin-input-jp').style.display = 'none';
-        document.getElementById('hasil-rakitan').style.display = 'block';
-        const canvas = document.getElementById('canvasJP');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        img.onload = () => {
-            canvas.width = 1600; canvas.height = 900;
-            ctx.drawImage(img, 0, 0);
-        };
-        img.src = savedData;
-    }
 }
 
 function initPasteSistem() {
@@ -994,23 +979,23 @@ async function prosesRakitHP() {
     });
 
     try {
-        const [imgBg, imgBukti, imgBukti2, imgLogo] = await Promise.all([
+        const [imgBg, imgBukti, imgBukti2, imgLogo, imgG] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
-            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD') // Link Logo Asli Danatoto
+            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
+            loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')  // Logo Google Drive
         ]);
 
         // 1. Gambar Background
         if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
-          // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER) ---
+        // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER PAS) ---
         if (imgLogo) {
-            const lW = 210; // Kecilkan dikit lebarnya biar RATA & GAK PEANG
+            const lW = 210; 
             const lH = 85;  
-            const lX = (1280 / 2) - (lW / 2); // 535 (Tengah Pas)
-            const lY = -22; // NAIKKAN LAGI BIAR MENTOK ATAS
-            
+            const lX = (1600 / 2) - (lW / 2); // 695 (Senter di Canvas 1600)
+            const lY = -22; 
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
       
@@ -1026,8 +1011,13 @@ async function prosesRakitHP() {
         
         drawRoundedJP(ctx, rX + 10, rY + 55, 260, 35, 18);
         ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
+        
+        // Logo Google & Teks Pencarian
+        if (imgG) {
+            ctx.drawImage(imgG, rX + 25, rY + 63, 18, 18);
+        }
         ctx.fillStyle = "#555"; ctx.font = "italic 16px Arial"; ctx.textAlign = "left";
-        ctx.fillText("🔍 DANATOTO", rX + 30, rY + 78);
+        ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
 
         // 4. RENDER HP
