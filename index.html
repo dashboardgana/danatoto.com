@@ -297,6 +297,9 @@ function doLogin() {
         <div id="menu-win" class="menu-item" onclick="loadKemenangan()">
     <i class="fas fa-trophy"></i> POSTINGAN KEMENANGAN BESAR
 </div>
+      <div id="menu-add-user" class="menu-item" style="display: none;" onclick="loadAddUser()">
+    <i class="fas fa-user-plus"></i> ADD USER & IP
+</div>
 
         <div class="menu-item" onclick="doLogout()" style="color: #ff5252; margin-top: 50px;"><i class="fas fa-power-off"></i> LOGOUT</div>
     </div>
@@ -355,17 +358,25 @@ function doLogin() {
     })();
 
     function doLogin() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        if(u === "gana" && p === "1234") {
-            sessionStorage.setItem('isLoggedIn', 'true');
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('main-dashboard').style.display = 'block';
-            showWelcome();
-        } else {
-            document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
+    const u = document.getElementById('user').value;
+    const p = document.getElementById('pass').value;
+
+    if(u === "gana" && p === "1234") {
+        sessionStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('main-dashboard').style.display = 'block';
+        showWelcome();
+
+        // --- INI POSISI YANG BENAR (DI DALAM IF LOGIN) ---
+        if (u.toLowerCase() === "gana") {
+            document.getElementById('menu-add-user').style.display = 'block';
         }
+        // ------------------------------------------------
+        
+    } else {
+        document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
     }
+}
 
     function doLogout() {
         sessionStorage.removeItem('isLoggedIn');
@@ -1031,6 +1042,132 @@ function downloadHasilJP() {
     link.href = document.getElementById('canvasJP').toDataURL();
     link.click();
 }
+  // ==========================================
+// SCRIPT UTAMA: MENU ADMIN (ADD USER & IP)
+// ==========================================
+
+function loadAddUser() {
+    // 1. Proteksi: Hanya GANA yang bisa buka
+    const currentActive = document.getElementById('txt-username')?.innerText || "";
+    if (currentActive.toUpperCase() !== "GANA" && typeof u !== 'undefined' && u.toUpperCase() !== "GANA") {
+        // Jika Bos tes dan muncul ini, pastikan variabel username loginnya sudah benar
+    }
+
+    if (typeof resetMenu === "function") resetMenu();
+    
+    // Aktifkan visual menu di Sidebar
+    const semuaMenu = document.querySelectorAll('.menu-item');
+    semuaMenu.forEach(m => m.classList.remove('active-menu'));
+    
+    const mainGrid = document.getElementById('main-grid');
+    if(mainGrid) mainGrid.style.display = "block";
+    
+    // Ganti Header Dashboard
+    const txtTgl = document.getElementById('txt-tanggal');
+    if (txtTgl) { txtTgl.innerText = "SISTEM MANAJEMEN USER & IP WHITELIST"; }
+
+    // Render Tampilan Form & Area Tabel
+    mainGrid.innerHTML = `
+        <div style="padding: 20px; color: white;">
+            <div style="background: #111; padding: 25px; border-radius: 15px; border: 2px solid #ffeb3b; max-width: 600px; margin-bottom: 20px;">
+                <h3 style="color: #ffeb3b; margin-top: 0;">➕ DAFTARKAN USER BARU</h3>
+                <div style="margin-top: 15px;">
+                    <label style="display:block; margin-bottom:5px;">Username:</label>
+                    <input type="text" id="new-user" placeholder="Masukkan Username" style="width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: gold; margin-bottom: 10px; border-radius: 5px;">
+                    
+                    <label style="display:block; margin-bottom:5px;">Password:</label>
+                    <input type="password" id="new-pass" placeholder="Masukkan Password" style="width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: gold; margin-bottom: 10px; border-radius: 5px;">
+                    
+                    <label style="display:block; margin-bottom:5px;">IP Whitelist:</label>
+                    <input type="text" id="new-ip" placeholder="Contoh: 114.124.xxx.xxx" style="width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #00f2ff; border-radius: 5px;">
+                </div>
+                <button onclick="simpanUserBaru()" style="width: 100%; margin-top: 20px; padding: 15px; background: #ffeb3b; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 8px;">💾 SIMPAN AKSES USER</button>
+            </div>
+            <div id="tabel-user-area" style="margin-top: 30px;"></div>
+        </div>
+    `;
+    updateUserTable();
+}
+
+// 2. FUNGSI SIMPAN DATA USER
+function simpanUserBaru() {
+    const user = document.getElementById('new-user').value;
+    const pass = document.getElementById('new-pass').value;
+    const ip = document.getElementById('new-ip').value;
+
+    if(!user || !pass || !ip) return alert("Waduh Bos, isi semua dulu datanya!");
+
+    let db = JSON.parse(localStorage.getItem('db_users') || "[]");
+    db.push({ user, pass, ip });
+    localStorage.setItem('db_users', JSON.stringify(db));
+    
+    alert("User " + user + " Berhasil Didaftarkan!");
+    
+    // Bersihkan form
+    document.getElementById('new-user').value = "";
+    document.getElementById('new-pass').value = "";
+    document.getElementById('new-ip').value = "";
+    
+    updateUserTable();
+}
+
+// 3. FUNGSI UPDATE TABEL USER
+function updateUserTable() {
+    const area = document.getElementById('tabel-user-area');
+    if (!area) return;
+    
+    let db = JSON.parse(localStorage.getItem('db_users') || "[]");
+    
+    if (db.length === 0) {
+        area.innerHTML = "<p style='color: #888;'>Belum ada user yang terdaftar.</p>";
+        return;
+    }
+
+    let html = `
+        <h3 style="color: #00f2ff;">📋 DAFTAR USER AKTIF</h3>
+        <table style="width: 100%; background: #111; border-radius: 10px; border-collapse: collapse; border: 1px solid #333;">
+            <tr style="border-bottom: 2px solid #333; color: #ffeb3b; background: #222;">
+                <th style="padding: 12px; text-align: left;">Username</th>
+                <th style="padding: 12px; text-align: left;">IP Terdaftar</th>
+                <th style="padding: 12px; text-align: center;">Aksi</th>
+            </tr>`;
+            
+    db.forEach((u, i) => {
+        html += `
+            <tr style="border-bottom: 1px solid #222;">
+                <td style="padding: 12px;">${u.user}</td>
+                <td style="padding: 12px; color: #00f2ff; font-family: monospace;">${u.ip}</td>
+                <td style="padding: 12px; text-align: center;">
+                    <button onclick="resetPass(${i})" style="background: orange; color: black; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold;">Reset</button>
+                    <button onclick="hapusUser(${i})" style="background: red; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-left: 5px;">Hapus</button>
+                </td>
+            </tr>`;
+    });
+    
+    area.innerHTML = html + `</table>`;
+}
+
+// 4. FUNGSI RESET PASSWORD
+function resetPass(i) {
+    let db = JSON.parse(localStorage.getItem('db_users'));
+    let pBaru = prompt("Masukkan Password Baru untuk " + db[i].user + " :");
+    if(pBaru) { 
+        db[i].pass = pBaru; 
+        localStorage.setItem('db_users', JSON.stringify(db)); 
+        alert("Password berhasil diupdate Bos!"); 
+    }
+}
+
+// 5. FUNGSI HAPUS USER
+function hapusUser(i) {
+    if(confirm("Yakin mau hapus user ini? Dia gak bakal bisa login lagi loh.")) {
+        let db = JSON.parse(localStorage.getItem('db_users'));
+        db.splice(i, 1); 
+        localStorage.setItem('db_users', JSON.stringify(db));
+        updateUserTable();
+    }
+}
+  
 </script>
 </body>
 </html>
