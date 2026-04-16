@@ -971,7 +971,7 @@ async function prosesRakitHP() {
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
     
-    // 1. SET CANVAS TETAP LEBAR (BIAR HP GAK TABRAKAN)
+    // 1. SET CANVAS LEBAR (2200px)
     canvas.width = 2200; 
     canvas.height = 900;
 
@@ -982,31 +982,27 @@ async function prosesRakitHP() {
     });
 
     try {
-        const [imgBg, imgBukti, imgBukti2, imgLogo, imgG] = await Promise.all([
+        const [imgBg, imgBukti, imgLogo, imgG] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
-            window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
             loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
             loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')
         ]);
 
-        const bgW = 1600; // Lebar gambar asli Zeus/Mahjong
-        const offsetX = (canvas.width - bgW) / 2; // Titik mulai gambar tengah (300px)
+        const bgW = 1600; 
+        const offsetX = (canvas.width - bgW) / 2; // Titik tengah (300px)
 
         if (imgBg) {
-            // --- 2. LOGIKA STRETCH BACKGROUND (ANTI KOTAK HITAM) ---
-            
-            // A. Gambar sisi paling kiri background ditarik ke ujung kiri canvas
-            ctx.drawImage(imgBg, 0, 0, 10, imgBg.height, 0, 0, offsetX + 10, canvas.height);
-            
-            // B. Gambar sisi paling kanan background ditarik ke ujung kanan canvas
-            ctx.drawImage(imgBg, imgBg.width - 10, 0, 10, imgBg.height, offsetX + bgW - 10, 0, offsetX + 10, canvas.height);
-
-            // C. Gambar Background Asli Bos di TENGAH (TIDAK BERUBAH)
+            // --- 2. LOGIKA STRETCH BACKGROUND ---
+            // Sisi Kiri ditarik ke ujung kiri canvas
+            ctx.drawImage(imgBg, 0, 0, 15, imgBg.height, 0, 0, offsetX + 15, canvas.height);
+            // Sisi Kanan ditarih ke ujung kanan canvas
+            ctx.drawImage(imgBg, imgBg.width - 15, 0, 15, imgBg.height, offsetX + bgW - 15, 0, offsetX + 15, canvas.height);
+            // Background Utama di tengah
             ctx.drawImage(imgBg, offsetX, 0, bgW, 900);
         }
 
-        // 3. LOGO DANATOTO (SENTER LANGIT-LANGIT)
+        // 3. LOGO DANATOTO (SENTER TENGAH)
         if (imgLogo) {
             const lW = 210; const lH = 85;  
             const lX = (canvas.width / 2) - (lW / 2); 
@@ -1030,8 +1026,9 @@ async function prosesRakitHP() {
         ctx.fillText("🔍 DANATOTO", rX + 48, 98);
         ctx.restore();
 
-        // 5. RENDER HP (DI ATAS BACKGROUND YANG SUDAH DI-STRETCH)
+        // 5. RENDER HP (OTOMATIS 1 ATAU 2 BUKTI)
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
+        
         const renderHP = (x, img) => {
             if (!img) return;
             ctx.save();
@@ -1048,10 +1045,12 @@ async function prosesRakitHP() {
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        // Letakkan HP di area sayap hasil stretch
-        renderHP(offsetX - 280, imgBukti); 
+        // HP KIRI (Bukti 1) - Selalu Muncul
+        renderHP(offsetX - 260, imgBukti); 
+
+        // HP KANAN (Bukti 2) - HANYA MUNCUL KALAU BOS TEMPEL GAMBARNYA
         if (imgBukti2) {
-            renderHP(offsetX + bgW - 60, imgBukti2);
+            renderHP(offsetX + 1600 - 80, imgBukti2);
         }
 
         localStorage.setItem('last_jp_result', canvas.toDataURL());
