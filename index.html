@@ -971,7 +971,7 @@ async function prosesRakitHP() {
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
     
-    // 1. SET CANVAS SUPER LEBAR (Agar HP tidak menabrak gambar tengah)
+    // 1. SET CANVAS TETAP LEBAR (BIAR HP GAK TABRAKAN)
     canvas.width = 2200; 
     canvas.height = 900;
 
@@ -990,41 +990,30 @@ async function prosesRakitHP() {
             loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')
         ]);
 
-        const bgW = 1600; // Lebar standar background asli Bos
-        const offsetX = (canvas.width - bgW) / 2; // Posisi tengah (300px)
+        const bgW = 1600; // Lebar gambar asli Zeus/Mahjong
+        const offsetX = (canvas.width - bgW) / 2; // Titik mulai gambar tengah (300px)
 
         if (imgBg) {
-            // --- 2. LOGIKA WARNA SAMPING OTOMATIS (BIAR GAK JELEK) ---
-            // Kita gambar background dulu di canvas sementara buat ambil warna ujungnya
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = imgBg.width; tempCanvas.height = imgBg.height;
-            tempCtx.drawImage(imgBg, 0, 0);
+            // --- 2. LOGIKA STRETCH BACKGROUND (ANTI KOTAK HITAM) ---
             
-            // Ambil warna pixel paling pojok kiri dan pojok kanan background
-            const leftPixel = tempCtx.getImageData(0, imgBg.height/2, 1, 1).data;
-            const rightPixel = tempCtx.getImageData(imgBg.width-1, imgBg.height/2, 1, 1).data;
+            // A. Gambar sisi paling kiri background ditarik ke ujung kiri canvas
+            ctx.drawImage(imgBg, 0, 0, 10, imgBg.height, 0, 0, offsetX + 10, canvas.height);
             
-            // Isi sayap kiri
-            ctx.fillStyle = `rgb(${leftPixel[0]},${leftPixel[1]},${leftPixel[2]})`;
-            ctx.fillRect(0, 0, offsetX + 10, canvas.height);
-            
-            // Isi sayap kanan
-            ctx.fillStyle = `rgb(${rightPixel[0]},${rightPixel[1]},${rightPixel[2]})`;
-            ctx.fillRect(offsetX + bgW - 10, 0, offsetX + 10, canvas.height);
+            // B. Gambar sisi paling kanan background ditarik ke ujung kanan canvas
+            ctx.drawImage(imgBg, imgBg.width - 10, 0, 10, imgBg.height, offsetX + bgW - 10, 0, offsetX + 10, canvas.height);
 
-            // 3. Gambar Background Asli (TETAP DI TENGAH, TIDAK DIGESER)
+            // C. Gambar Background Asli Bos di TENGAH (TIDAK BERUBAH)
             ctx.drawImage(imgBg, offsetX, 0, bgW, 900);
         }
 
-        // --- 4. LOGO DANATOTO (LOCK SENTER ATAS) ---
+        // 3. LOGO DANATOTO (SENTER LANGIT-LANGIT)
         if (imgLogo) {
             const lW = 210; const lH = 85;  
             const lX = (canvas.width / 2) - (lW / 2); 
             ctx.drawImage(imgLogo, lX, -22, lW, lH);
         }
       
-        // 5. DAFTAR SEKARANG & SEARCH BOX
+        // 4. SEARCH BOX & DAFTAR SEKARANG
         const rX = offsetX + 1300; 
         ctx.save();
         let grad = ctx.createLinearGradient(rX, 20, rX + 280, 65);
@@ -1041,7 +1030,7 @@ async function prosesRakitHP() {
         ctx.fillText("🔍 DANATOTO", rX + 48, 98);
         ctx.restore();
 
-        // 6. RENDER HP (DI SAMPING LUAR GAMBAR UTAMA)
+        // 5. RENDER HP (DI ATAS BACKGROUND YANG SUDAH DI-STRETCH)
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
         const renderHP = (x, img) => {
             if (!img) return;
@@ -1059,7 +1048,7 @@ async function prosesRakitHP() {
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        // HP ditaruh di area sayap yang warnanya sudah mengikuti background
+        // Letakkan HP di area sayap hasil stretch
         renderHP(offsetX - 280, imgBukti); 
         if (imgBukti2) {
             renderHP(offsetX + bgW - 60, imgBukti2);
