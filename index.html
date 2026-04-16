@@ -305,10 +305,24 @@ function doLogin() {
     </div>
 
     <div class="content">
-        <div id="header-container" class="header-box">
-            <marquee id="txt-jalan" class="running-text" direction="left" scrollamount="7">
-                SELAMAT DATANG DI VIP DANATOTO SYSTEM - SILAHKAN PILIH MENU DI SIDEBAR ✨
-            </marquee>
+   <marquee id="txt-jalan" class="running-text" direction="left" scrollamount="10" 
+    style="color: #00f2ff; font-weight: bold; padding: 10px 0; text-shadow: 0 0 10px #00f2ff; animation: neonLampu 1.5s ease-in-out infinite alternate;">
+    SELAMAT DATANG DI DANATOTO SYSTEM - SILAHKAN PILIH MENU DI SIDEBAR ✨
+</marquee>
+
+<style>
+/* Ini yang bikin efek lampu kelap-kelip Bos */
+@keyframes neonLampu {
+  from {
+    text-shadow: 0 0 5px #fff, 0 0 10px #00f2ff, 0 0 20px #00f2ff;
+    color: #00f2ff;
+  }
+  to {
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de;
+    color: #fff;
+  }
+}
+</style>
             <div id="txt-tanggal" class="date-display" style="display: none;"></div>
             <div id="sub-txt-tanggal" class="sub-date" style="display: none;"></div>
             <button id="btn-master" class="btn-copy-all" onclick="copyAllPrediksi()"><i class="fas fa-copy"></i> COPY ALL PREDIKSI</button>
