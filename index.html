@@ -998,18 +998,22 @@ async function prosesRakitHP() {
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
-            loadImg('https://raw.githubusercontent.com/paitonano/danatoto/main/logo.png') // Link Logo Asli Danatoto
+            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD') // Link Logo Asli Danatoto
         ]);
 
         // 1. Gambar Background
         if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
-        // 2. LOGO DANATOTO (POSISI TENGAH ATAS)
+          // --- 2. LOGO DANATOTO (MENTOK LANGIT-LANGIT & SENTER) ---
         if (imgLogo) {
-            const lW = 220; const lH = 90;
-            ctx.drawImage(imgLogo, (1600 / 2) - (lW / 2), 5, lW, lH);
+            const lW = 210; // Kecilkan dikit lebarnya biar RATA & GAK PEANG
+            const lH = 85;  
+            const lX = (1280 / 2) - (lW / 2); // 535 (Tengah Pas)
+            const lY = -22; // NAIKKAN LAGI BIAR MENTOK ATAS
+            
+            ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
-
+      
         // 3. DAFTAR SEKARANG & SEARCH BOX (KANAN ATAS)
         const rX = 1300; const rY = 20;
         ctx.save();
