@@ -205,7 +205,24 @@
             width: 100%; padding: 15px; background: linear-gradient(90deg, #00d4ff, #00ff88); color: #000;
             border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px;
         }
+/* BACKGROUND MARMER DALAM DASHBOARD */
+.content {
+    background-image: url('https://drive.google.com/uc?export=view&id=1NhmKuILv3elMWTILHpOFb6RINv2gd6Y8') !important;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    z-index: 1;
+}
 
+/* LAPISAN GELAP SUPAYA TULISAN TETAP JELAS */
+.content::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6); 
+    z-index: -1;
+}
         @media (max-width: 768px) { 
             .sidebar { display: none; } 
             .content { margin-left: 0; width: 100%; padding: 15px; } 
