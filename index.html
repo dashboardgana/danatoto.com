@@ -357,24 +357,51 @@ function doLogin() {
         }
     })();
 
-    function doLogin() {
+  async function doLogin() {
     const u = document.getElementById('user').value;
     const p = document.getElementById('pass').value;
+    const errDisplay = document.getElementById('err');
+    
+    // 1. Ambil IP user yang sekarang sedang akses
+    let currentIP = "";
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        currentIP = data.ip;
+    } catch (e) {
+        console.log("Gagal ambil IP");
+    }
 
-    if(u === "gana" && p === "1234") {
+    // 2. Cek Login Khusus GANA (Akses Master)
+    if(u.toLowerCase() === "gana" && p === "1234") {
         sessionStorage.setItem('isLoggedIn', 'true');
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
+        document.getElementById('menu-add-user').style.display = 'block';
+        return;
+    }
 
-        // --- INI POSISI YANG BENAR (DI DALAM IF LOGIN) ---
-        if (u.toLowerCase() === "gana") {
-            document.getElementById('menu-add-user').style.display = 'block';
+    // 3. Cek Login User Lain di Database
+    let db = JSON.parse(localStorage.getItem('db_users') || "[]");
+    let userFound = db.find(user => user.user === u && user.pass === p);
+
+    if (userFound) {
+        // 4. VALIDASI IP (Maksud Bos di sini)
+        if (userFound.ip !== currentIP) {
+            errDisplay.innerText = "MAAF, IP ANDA TIDAK TERDAFTAR!"; // Muncul di bawah tombol login
+            errDisplay.style.color = "red";
+            return;
         }
-        // ------------------------------------------------
-        
+
+        // Jika IP Cocok
+        sessionStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('main-dashboard').style.display = 'block';
+        showWelcome();
     } else {
-        document.getElementById('err').innerText = "USERNAME/PASSWORD SALAH!";
+        errDisplay.innerText = "USERNAME/PASSWORD SALAH!";
+        errDisplay.style.color = "red";
     }
 }
 
