@@ -984,7 +984,7 @@ async function prosesRakitHP() {
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
     
-    // 1. MELEBARKAN CANVAS (1600x900) - SESUAI REVISI
+    // 1. MELEBARKAN CANVAS (1600x900)
     canvas.width = 1600; 
     canvas.height = 900;
 
@@ -1016,10 +1016,11 @@ async function prosesRakitHP() {
             ctx.drawImage(imgLogo, lX, lY, lW, lH);
         }
 
-        // --- 4. MENU DAFTAR & SEARCH (GESER KE KANAN ATAS) ---
-        const rX = 1300; // Geser agar tidak tertutup HP Kanan
+        // --- 4. MENU DAFTAR & SEARCH (KANAN ATAS) ---
+        const rX = 1300; 
         const rY = 20; const rW = 280; 
 
+        // A. Tombol Daftar
         ctx.save();
         let grad = ctx.createLinearGradient(rX, rY, rX + rW, rY + 45);
         grad.addColorStop(0, '#FFD700'); grad.addColorStop(1, '#B8860B'); 
@@ -1031,10 +1032,20 @@ async function prosesRakitHP() {
         ctx.fillText("DAFTAR SEKARANG", rX + (rW / 2), rY + 30);
         ctx.restore();
 
+        // B. Box Google Search (TAMBAHAN REVISI)
+        const sY = rY + 55;
+        ctx.save();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; 
+        ctx.shadowBlur = 10; ctx.shadowColor = "rgba(255, 255, 255, 0.4)";
+        drawRoundedJP(ctx, rX + 10, sY, rW - 20, 35, 18); 
+        ctx.fill();
+        ctx.fillStyle = "#555"; ctx.font = "italic 16px Arial"; ctx.textAlign = "left";
+        ctx.fillText("🔍 DANATOTO", rX + 30, sY + 23);
+        ctx.restore();
+
         // --- 5. LOGIKA FRAME HP (KIRI & KANAN) ---
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
 
-        // FUNGSI INTERNAL GAMBAR HP
         const randerHP = (xPos, imgSource) => {
             if (!imgSource) return;
             ctx.save();
@@ -1056,13 +1067,8 @@ async function prosesRakitHP() {
             ctx.arc(xPos + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        // EKSEKUSI HP 1 (SUDUT KIRI)
-        randerHP(30, imgBukti);
-
-        // EKSEKUSI HP 2 (SUDUT KANAN - Hanya jika ada Bukti 2)
-        if (imgBukti2) {
-            randerHP(1600 - hp.w - 30, imgBukti2);
-        }
+        randerHP(30, imgBukti); // HP 1 Kiri
+        if (imgBukti2) randerHP(1600 - hp.w - 30, imgBukti2); // HP 2 Kanan
 
         // SIMPAN HASIL
         localStorage.setItem('last_jp_result', canvas.toDataURL());
@@ -1071,43 +1077,8 @@ async function prosesRakitHP() {
 
     } catch (e) { 
         console.error(e);
-        alert("Gagal muat logo Bos! Cek koneksi."); 
+        alert("Gagal rakit gambar!"); 
     }
-}
-
-function hapusHasilJP() {
-    if (confirm("Hapus hasil edit dan ulang dari awal?")) {
-        localStorage.removeItem('last_jp_result');
-        window.dataJP_bg = null; window.dataJP_bukti = null;
-        loadKemenangan(); 
-    }
-}
-
-function drawRoundedJP(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
-}
-
-function initPasteSistem() {
-    const setup = (id, imgId, key) => {
-        const el = document.getElementById(id); if(!el) return;
-        el.addEventListener('paste', (e) => {
-            const item = Array.from(e.clipboardData.items).find(x => x.type.indexOf('image') !== -1);
-            if (item) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    document.getElementById(imgId).src = ev.target.result;
-                    document.getElementById(imgId).style.display = 'block';
-                    window['dataJP_' + key] = ev.target.result;
-                    el.style.borderColor = "#4caf50";
-                };
-                reader.readAsDataURL(item.getAsFile());
-            }
-        });
-    };
-    setup('box-bg', 'v-bg', 'bg'); setup('box-bukti', 'v-bukti', 'bukti');
 }
 
 // ==========================================
