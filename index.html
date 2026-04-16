@@ -885,7 +885,7 @@ function copyAllPrediksi() {
         console.error('Gagal menyalin semua: ', err);
     });
 }
-// 1. VARIABLE GLOBAL & STORAGE (LENGKAP)
+// 1. VARIABLE GLOBAL & STORAGE
 window.dataJP_bg = window.dataJP_bg || null;
 window.dataJP_bukti = window.dataJP_bukti || null;
 window.dataJP_bukti2 = window.dataJP_bukti2 || null;
@@ -899,15 +899,15 @@ function loadKemenangan() {
     const mainGrid = document.getElementById('main-grid');
     mainGrid.style.display = "block";
     
-    // Header
+    // Header Text
     const txtTgl = document.getElementById('txt-tanggal');
     const subTxt = document.getElementById('sub-txt-tanggal');
     if (txtTgl) txtTgl.innerText = "GENERATOR POSTINGAN KEMENANGAN BESAR";
     if (subTxt) subTxt.innerText = "OTOMATIS EDIT & EXPORT GAMBAR";
 
-    // Tampilan Menu Input (3 KOTAK CTRL+V)
+    // Menu Input (3 KOTAK)
     mainGrid.innerHTML = `
-        <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; position: relative; z-index: 999;">
+        <div class="kemenangan-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
             <div id="mesin-input-jp" style="background: #111; padding: 30px; border-radius: 15px; border: 2px solid #ffeb3b; width: 450px; text-align: center;">
                 <h3 style="color: #ffeb3b; margin-bottom: 25px;">🛠️ MESIN RAKIT JP</h3>
                 
@@ -942,7 +942,7 @@ function loadKemenangan() {
 
     initPasteSistem();
 
-    // Cek apakah ada hasil rakitan sebelumnya
+    // Load last result if exists
     const savedData = localStorage.getItem('last_jp_result');
     if (savedData) {
         document.getElementById('mesin-input-jp').style.display = 'none';
@@ -981,7 +981,7 @@ function initPasteSistem() {
 }
 
 async function prosesRakitHP() {
-    if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Minimal Background dan Bukti 1 harus diisi Bos!");
+    if (!window.dataJP_bg || !window.dataJP_bukti) return alert("Background dan Bukti 1 wajib diisi!");
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
@@ -998,13 +998,19 @@ async function prosesRakitHP() {
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : null,
-            loadImg('https://lh3.googleusercontent.com/d/1XqL_8rB9FvLz-oW-t-XnJvK0f0qY5I9l=w200') // Pastikan URL Logo Aktif
+            loadImg('https://raw.githubusercontent.com/paitonano/danatoto/main/logo.png') // Link Logo Asli Danatoto
         ]);
 
+        // 1. Gambar Background
         if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
-        if (imgLogo) ctx.drawImage(imgLogo, (1600 / 2) - 105, -22, 210, 85);
 
-        // Tombol Daftar Kanan
+        // 2. LOGO DANATOTO (POSISI TENGAH ATAS)
+        if (imgLogo) {
+            const lW = 220; const lH = 90;
+            ctx.drawImage(imgLogo, (1600 / 2) - (lW / 2), 5, lW, lH);
+        }
+
+        // 3. DAFTAR SEKARANG & SEARCH BOX (KANAN ATAS)
         const rX = 1300; const rY = 20;
         ctx.save();
         let grad = ctx.createLinearGradient(rX, rY, rX + 280, rY + 45);
@@ -1014,14 +1020,13 @@ async function prosesRakitHP() {
         ctx.fillStyle = "#000"; ctx.font = "bold 22px Arial"; ctx.textAlign = "center";
         ctx.fillText("DAFTAR SEKARANG", rX + 140, rY + 30);
         
-        // Google Search
         drawRoundedJP(ctx, rX + 10, rY + 55, 260, 35, 18);
         ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
         ctx.fillStyle = "#555"; ctx.font = "italic 16px Arial"; ctx.textAlign = "left";
         ctx.fillText("🔍 DANATOTO", rX + 30, rY + 78);
         ctx.restore();
 
-        // Render HP
+        // 4. RENDER HP
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
         const renderHP = (x, img) => {
             if (!img) return;
@@ -1035,19 +1040,19 @@ async function prosesRakitHP() {
             ctx.clip();
             ctx.drawImage(img, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
             ctx.restore();
-            // Kamera depan
             ctx.fillStyle = "#000"; ctx.beginPath();
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        renderHP(30, imgBukti); // HP 1 Kiri
-        if (imgBukti2) renderHP(1600 - hp.w - 30, imgBukti2); // HP 2 Kanan
+        renderHP(30, imgBukti); 
+        if (imgBukti2) renderHP(1600 - hp.w - 30, imgBukti2);
 
+        // SIMPAN HASIL
         localStorage.setItem('last_jp_result', canvas.toDataURL());
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { alert("Gagal rakit gambar!"); }
+    } catch (e) { console.error(e); }
 }
 
 function downloadHasilJP() {
@@ -1071,7 +1076,7 @@ function drawRoundedJP(ctx, x, y, w, h, r) {
 }
 
 function hapusHasilJP() {
-    if (confirm("Reset ulang dari awal Bos?")) {
+    if (confirm("Reset ulang?")) {
         localStorage.removeItem('last_jp_result');
         window.dataJP_bg = null; window.dataJP_bukti = null; window.dataJP_bukti2 = null;
         loadKemenangan();
