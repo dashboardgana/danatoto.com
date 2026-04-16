@@ -970,7 +970,12 @@ async function prosesRakitHP() {
 
     const canvas = document.getElementById('canvasJP');
     const ctx = canvas.getContext('2d');
-    canvas.width = 1600; canvas.height = 900;
+    
+    // Setting Kualitas Tinggi
+    canvas.width = 1600; 
+    canvas.height = 900;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const loadImg = (src) => new Promise((res) => {
         if (!src) return res(null);
@@ -980,16 +985,15 @@ async function prosesRakitHP() {
     });
 
     try {
-        // PERBAIKAN: Menambahkan pengecekan window.dataJP_bukti2 agar tidak error
         const [imgBg, imgBukti, imgBukti2, imgLogo, imgG] = await Promise.all([
             loadImg(window.dataJP_bg),
             loadImg(window.dataJP_bukti),
             window.dataJP_bukti2 ? loadImg(window.dataJP_bukti2) : Promise.resolve(null),
-            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), // Logo Danatoto
-            loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2')  // Logo Google Drive
+            loadImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD'), 
+            loadImg('https://lh3.googleusercontent.com/d/10J0y73M4RqZi3hhgrGJum7qxt3cGN9J2') 
         ]);
 
-        // 1. Gambar Background
+        // 1. Gambar Background (Menggunakan drawImage dengan koordinat lengkap agar presisi)
         if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
         // --- 2. LOGO DANATOTO ---
@@ -1023,15 +1027,19 @@ async function prosesRakitHP() {
         const renderHP = (x, img) => {
             if (!img) return;
             ctx.save();
-            ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
+            // Shadow halus untuk kedalaman
+            ctx.shadowBlur = 30; ctx.shadowColor = "rgba(0,0,0,0.5)";
             ctx.fillStyle = "#111"; 
             drawRoundedJP(ctx, x, hp.y, hp.w, hp.h, hp.r); ctx.fill();
             ctx.restore();
+
             ctx.save();
             drawRoundedJP(ctx, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
             ctx.clip();
+            // Render Bukti Transfer dengan kualitas tinggi
             ctx.drawImage(img, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
             ctx.restore();
+
             ctx.fillStyle = "#000"; ctx.beginPath();
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
@@ -1039,8 +1047,8 @@ async function prosesRakitHP() {
         renderHP(30, imgBukti); 
         if (imgBukti2) renderHP(1600 - hp.w - 30, imgBukti2);
 
-        // SIMPAN HASIL
-        localStorage.setItem('last_jp_result', canvas.toDataURL());
+        // SIMPAN HASIL DENGAN KUALITAS TINGGI (PNG)
+        localStorage.setItem('last_jp_result', canvas.toDataURL('image/png', 1.0));
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
