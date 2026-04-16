@@ -1020,26 +1020,38 @@ async function prosesRakitHP() {
         ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
 
-        // 4. RENDER HP
+       // 4. RENDER HP (POSISI MEPET PINGGIR BIAR GAK TUTUPIN TENGAH)
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
+        
         const renderHP = (x, img) => {
             if (!img) return;
             ctx.save();
+            // Efek Bayangan HP
             ctx.shadowBlur = 40; ctx.shadowColor = "rgba(0,0,0,0.8)";
             ctx.fillStyle = "#111"; 
             drawRoundedJP(ctx, x, hp.y, hp.w, hp.h, hp.r); ctx.fill();
             ctx.restore();
+
+            // Gambar Bukti Transfer di dalam HP
             ctx.save();
             drawRoundedJP(ctx, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
             ctx.clip();
             ctx.drawImage(img, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
             ctx.restore();
+
+            // Kamera HP (Dot Hitam Atas)
             ctx.fillStyle = "#000"; ctx.beginPath();
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
-        renderHP(30, imgBukti); 
-        if (imgBukti2) renderHP(1600 - hp.w - 30, imgBukti2);
+        // --- ATUR POSISI DI SINI ---
+        // Bukti 1 ditaruh di PINGGIR KIRI (Jarak 20px dari tembok kiri)
+        renderHP(20, imgBukti); 
+
+        // Bukti 2 ditaruh di PINGGIR KANAN (Jarak 20px dari tembok kanan)
+        if (imgBukti2) {
+            renderHP(1600 - hp.w - 20, imgBukti2);
+        }
 
         // SIMPAN HASIL
         localStorage.setItem('last_jp_result', canvas.toDataURL());
