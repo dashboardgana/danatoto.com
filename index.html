@@ -362,44 +362,51 @@ function doLogin() {
     const p = document.getElementById('pass').value;
     const errDisplay = document.getElementById('err');
     
-    // 1. Ambil IP user yang sekarang sedang akses
-    let currentIP = "";
-    try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        currentIP = data.ip;
-    } catch (e) {
-        console.log("Gagal ambil IP");
-    }
+    // --- 1. CEK DATA DARI DATABASE (Local Storage) ---
+    // Ini biar username 'rani' atau user lain yang Bos daftar bisa masuk
+    let db = JSON.parse(localStorage.getItem('db_users') || "[]");
+    let userDaftar = db.find(x => x.user === u && x.pass === p);
 
-    // 2. Cek Login Khusus GANA (Akses Master)
-    if(u.toLowerCase() === "gana" && p === "1234") {
+    // --- 2. LOGIKA LOGIN ---
+    
+    // A. Cek Akun Utama (Master GANA)
+    if(u === "gana" && p === "1234") { // Sesuaikan pass gana Bos
         sessionStorage.setItem('isLoggedIn', 'true');
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
-        document.getElementById('menu-add-user').style.display = 'block';
+        // Munculkan menu Add User khusus Gana
+        const menuAdmin = document.getElementById('menu-add-user');
+        if(menuAdmin) menuAdmin.style.display = 'block';
         return;
-    }
+    } 
+    
+    // B. Cek User Hasil Daftar (Seperti rani)
+    else if (userDaftar) {
+        // Ambil IP asli user sekarang
+        let currentIP = "";
+        try {
+            const resp = await fetch('https://api.ipify.org?format=json');
+            const data = await resp.json();
+            currentIP = data.ip;
+        } catch(e) { console.log("Cek IP Gagal"); }
 
-    // 3. Cek Login User Lain di Database
-    let db = JSON.parse(localStorage.getItem('db_users') || "[]");
-    let userFound = db.find(user => user.user === u && user.pass === p);
-
-    if (userFound) {
-        // 4. VALIDASI IP (Maksud Bos di sini)
-        if (userFound.ip !== currentIP) {
-            errDisplay.innerText = "MAAF, IP ANDA TIDAK TERDAFTAR!"; // Muncul di bawah tombol login
+        // VALIDASI IP (Sesuai permintaan Bos tadi)
+        if (userDaftar.ip !== currentIP) {
+            errDisplay.innerText = "MAAF, IP ANDA TIDAK TERDAFTAR!";
             errDisplay.style.color = "red";
             return;
         }
 
-        // Jika IP Cocok
+        // Jika IP Cocok, Silakan Masuk
         sessionStorage.setItem('isLoggedIn', 'true');
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
-    } else {
+    } 
+    
+    // C. Jika Semuanya Salah
+    else {
         errDisplay.innerText = "USERNAME/PASSWORD SALAH!";
         errDisplay.style.color = "red";
     }
