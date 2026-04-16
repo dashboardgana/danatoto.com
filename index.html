@@ -357,61 +357,61 @@ function doLogin() {
         }
     })();
 
- async function doLogin() {
+async function doLogin() {
     const u = document.getElementById('user').value;
     const p = document.getElementById('pass').value;
     const errDisplay = document.getElementById('err');
     
-    // 1. AMBIL DATA USER DARI DATABASE LOCAL
+    // 1. AMBIL DATABASE USER
     let db = JSON.parse(localStorage.getItem('db_users') || "[]");
     
-    // 2. CARI APAKAH USERNAME & PASSWORD ADA DI DATABASE
-    let userKetemu = db.find(item => item.user === u && item.pass === p);
-
-    // 3. LOGIKA PENGECEKAN
-    
-    // A. JIKA YANG LOGIN ADALAH GANA (MASTER)
-    if(u === "gana" && p === "1234") { 
+    // 2. CEK LOGIN KHUSUS ADMIN (GANA)
+    if(u.toLowerCase() === "gana" && p === "1234") {
         sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('currentUser', 'GANA'); // Simpan siapa yang login
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
+        
         // Munculkan menu Add User khusus Gana
         const menuAdmin = document.getElementById('menu-add-user');
         if(menuAdmin) menuAdmin.style.display = 'block';
         return;
-    } 
-    
-    // B. JIKA USER KETEMU DI DATABASE (Seperti Rani)
-    else if (userKetemu) {
-        // Cek IP Otomatis
-        let currentIP = "";
-        try {
-            const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            currentIP = data.ip;
-        } catch (e) { console.log("Gagal ambil IP"); }
+    }
 
-        // Validasi IP
-        if (userKetemu.ip !== currentIP) {
+    // 3. CARI USER DI DATABASE (Rani, Raymon, dll)
+    // Pakai .find agar dia mencari ke seluruh daftar, bukan cuma baris pertama
+    let userKetemu = db.find(item => item.user === u && item.pass === p);
+
+    if (userKetemu) {
+        // --- PROSES CEK IP OTOMATIS ---
+        let ipSekarang = "";
+        try {
+            const resp = await fetch('https://api.ipify.org?format=json');
+            const data = await resp.json();
+            ipSekarang = data.ip;
+        } catch (e) { console.log("Gagal deteksi IP"); }
+
+        // VALIDASI IP
+        if (userKetemu.ip !== ipSekarang) {
             errDisplay.innerText = "MAAF, IP ANDA TIDAK TERDAFTAR!";
             errDisplay.style.color = "red";
             return;
         }
 
-        // Jika IP Cocok, Login Berhasil
+        // JIKA SEMUA OK, MASUK KE DASHBOARD
         sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('currentUser', u); // Simpan nama user
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
         
-        // Sembunyikan menu Add User (Biar rani gak bisa daftar user lain)
+        // Sembunyikan menu Add User (Biar user biasa gak bisa daftar orang lain)
         const menuAdmin = document.getElementById('menu-add-user');
         if(menuAdmin) menuAdmin.style.display = 'none';
-    } 
-    
-    // C. JIKA TIDAK ADA YANG COCOK
-    else {
+        
+    } else {
+        // JIKA TIDAK ADA DI DATABASE
         errDisplay.innerText = "USERNAME/PASSWORD SALAH!";
         errDisplay.style.color = "red";
     }
