@@ -1022,28 +1022,58 @@ async function prosesRakitHP() {
         ctx.fillText("🔍 DANATOTO", rX + 48, rY + 78);
         ctx.restore();
 
-        // 4. RENDER HP
+       // 4. RENDER HP (FIX ANTI-PEANG & TETAP JERNIH)
         const hp = { w: 340, h: 640, r: 50, b: 12, y: 130 };
         const renderHP = (x, img) => {
             if (!img) return;
+            
+            // --- BAGIAN 1: FRAME HP & SHADOW ---
             ctx.save();
-            // Shadow halus untuk kedalaman
             ctx.shadowBlur = 30; ctx.shadowColor = "rgba(0,0,0,0.5)";
             ctx.fillStyle = "#111"; 
             drawRoundedJP(ctx, x, hp.y, hp.w, hp.h, hp.r); ctx.fill();
             ctx.restore();
 
+            // --- BAGIAN 2: LOGIKA ANTI-PEANG (OBJECT-FIT COVER) ---
             ctx.save();
-            drawRoundedJP(ctx, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2), hp.r - 10);
+            const innerW = hp.w - (hp.b * 2);
+            const innerH = hp.h - (hp.b * 2);
+            const innerX = x + hp.b;
+            const innerY = hp.y + hp.b;
+            
+            // Kliping biar gambar gak keluar jalur
+            drawRoundedJP(ctx, innerX, innerY, innerW, innerH, hp.r - 10);
             ctx.clip();
-            // Render Bukti Transfer dengan kualitas tinggi
-            ctx.drawImage(img, x + hp.b, hp.y + hp.b, hp.w - (hp.b*2), hp.h - (hp.b*2));
+
+            // Hitung rasio biar gak peang
+            const imgRatio = img.width / img.height;
+            const canvasRatio = innerW / innerH;
+            let drawW, drawH, drawX, drawY;
+
+            if (imgRatio > canvasRatio) {
+                // Gambar terlalu lebar
+                drawH = innerH;
+                drawW = innerH * imgRatio;
+                drawX = innerX + (innerW - drawW) / 2;
+                drawY = innerY;
+            } else {
+                // Gambar terlalu tinggi
+                drawW = innerW;
+                drawH = innerW / imgRatio;
+                drawX = innerX;
+                drawY = innerY + (innerH - drawH) / 2;
+            }
+
+            // Gambar dipasang (Smoothing otomatis aktif dari settingan atas)
+            ctx.drawImage(img, drawX, drawY, drawW, drawH);
             ctx.restore();
 
+            // --- BAGIAN 3: AKSESORIS HP (CAMERA LENS) ---
             ctx.fillStyle = "#000"; ctx.beginPath();
             ctx.arc(x + (hp.w/2), hp.y + 30, 8, 0, Math.PI * 2); ctx.fill();
         };
 
+        // Jalankan render
         renderHP(30, imgBukti); 
         if (imgBukti2) renderHP(1600 - hp.w - 30, imgBukti2);
 
@@ -1052,7 +1082,7 @@ async function prosesRakitHP() {
         document.getElementById('mesin-input-jp').style.display = 'none';
         document.getElementById('hasil-rakitan').style.display = 'block';
 
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Waduh, ada error Bos:", e); }
 }
 
 function downloadHasilJP() {
