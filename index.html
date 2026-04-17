@@ -715,14 +715,11 @@ async function renderSyair() {
    const idx = d.getDate() % daftarHarian.length;					
 const hariIni = daftarHarian[idx];					
 
-// --- LOGIKA UPDATE OTOMATIS & ANTI-KEMBAR ---
-// Seed berdasarkan tanggal agar angka berubah otomatis tiap hari tapi tetap konsisten
+// SEED OTOMATIS BERDASARKAN TANGGAL
 const seedHari = d.getDate() + d.getMonth() + d.getFullYear();
 
 const getAngkaHarian = (jumlah, s) => {
     let pool = "0123456789".split("");
-    let hasil = "";
-    // Mengocok angka berdasarkan seed hari + urutan (s)
     for (let i = 0; i < pool.length; i++) {
         let j = (seedHari + s + i) % pool.length;
         [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -730,28 +727,20 @@ const getAngkaHarian = (jumlah, s) => {
     return pool.join("").substring(0, jumlah);
 };
 
-// 1. BBFS (7 Digit Unik) - Update Tiap Hari
+// BBFS & ANGKA MAIN (DIJAMIN UNIK TIAP HARI)
 const bbfsOto = getAngkaHarian(7, 1); 
-
-// 2. ANGKA MAIN (5 Digit Unik) - Update Tiap Hari
 const angkaMainOto = getAngkaHarian(5, 2);
 
-// 3. COLOK BEBAS (2 Digit Berbeda)
+// COLOK BEBAS (FORMAT: 1 / 3)
 const cbUnik = getAngkaHarian(2, 3);
 const colokBebasOto = cbUnik[0] + " / " + cbUnik[1];
 
-// 4. TWIN (Ambil dari BBFS biar nyambung)
+// TWIN (DIJAMIN KEMBAR: 00 / 33)
 const twinOto = bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1];
 
-// 5. BINTANG (Atas & Bawah PASTI BEDA)
-const btgUnik = getAngkaHarian(2, 4);
-const btgAtas = btgUnik[0];
-const btgBawah = btgUnik[1];
-
-// Fungsi genNo lama tetap disimpan biar script lain tidak error
-const genNo = (s) => (Math.floor(Math.abs(Math.sin(seedHari + s) * 10000)) % 90 + 10).toString();
-// --------------------------------------------				
-
+// BINTANG (PASTI BEDA ATAS BAWAH)
+const btgAtas = getAngkaHarian(2, 4)[0];
+const btgBawah = getAngkaHarian(2, 4)[1];
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
