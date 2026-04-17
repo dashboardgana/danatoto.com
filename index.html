@@ -718,7 +718,7 @@ const hariIni = daftarHarian[idx];
 const seed = d.getDate() + d.getMonth() + d.getFullYear();					
 const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
 
-// --- TAMBAHAN LOGIKA ANGKA UNIK (STRUKTUR TETAP) ---
+// --- TAMBAHAN LOGIKA ANGKA UNIK ---
 const getU = (p, s) => {
     let a = "0123456789".split("");
     for (let i = 0; i < a.length; i++) {
@@ -727,9 +727,10 @@ const getU = (p, s) => {
     }
     return a.join("").substring(0, p);
 };
+// Variabel angka unik agar tidak kembar
 const bbfsOto = getU(7, 1);
 const btg = getU(4, 5);
-// --------------------------------------------------
+// ---------------------------------
 
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
@@ -758,26 +759,26 @@ const btg = getU(4, 5);
                 const innerH = targetH - (padding * 2);
                 
                 const scale = Math.min(innerW / img.width, innerH / img.height);
-      0         const drawW = img.width * scale;
-      0         const drawH = img.height * scale;
-      0         
-      0         const drawX = targetX + (targetW - drawW) / 2;
-      0         const drawY = targetY + (targetH - drawH) / 2;
+                const drawW = img.width * scale;
+                const drawH = img.height * scale;
+                
+                const drawX = targetX + (targetW - drawW) / 2;
+                const drawY = targetY + (targetH - drawH) / 2;
 
-      0         ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
-      0         resolve();
-      0     };
-      0     img.onerror = () => resolve();
+                ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
+                resolve();
+            };
+            img.onerror = () => resolve();
         });
     };
 
     const drawImg = (url, x, y, w, h) => {
         return new Promise((resolve) => {
-      0     const img = new Image();
-      0     img.crossOrigin = "anonymous";
-      0     img.src = url;
-  0         img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
-  0         img.onerror = () => resolve();
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = url;
+            img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
+            img.onerror = () => resolve();
         });
     };
 
@@ -792,7 +793,7 @@ const btg = getU(4, 5);
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // 2. Kotak Link Bio (SUDUT KANAN) - TAMBAHAN BARU
+    // 2. Kotak Link Bio (SUDUT KANAN)
     ctx.fillStyle = "black";
     ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
     ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
@@ -825,7 +826,6 @@ const btg = getU(4, 5);
     }
     ctx.closePath(); ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-
     // Angka Bintang (Ditetapkan berbeda)
     ctx.fillText(btg[0], 315, 470); ctx.fillText(btg[1], 485, 470); 
     ctx.fillText(btg[2], 315, 595); ctx.fillText(btg[3], 485, 595); 
@@ -848,13 +848,6 @@ const btg = getU(4, 5);
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
     ctx.fillText(hariIni.p1, 400, pY + 55);  
     ctx.fillText(hariIni.p2, 400, pY + 100);
-     function exportSyair() {
-        const canvas = document.getElementById('canvasSyair');
-        const link = document.createElement('a');
-        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    }
 
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
