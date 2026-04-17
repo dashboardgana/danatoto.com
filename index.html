@@ -712,12 +712,40 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
- const idx = d.getDate() % daftarHarian.length;					
-const hariIni = daftarHarian[idx];					
-					
-const seed = d.getDate() + d.getMonth() + d.getFullYear();					
-const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
-const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);					
+const idx = d.getDate() % daftarHarian.length;
+const hariIni = daftarHarian[idx];
+
+// --- PERBAIKAN SAKTI: ANTI-KEMBAR & UPDATE OTOMATIS ---
+const seed = d.getDate() + d.getMonth() + d.getFullYear();
+
+// Fungsi genNo asli Bos tetap ada biar script bawah GAK RUSAK
+const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
+
+// Fungsi pengacak angka unik harian
+const getUnik = (p, s) => {
+    let angka = "0123456789".split("");
+    for (let i = 0; i < angka.length; i++) {
+        let j = (seed + s + i) % angka.length;
+        [angka[i], angka[j]] = [angka[j], angka[i]];
+    }
+    return angka.join("").substring(0, p);
+};
+
+// 1. BBFS & ANGKA MAIN (Pasti Unik & Update Tiap Hari)
+const bbfsOto = getUnik(7, 1); 
+const angkaMainOto = getUnik(5, 2);
+
+// 2. COLOK BEBAS (Format: 1 / 3)
+const cb = getUnik(2, 3);
+const colokBebasOto = cb[0] + " / " + cb[1];
+
+// 3. TWIN (Format: 00 / 33 - Diambil dari BBFS hari ini)
+const twinOto = bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1];
+
+// 4. BINTANG (Atas & Bawah PASTI BEDA)
+const btgAtas = getUnik(2, 4)[0];
+const btgBawah = getUnik(2, 4)[1];
+// -----------------------------------------------------				
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
