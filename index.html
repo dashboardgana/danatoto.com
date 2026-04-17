@@ -712,143 +712,146 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
-const idx = d.getDate() % daftarHarian.length;					
-const hariIni = daftarHarian[idx];					
-					
-const seed = d.getDate() + d.getMonth() + d.getFullYear();					
-const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
+const idx = d.getDate() % daftarHarian.length;
+const hariIni = daftarHarian[idx];
+const seed = d.getDate() + d.getMonth() + d.getFullYear();
+const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
 
-// --- PERBAIKAN LOGIKA ANGKA (ANTI-KEMBAR & UPDATE OTOMATIS) ---
+// --- PERBAIKAN LOGIKA ANGKA (HANYA ISI VARIABEL, STRUKTUR TETAP) ---
 const getUnik = (p, s) => {
-    let angka = "0123456789".split("");
-    for (let i = 0; i < angka.length; i++) {
-        let j = (seed + s + i) % angka.length;
-        [angka[i], angka[j]] = [angka[j], angka[i]];
+    let pool = "0123456789".split("");
+    for (let i = 0; i < pool.length; i++) {
+        let j = (seed + s + i) % pool.length;
+        [pool[i], pool[j]] = [pool[j], pool[i]];
     }
-    return angka.join("").substring(0, p);
+    return pool.join("").substring(0, p);
 };
 
+// Variabel tetap menggunakan nama asli Bos agar tidak blank
 const bbfsOto = getUnik(7, 1);
-const amOto = getUnik(5, 2);
-const cbOto = getUnik(2, 3);
-const btgOto = getUnik(4, 4);
-// --------------------------------------------------------------
+const angkaMainUnik = getUnik(4, 2);
+const colokUnik = getUnik(2, 3);
+const btgUnik = getUnik(4, 4);
+// ------------------------------------------------------------------
 
-    // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
-    const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = url;
-            img.onload = () => {
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-      0         tempCanvas.width = img.width;
-                tempCanvas.height = img.height;
-                tempCtx.drawImage(img, 0, 0);
-                
-                const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                const data = imgData.data;
-      0         for (let i = 0; i < data.length; i += 4) {
-      0             if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
-      0                 data[i+3] = 0;
-      0             }
-      0         }
-      0         tempCtx.putImageData(imgData, 0, 0);
+    // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
+    const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = url;
+            img.onload = () => {
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = img.width;
+                tempCanvas.height = img.height;
+                tempCtx.drawImage(img, 0, 0);
+                
+                const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                const data = imgData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
+                        data[i+3] = 0;
+                    }
+                }
+                tempCtx.putImageData(imgData, 0, 0);
 
-      0         const padding = 15;
-      0         const innerW = targetW - (padding * 2);
-      0         const innerH = targetH - (padding * 2);
-      0         
-      0         const scale = Math.min(innerW / img.width, innerH / img.height);
-      0         const drawW = img.width * scale;
-      0         const drawH = img.height * scale;
-      0         
-      0         const drawX = targetX + (targetW - drawW) / 2;
-      0         const drawY = targetY + (targetH - drawH) / 2;
+                const padding = 15;
+                const innerW = targetW - (padding * 2);
+                const innerH = targetH - (padding * 2);
+                
+                const scale = Math.min(innerW / img.width, innerH / img.height);
+                const drawW = img.width * scale;
+                const drawH = img.height * scale;
+                
+                const drawX = targetX + (targetW - drawW) / 2;
+                const drawY = targetY + (targetH - drawH) / 2;
 
-      0         ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
-      0         resolve();
-      0     };
-      0     img.onerror = () => resolve();
-        });
-    };
+                ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
+                resolve();
+            };
+            img.onerror = () => resolve();
+        });
+    };
 
-    const drawImg = (url, x, y, w, h) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = url;
-      0     img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
-      0     img.onerror = () => resolve();
-        });
-    };
+    const drawImg = (url, x, y, w, h) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = url;
+            img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
+            img.onerror = () => resolve();
+        });
+    };
 
-    ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
+    ctx.clearRect(0, 0, 800, 1100);
+    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
+    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
 
-    // 1. Kotak Tanggal (SUDUT KIRI)
-    ctx.fillStyle = "black";
-    ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
-    ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
-    ctx.fillText(tglStr.toUpperCase(), 140, 40);
+    // 1. Kotak Tanggal (SUDUT KIRI)
+    ctx.fillStyle = "black";
+    ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
+    ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
+    ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // 2. Kotak Link Bio (SUDUT KANAN)
-    ctx.fillStyle = "black";
-    ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
-    ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial"; 
-    ctx.fillText("linklist.bio/Danatoto", 660, 40);
+    // 2. Kotak Link Bio (SUDUT KANAN)
+    ctx.fillStyle = "black";
+    ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
+    ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial"; 
+    ctx.fillText("linklist.bio/Danatoto", 660, 40);
 
-    // Kotak Angka
-    const drawBox = (x, y, label, value) => {
-        ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
-        ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
-        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
-        ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
-        ctx.fillText(label, x + 155, y + 38);
-        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
-        ctx.fillText(value, x + 155, y + 95);
-    };
-    drawBox(60, 160, "BBFS", bbfsOto); 
-    drawBox(430, 160, "ANGKA MAIN", amOto);
-    drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
-    drawBox(430, 285, "COLOK BEBAS", cbOto[0] + " / " + cbOto[1]);
+    // Kotak Angka (Struktur drawBox TETAP)
+    const drawBox = (x, y, label, value) => {
+        ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
+        ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
+        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
+        ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
+        ctx.fillText(label, x + 155, y + 38);
+        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
+        ctx.fillText(value, x + 155, y + 95);
+    };
 
-    // Bintang (Area Tengah)
-    const cx = 400, cy = 520; 
-    ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
-    ctx.beginPath(); ctx.moveTo(cx, cy-85);
-    for(let i=0; i<5; i++){
-        ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
-        ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
-    }
-    ctx.closePath(); ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-    // Angka Bintang (Pasti Beda)
-    ctx.fillText(btgOto[0], 315, 470); ctx.fillText(btgOto[1], 485, 470); 
-    ctx.fillText(btgOto[2], 315, 595); ctx.fillText(btgOto[3], 485, 595); 
+    // Update value tanpa merusak urutan asli Bos
+    drawBox(60, 160, "BBFS", bbfsOto); 
+    drawBox(430, 160, "ANGKA MAIN", angkaMainUnik);
+    drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
+    drawBox(430, 285, "COLOK BEBAS", colokUnik[0] + " / " + colokUnik[1]);
 
-    // --- POSISI SUDUT KIRI & KANAN ---
-    await drawImg(hariIni.img2, 510, 480, 260, 410); 
-    await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
+    // Bintang (Area Tengah - Struktur Bintang TETAP)
+    const cx = 400, cy = 520; 
+    ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
+    ctx.beginPath(); ctx.moveTo(cx, cy-85);
+    for(let i=0; i<5; i++){
+        ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
+        ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+    
+    // Isi Bintang (Pasti beda satu sama lain)
+    ctx.fillText(btgUnik[0], 315, 470); ctx.fillText(btgUnik[1], 485, 470); 
+    ctx.fillText(btgUnik[2], 315, 595); ctx.fillText(btgUnik[3], 485, 595); 
 
-    // Label Shio
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
-    ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
-    ctx.fillText("SHIO " + hariIni.shio, 140, 530);
+    // --- POSISI SUDUT KIRI & KANAN ---
+    await drawImg(hariIni.img2, 510, 480, 260, 410); 
+    await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
 
-    // Pantun
-    const pY = 930, pW = 670, pH = 135, pX = 65;
-    ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
-    ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
-    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-    ctx.fillText(hariIni.p1, 400, pY + 55);  
-    ctx.fillText(hariIni.p2, 400, pY + 100);
+    // Label Shio
+    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
+    ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
+    ctx.fillText("SHIO " + hariIni.shio, 140, 530);
+
+    // Pantun
+    const pY = 930, pW = 670, pH = 135, pX = 65;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
+    ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
+    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
+    ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
+    ctx.fillText(hariIni.p1, 400, pY + 55);   
+    ctx.fillText(hariIni.p2, 400, pY + 100);
 	
      function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
