@@ -717,7 +717,14 @@ const hariIni = daftarHarian[idx];
 
 const seed = d.getDate() + d.getMonth() + d.getFullYear();
 const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
-const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);
+const bbfsOto = (() => {
+    let n = "0123456789".split("");
+    for (let i = n.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.abs(Math.sin(seed + i) * 10000)) % (i + 1);
+        [n[i], n[j]] = [n[j], n[i]];
+    }
+    return n.join("").substring(0, 7);
+})();
 
 // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
 const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
