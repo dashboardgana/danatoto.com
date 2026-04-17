@@ -718,22 +718,19 @@ const hariIni = daftarHarian[idx];
 const seed = d.getDate() + d.getMonth() + d.getFullYear();					
 const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
 
-// --- LOGIKA PERBAIKAN NOMOR (ANTI-KEMBAR & UPDATE OTOMATIS) ---
-const getUnik = (p, s) => {
-    let pool = "0123456789".split("");
-    for (let i = 0; i < pool.length; i++) {
-        let j = (seed + s + i) % pool.length;
-        [pool[i], pool[j]] = [pool[j], pool[i]];
+// --- PERBAIKAN LOGIKA: BBFS UNIK & BINTANG BEDA ---
+const u = (p, s) => {
+    let a = "0123456789".split("");
+    for (let i = 0; i < a.length; i++) {
+        let j = (seed + s + i) % a.length;
+        [a[i], a[j]] = [a[j], a[i]];
     }
-    return pool.join("").substring(0, p);
+    return a.join("").substring(0, p);
 };
 
-// Pastikan variabel bbfsOto tetap ada agar tidak blank
-const bbfsOto = getUnik(7, 1);
-const amUnik = getUnik(5, 2);
-const cbUnik = getUnik(2, 3);
-const btgUnik = getUnik(4, 4);
-// --------------------------------------------------------------
+const bbfsOto = u(7, 1); // BBFS dijamin unik
+const btg = u(4, 5);    // Angka bintang dijamin beda
+// ------------------------------------------------
 
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
@@ -759,29 +756,29 @@ const btgUnik = getUnik(4, 4);
 
                 const padding = 15;
                 const innerW = targetW - (padding * 2);
-                const innerH = targetH - (padding * 2);
+      0         const innerH = targetH - (padding * 2);
                 
                 const scale = Math.min(innerW / img.width, innerH / img.height);
                 const drawW = img.width * scale;
                 const drawH = img.height * scale;
                 
-                const drawX = targetX + (targetW - drawW) / 2;
-                const drawY = targetY + (targetH - drawH) / 2;
+      0         const drawX = targetX + (targetW - drawW) / 2;
+      0         const drawY = targetY + (targetH - drawH) / 2;
 
-                ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
-                resolve();
-            };
-            img.onerror = () => resolve();
+      0         ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
+      0         resolve();
+      0     };
+      0     img.onerror = () => resolve();
         });
     };
 
     const drawImg = (url, x, y, w, h) => {
         return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = url;
-            img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
-            img.onerror = () => resolve();
+      0     const img = new Image();
+      0     img.crossOrigin = "anonymous";
+      0     img.src = url;
+      0     img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
+      0     img.onerror = () => resolve();
         });
     };
 
@@ -814,11 +811,10 @@ const btgUnik = getUnik(4, 4);
         ctx.fillText(value, x + 155, y + 95);
     };
 
-    // PERBAIKAN: Memanggil variabel unik agar tidak berantakan
     drawBox(60, 160, "BBFS", bbfsOto); 
-    drawBox(430, 160, "ANGKA MAIN", amUnik);
+    drawBox(430, 160, "ANGKA MAIN", u(5, 2));
     drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
-    drawBox(430, 285, "COLOK BEBAS", cbUnik[0] + " / " + cbUnik[1]);
+    drawBox(430, 285, "COLOK BEBAS", u(1, 3) + " / " + u(1, 4));
 
     // Bintang (Area Tengah)
     const cx = 400, cy = 520; 
@@ -830,10 +826,8 @@ const btgUnik = getUnik(4, 4);
     }
     ctx.closePath(); ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-    
-    // PERBAIKAN: Bintang dijamin beda
-    ctx.fillText(btgUnik[0], 315, 470); ctx.fillText(btgUnik[1], 485, 470); 
-    ctx.fillText(btgUnik[2], 315, 595); ctx.fillText(btgUnik[3], 485, 595); 
+    ctx.fillText(btg[0], 315, 470); ctx.fillText(btg[1], 485, 470); 
+    ctx.fillText(btg[2], 315, 595); ctx.fillText(btg[3], 485, 595); 
 
     // --- POSISI SUDUT KIRI & KANAN ---
     await drawImg(hariIni.img2, 510, 480, 260, 410); 
