@@ -715,10 +715,6 @@ async function renderSyair() {
     const idx = d.getDate() % daftarHarian.length;
     const hariIni = daftarHarian[idx];
 
-   // 1. Fungsi sakti biar angka gak kembar (taruh di atas atau sebelum proses rakit)
-function dapatkanAngkaUnik(jumlah, min, max) {
-    let angka = [];
-    while(angka.length < jumlah) {
         let r = Math.floor(Math.random() * (max - min + 1)) + min;
         if(angka.indexOf(r) === -1) angka.push(r);
     }
