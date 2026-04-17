@@ -712,115 +712,100 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
-// --- BAGIAN DEFINISI (DITAMBAHKAN AGAR TIDAK BLANK) ---
-const d = new Date();
+// --- 1. BARIS WAJIB (AGAR TIDAK BLANK PUTIH) ---
+const d = new Date(); 
 const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 const seed = d.getDate() + d.getMonth() + d.getFullYear();
 
-// Fungsi penghasil angka unik (agar BBFS & Bintang tidak kembar)
-const getU = (p, s) => {
-    let a = "0123456789".split("");
-    for (let i = 0; i < a.length; i++) {
-        let j = (seed + s + i) % a.length;
-        [a[i], a[j]] = [a[j], a[i]];
+// --- 2. LOGIKA ANGKA UNIK (BBFS & BINTANG TIDAK KEMBAR) ---
+const getUnik = (panjang, s) => {
+    let angka = "0123456789".split("");
+    for (let i = 0; i < angka.length; i++) {
+        let j = (seed + s + i) % angka.length;
+        [angka[i], angka[j]] = [angka[j], angka[i]];
     }
-    return a.join("").substring(0, p);
+    return angka.join("").substring(0, panjang);
 };
 
 const idx = d.getDate() % daftarHarian.length;					
 const hariIni = daftarHarian[idx];					
-					
-const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
-const bbfsOto = getU(7, 1); // BBFS 7 Digit Unik
-const btg = getU(4, 5);     // Bintang 4 Digit Unik
+const bbfsOto = getUnik(7, 1); 
+const btg = getUnik(4, 5); 
 
-// --- KODE ASLI BOS (TIDAK DIRUBAH STRUKTURNYA) ---
-    const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = url;
-            img.onload = () => {
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = img.width;
-                tempCanvas.height = img.height;
-                tempCtx.drawImage(img, 0, 0);
-                
-                const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
-                        data[i+3] = 0;
-                    }
-                }
-                tempCtx.putImageData(imgData, 0, 0);
+// --- 3. MULAI KODE RENDER (KODE ASLI BOS) ---
+const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = url;
+        img.onload = () => {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = img.width;
+            tempCanvas.height = img.height;
+            tempCtx.drawImage(img, 0, 0);
+            const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imgData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) { data[i+3] = 0; }
+            }
+            tempCtx.putImageData(imgData, 0, 0);
+            const scale = Math.min((targetW-30) / img.width, (targetH-30) / img.height);
+            const drawW = img.width * scale;
+            const drawH = img.height * scale;
+            ctx.drawImage(tempCanvas, targetX + (targetW - drawW) / 2, targetY + (targetH - drawH) / 2, drawW, drawH);
+            resolve();
+        };
+        img.onerror = () => resolve();
+    });
+};
 
-                const padding = 15;
-                const innerW = targetW - (padding * 2);
-                const innerH = targetH - (padding * 2);
-                
-                const scale = Math.min(innerW / img.width, innerH / img.height);
-                const drawW = img.width * scale;
-                const drawH = img.height * scale;
-                
-                const drawX = targetX + (targetW - drawW) / 2;
-                const drawY = targetY + (targetH - drawH) / 2;
+const drawImg = (url, x, y, w, h) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = url;
+        img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
+        img.onerror = () => resolve();
+    });
+};
 
-                ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
-                resolve();
-            };
-            img.onerror = () => resolve();
-        });
-    };
+const drawBox = (x, y, label, value) => {
+    ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
+    ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
+    ctx.fillText(label, x + 155, y + 38);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
+    ctx.fillText(value, x + 155, y + 95);
+};
 
-    const drawImg = (url, x, y, w, h) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = url;
-            img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
-            img.onerror = () => resolve();
-        });
-    };
-
+// --- 4. PROSES DRAWING ---
+async function prosesRender() {
     ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://api.qrserver.com/v1/create-qr-code/?size=800x1100&data=BG", 0, 0, 800, 1100);
-    await drawImg('https://api.qrserver.com/v1/create-qr-code/?size=220x60&data=LOGO', 290, 85, 220, 60);
+    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
+    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
 
-    // 1. Kotak Tanggal (SUDUT KIRI)
+    // Header Tanggal & Link
     ctx.fillStyle = "black";
     ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
     ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // 2. Kotak Link Bio (SUDUT KANAN)
     ctx.fillStyle = "black";
     ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
     ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial"; 
     ctx.fillText("linklist.bio/Danatoto", 660, 40);
 
-    // Kotak Angka
-    const drawBox = (x, y, label, value) => {
-        ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
-        ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
-        ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
-        ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
-        ctx.fillText(label, x + 155, y + 38);
-        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
-        ctx.fillText(value, x + 155, y + 95);
-    };
-
+    // Kotak Angka (FIX TWIN KEMBAR & BBFS UNIK)
     drawBox(60, 160, "BBFS", bbfsOto); 
-    drawBox(430, 160, "ANGKA MAIN", getU(4, 2));
-
-    // PERBAIKAN: TWIN KEMBAR (Ambil dari 2 angka depan BBFS)
+    drawBox(430, 160, "ANGKA MAIN", getUnik(4, 2));
     drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
-    drawBox(430, 285, "COLOK BEBAS", getU(1, 3) + " / " + getU(1, 4));
+    drawBox(430, 285, "COLOK BEBAS", getUnik(1, 3) + " / " + getUnik(1, 4));
 
-    // Bintang (Area Tengah)
+    // Bintang (ANGKA TIDAK KEMBAR ATAS BAWAH)
     const cx = 400, cy = 520; 
     ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
     ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -830,12 +815,10 @@ const btg = getU(4, 5);     // Bintang 4 Digit Unik
     }
     ctx.closePath(); ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-
-    // PERBAIKAN: ANGKA BINTANG TIDAK KEMBAR ATAS BAWAH
     ctx.fillText(btg[0], 315, 470); ctx.fillText(btg[1], 485, 470); 
     ctx.fillText(btg[2], 315, 595); ctx.fillText(btg[3], 485, 595); 
 
-    // POSISI GAMBAR (Sesuai kode Bos)
+    // Gambar Shio & Character
     await drawImg(hariIni.img2, 510, 480, 260, 410); 
     await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
 
@@ -846,15 +829,16 @@ const btg = getU(4, 5);     // Bintang 4 Digit Unik
     ctx.fillText("SHIO " + hariIni.shio, 140, 530);
 
     // Pantun
-    const pY = 930, pW = 670, pH = 135, pX = 65;
     ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
-    ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
+    ctx.beginPath(); ctx.roundRect(65, 930, 670, 135, 20); ctx.fill(); 
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-    ctx.fillText(hariIni.p1, 400, pY + 55);   
-    ctx.fillText(hariIni.p2, 400, pY + 100); 
+    ctx.fillText(hariIni.p1, 400, 985);   
+    ctx.fillText(hariIni.p2, 400, 1030); 
+}
 
-// Fungsi Export Bos
+prosesRender();
+
 function exportSyair() {
     const canvas = document.getElementById('canvasSyair');
     const link = document.createElement('a');
