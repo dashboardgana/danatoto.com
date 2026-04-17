@@ -712,12 +712,14 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
-// --- 1. BARIS WAJIB (AGAR TIDAK BLANK PUTIH) ---
+// --- 1. SETUP UTAMA (AGAR TIDAK BLANK) ---
+const canvas = document.getElementById('canvasSyair');
+const ctx = canvas.getContext('2d'); // INI KUNCI BIAR GAK BLANK!
 const d = new Date(); 
 const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 const seed = d.getDate() + d.getMonth() + d.getFullYear();
 
-// --- 2. LOGIKA ANGKA UNIK (BBFS & BINTANG TIDAK KEMBAR) ---
+// --- 2. LOGIKA ANGKA ---
 const getUnik = (panjang, s) => {
     let angka = "0123456789".split("");
     for (let i = 0; i < angka.length; i++) {
@@ -732,7 +734,7 @@ const hariIni = daftarHarian[idx];
 const bbfsOto = getUnik(7, 1); 
 const btg = getUnik(4, 5); 
 
-// --- 3. MULAI KODE RENDER (KODE ASLI BOS) ---
+// --- 3. FUNGSI GAMBAR ---
 const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
     return new Promise((resolve) => {
         const img = new Image();
@@ -780,70 +782,72 @@ const drawBox = (x, y, label, value) => {
     ctx.fillText(value, x + 155, y + 95);
 };
 
-// --- 4. PROSES DRAWING ---
+// --- 4. PROSES RENDER ---
 async function prosesRender() {
-    ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
+    try {
+        ctx.clearRect(0, 0, 800, 1100);
+        await drawImg("https://lh3.googleusercontent.com/d/1hi0E-O15aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
+        await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPFwQGnrbQrhC1D', 290, 85, 220, 60);
 
-    // Header Tanggal & Link
-    ctx.fillStyle = "black";
-    ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
-    ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
-    ctx.fillText(tglStr.toUpperCase(), 140, 40);
+        // Header Tanggal & Link
+        ctx.fillStyle = "black";
+        ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
+        ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
+        ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    ctx.fillStyle = "black";
-    ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
-    ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial"; 
-    ctx.fillText("linklist.bio/Danatoto", 660, 40);
+        ctx.fillStyle = "black";
+        ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
+        ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial"; 
+        ctx.fillText("linklist.bio/Danatoto", 660, 40);
 
-    // Kotak Angka (FIX TWIN KEMBAR & BBFS UNIK)
-    drawBox(60, 160, "BBFS", bbfsOto); 
-    drawBox(430, 160, "ANGKA MAIN", getUnik(4, 2));
-    drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
-    drawBox(430, 285, "COLOK BEBAS", getUnik(1, 3) + " / " + getUnik(1, 4));
+        // Kotak Angka
+        drawBox(60, 160, "BBFS", bbfsOto); 
+        drawBox(430, 160, "ANGKA MAIN", getUnik(4, 2));
+        drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
+        drawBox(430, 285, "COLOK BEBAS", getUnik(1, 3) + " / " + getUnik(1, 4));
 
-    // Bintang (ANGKA TIDAK KEMBAR ATAS BAWAH)
-    const cx = 400, cy = 520; 
-    ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
-    ctx.beginPath(); ctx.moveTo(cx, cy-85);
-    for(let i=0; i<5; i++){
-        ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
-        ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
-    }
-    ctx.closePath(); ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-    ctx.fillText(btg[0], 315, 470); ctx.fillText(btg[1], 485, 470); 
-    ctx.fillText(btg[2], 315, 595); ctx.fillText(btg[3], 485, 595); 
+        // Bintang
+        const cx = 400, cy = 520; 
+        ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
+        ctx.beginPath(); ctx.moveTo(cx, cy-85);
+        for(let i=0; i<5; i++){
+            ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
+            ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
+        }
+        ctx.closePath(); ctx.stroke();
+        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+        ctx.fillText(btg[0], 315, 470); ctx.fillText(btg[1], 485, 470); 
+        ctx.fillText(btg[2], 315, 595); ctx.fillText(btg[3], 485, 595); 
 
-    // Gambar Shio & Character
-    await drawImg(hariIni.img2, 510, 480, 260, 410); 
-    await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
+        // Shio & Karakter
+        await drawImg(hariIni.img2, 510, 480, 260, 410); 
+        await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
 
-    // Label Shio
-    ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
-    ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
-    ctx.fillText("SHIO " + hariIni.shio, 140, 530);
+        ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
+        ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
+        ctx.fillText("SHIO " + hariIni.shio, 140, 530);
 
-    // Pantun
-    ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
-    ctx.beginPath(); ctx.roundRect(65, 930, 670, 135, 20); ctx.fill(); 
-    ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
-    ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-    ctx.fillText(hariIni.p1, 400, 985);   
-    ctx.fillText(hariIni.p2, 400, 1030); 
+        // Pantun
+        ctx.fillStyle = "rgba(0, 0, 0, 0.85)"; 
+        ctx.beginPath(); ctx.roundRect(65, 930, 670, 135, 20); ctx.fill(); 
+        ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
+        ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
+        ctx.fillText(hariIni.p1, 400, 985);   
+        ctx.fillText(hariIni.p2, 400, 1030);
+    } catch (e) { console.log(e); }
 }
 
+// Jalankan
 prosesRender();
 
 function exportSyair() {
-    const canvas = document.getElementById('canvasSyair');
+    const canvasSave = document.getElementById('canvasSyair');
     const link = document.createElement('a');
     link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
-    link.href = canvas.toDataURL("image/png");
+    link.href = canvasSave.toDataURL("image/png");
     link.click();
 }
     // FUNGSI UNTUK COPY SATU PER SATU
