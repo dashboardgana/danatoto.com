@@ -712,25 +712,12 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
-    const idx = d.getDate() % daftarHarian.length;
-    const hariIni = daftarHarian[idx];
-
-        let r = Math.floor(Math.random() * (max - min + 1)) + min;
-        if(angka.indexOf(r) === -1) angka.push(r);
-    }
-    return angka.join('');
-}
-
-// 2. Terapkan variabelnya di sini (Ganti baris 718-721 Bos tadi)
-const bbfsOto = dapatkanAngkaUnik(7, 0, 9); // BBFS 7 digit unik
-const angkaMainOto = dapatkanAngkaUnik(4, 0, 9); // Angka Main 4 digit unik
-
-// 3. Logika khusus Bintang (Atas & Bawah PASTI BEDA)
-let bintangAtas = Math.floor(Math.random() * 10);
-let bintangBawah;
-do {
-    bintangBawah = Math.floor(Math.random() * 10);
-} while (bintangBawah === bintangAtas);
+   const idx = d.getDate() % daftarHarian.length;					
+const hariIni = daftarHarian[idx];					
+					
+const seed = d.getDate() + d.getMonth() + d.getFullYear();					
+const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
+const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);					
 
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
