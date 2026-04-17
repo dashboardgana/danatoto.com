@@ -806,7 +806,7 @@ ctx.fillText(value, x + 155, y + 95);
 };
 drawBox(60, 160, "BBFS", bbfsOto);
 drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
-drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
+drawBox(60, 285, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
 drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
 // Bintang (Area Tengah)
@@ -818,9 +818,16 @@ ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*
 ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
 }
 ctx.closePath(); ctx.stroke();
-ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470);
-ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595);
+let b1 = genNo(7).substring(0,1);
+let b2 = genNo(8).substring(0,1);
+let b3 = genNo(9).substring(0,1);
+let b4 = genNo(10).substring(0,1);
+
+if(b1 === b3) b3 = ((parseInt(b1) + 1) % 10).toString();
+if(b2 === b4) b4 = ((parseInt(b2) + 1) % 10).toString();
+
+ctx.fillText(b1, 315, 470); ctx.fillText(b2, 485, 470);
+ctx.fillText(b3, 315, 595); ctx.fillText(b4, 485, 595);
 
 // --- POSISI SUDUT KIRI & KANAN ---
 await drawImg(hariIni.img2, 510, 480, 260, 410);
