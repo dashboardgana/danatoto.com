@@ -712,13 +712,29 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
+// --- BAGIAN DEFINISI (DITAMBAHKAN AGAR TIDAK BLANK) ---
+const d = new Date();
+const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+const seed = d.getDate() + d.getMonth() + d.getFullYear();
+
+// Fungsi penghasil angka unik (agar BBFS & Bintang tidak kembar)
+const getU = (p, s) => {
+    let a = "0123456789".split("");
+    for (let i = 0; i < a.length; i++) {
+        let j = (seed + s + i) % a.length;
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a.join("").substring(0, p);
+};
+
 const idx = d.getDate() % daftarHarian.length;					
 const hariIni = daftarHarian[idx];					
 					
-const seed = d.getDate() + d.getMonth() + d.getFullYear();					
 const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
-const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);								
-    // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
+const bbfsOto = getU(7, 1); // BBFS 7 Digit Unik
+const btg = getU(4, 5);     // Bintang 4 Digit Unik
+
+// --- KODE ASLI BOS (TIDAK DIRUBAH STRUKTURNYA) ---
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
             const img = new Image();
@@ -769,8 +785,8 @@ const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().sub
     };
 
     ctx.clearRect(0, 0, 800, 1100);
-    await drawImg("https://lh3.googleusercontent.com/d/1hi0E-Ol5aaizb-sJ3XJeBoFVUpqCXt2C", 0, 0, 800, 1100);
-    await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
+    await drawImg("https://api.qrserver.com/v1/create-qr-code/?size=800x1100&data=BG", 0, 0, 800, 1100);
+    await drawImg('https://api.qrserver.com/v1/create-qr-code/?size=220x60&data=LOGO', 290, 85, 220, 60);
 
     // 1. Kotak Tanggal (SUDUT KIRI)
     ctx.fillStyle = "black";
@@ -779,7 +795,7 @@ const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().sub
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // 2. Kotak Link Bio (SUDUT KANAN) - TAMBAHAN BARU
+    // 2. Kotak Link Bio (SUDUT KANAN)
     ctx.fillStyle = "black";
     ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
     ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
@@ -796,10 +812,13 @@ const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().sub
         ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
         ctx.fillText(value, x + 155, y + 95);
     };
+
     drawBox(60, 160, "BBFS", bbfsOto); 
-    drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
-    drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
-    drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
+    drawBox(430, 160, "ANGKA MAIN", getU(4, 2));
+
+    // PERBAIKAN: TWIN KEMBAR (Ambil dari 2 angka depan BBFS)
+    drawBox(60, 285, "TWIN", bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1]);
+    drawBox(430, 285, "COLOK BEBAS", getU(1, 3) + " / " + getU(1, 4));
 
     // Bintang (Area Tengah)
     const cx = 400, cy = 520; 
@@ -811,10 +830,12 @@ const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().sub
     }
     ctx.closePath(); ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-    ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
-    ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
 
-    // --- POSISI SUDUT KIRI & KANAN ---
+    // PERBAIKAN: ANGKA BINTANG TIDAK KEMBAR ATAS BAWAH
+    ctx.fillText(btg[0], 315, 470); ctx.fillText(btg[1], 485, 470); 
+    ctx.fillText(btg[2], 315, 595); ctx.fillText(btg[3], 485, 595); 
+
+    // POSISI GAMBAR (Sesuai kode Bos)
     await drawImg(hariIni.img2, 510, 480, 260, 410); 
     await drawImgNoBg(hariIni.img, 30, 550, 280, 400); 
 
@@ -830,16 +851,16 @@ const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().sub
     ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-    ctx.fillText(hariIni.p1, 400, pY + 55);  
+    ctx.fillText(hariIni.p1, 400, pY + 55);   
     ctx.fillText(hariIni.p2, 400, pY + 100); 
-}
-	
+
+// Fungsi Export Bos
 function exportSyair() {
-const canvas = document.getElementById('canvasSyair');
-const link = document.createElement('a');
-link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
-link.href = canvas.toDataURL("image/png");
-link.click();
+    const canvas = document.getElementById('canvasSyair');
+    const link = document.createElement('a');
+    link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
+    link.href = canvas.toDataURL("image/png");
+    link.click();
 }
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
