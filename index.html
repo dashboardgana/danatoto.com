@@ -712,16 +712,13 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
-const idx = d.getDate() % daftarHarian.length;
-const hariIni = daftarHarian[idx];
+const idx = d.getDate() % daftarHarian.length;					
+const hariIni = daftarHarian[idx];					
+					
+const seed = d.getDate() + d.getMonth() + d.getFullYear();					
+const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
 
-// --- PERBAIKAN SAKTI: ANTI-KEMBAR & UPDATE OTOMATIS ---
-const seed = d.getDate() + d.getMonth() + d.getFullYear();
-
-// Fungsi genNo asli Bos tetap ada biar script bawah GAK RUSAK
-const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
-
-// Fungsi pengacak angka unik harian
+// --- PERBAIKAN LOGIKA ANGKA (ANTI-KEMBAR & UPDATE OTOMATIS) ---
 const getUnik = (p, s) => {
     let angka = "0123456789".split("");
     for (let i = 0; i < angka.length; i++) {
@@ -731,21 +728,17 @@ const getUnik = (p, s) => {
     return angka.join("").substring(0, p);
 };
 
-// 1. BBFS & ANGKA MAIN (Pasti Unik & Update Tiap Hari)
 const bbfsOto = getUnik(7, 1); 
 const angkaMainOto = getUnik(5, 2);
-
-// 2. COLOK BEBAS (Format: 1 / 3)
-const cb = getUnik(2, 3);
-const colokBebasOto = cb[0] + " / " + cb[1];
-
-// 3. TWIN (Format: 00 / 33 - Diambil dari BBFS hari ini)
+const cbUnik = getUnik(2, 3);
+const colokBebasOto = cbUnik[0] + " / " + cbUnik[1];
 const twinOto = bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1];
 
-// 4. BINTANG (Atas & Bawah PASTI BEDA)
-const btgAtas = getUnik(2, 4)[0];
-const btgBawah = getUnik(2, 4)[1];
-// -----------------------------------------------------				
+// Logika Bintang (Pasti Beda)
+const btg = getUnik(4, 4);
+const btg1 = btg[0], btg2 = btg[1], btg3 = btg[2], btg4 = btg[3];
+// --------------------------------------------------------------
+
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
@@ -807,14 +800,14 @@ const btgBawah = getUnik(2, 4)[1];
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial"; 
     ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-    // 2. Kotak Link Bio (SUDUT KANAN) - TAMBAHAN BARU
+    // 2. Kotak Link Bio (SUDUT KANAN)
     ctx.fillStyle = "black";
     ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
     ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial"; 
     ctx.fillText("linklist.bio/Danatoto", 660, 40);
 
-    // Kotak Angka
+    // Kotak Angka (DIUPDATE VARIABELNYA)
     const drawBox = (x, y, label, value) => {
         ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
         ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -824,12 +817,13 @@ const btgBawah = getUnik(2, 4)[1];
         ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
         ctx.fillText(value, x + 155, y + 95);
     };
-    drawBox(60, 160, "BBFS", bbfsOto); 
-    drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
-    drawBox(60, 285, "TWIN", genNo(3)+"/"+genNo(4));
-    drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
 
-    // Bintang (Area Tengah)
+    drawBox(60, 160, "BBFS", bbfsOto); 
+    drawBox(430, 160, "ANGKA MAIN", angkaMainOto);
+    drawBox(60, 285, "TWIN", twinOto);
+    drawBox(430, 285, "COLOK BEBAS", colokBebasOto);
+
+    // Bintang (Area Tengah) - DIUPDATE AGAR TIDAK KEMBAR
     const cx = 400, cy = 520; 
     ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
     ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -839,8 +833,10 @@ const btgBawah = getUnik(2, 4)[1];
     }
     ctx.closePath(); ctx.stroke();
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-    ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470); 
-    ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595); 
+    
+    // Angka Bintang (Pasti Beda)
+    ctx.fillText(btg1, 315, 470); ctx.fillText(btg2, 485, 470); 
+    ctx.fillText(btg3, 315, 595); ctx.fillText(btg4, 485, 595); 
 
     // --- POSISI SUDUT KIRI & KANAN ---
     await drawImg(hariIni.img2, 510, 480, 260, 410); 
@@ -858,9 +854,8 @@ const btgBawah = getUnik(2, 4)[1];
     ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill(); 
     ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke(); 
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-    ctx.fillText(hariIni.p1, 400, pY + 55);  
-    ctx.fillText(hariIni.p2, 400, pY + 100); 
-}
+    ctx.fillText(hariIni.p1, 400, pY + 55);   
+    ctx.fillText(hariIni.p2, 400, pY + 100);
      function exportSyair() {
         const canvas = document.getElementById('canvasSyair');
         const link = document.createElement('a');
