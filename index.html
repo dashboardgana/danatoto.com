@@ -712,35 +712,12 @@ async function renderSyair() {
         { shio: "BABI", img: "https://i.ibb.co/bab-emas.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
-   const idx = d.getDate() % daftarHarian.length;					
+ const idx = d.getDate() % daftarHarian.length;					
 const hariIni = daftarHarian[idx];					
-
-// SEED OTOMATIS BERDASARKAN TANGGAL
-const seedHari = d.getDate() + d.getMonth() + d.getFullYear();
-
-const getAngkaHarian = (jumlah, s) => {
-    let pool = "0123456789".split("");
-    for (let i = 0; i < pool.length; i++) {
-        let j = (seedHari + s + i) % pool.length;
-        [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    return pool.join("").substring(0, jumlah);
-};
-
-// BBFS & ANGKA MAIN (DIJAMIN UNIK TIAP HARI)
-const bbfsOto = getAngkaHarian(7, 1); 
-const angkaMainOto = getAngkaHarian(5, 2);
-
-// COLOK BEBAS (FORMAT: 1 / 3)
-const cbUnik = getAngkaHarian(2, 3);
-const colokBebasOto = cbUnik[0] + " / " + cbUnik[1];
-
-// TWIN (DIJAMIN KEMBAR: 00 / 33)
-const twinOto = bbfsOto[0] + bbfsOto[0] + " / " + bbfsOto[1] + bbfsOto[1];
-
-// BINTANG (PASTI BEDA ATAS BAWAH)
-const btgAtas = getAngkaHarian(2, 4)[0];
-const btgBawah = getAngkaHarian(2, 4)[1];
+					
+const seed = d.getDate() + d.getMonth() + d.getFullYear();					
+const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();					
+const bbfsOto = (Math.floor(Math.abs(Math.sin(seed) * 10000000))).toString().substring(0,7);					
     // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
     const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
         return new Promise((resolve) => {
