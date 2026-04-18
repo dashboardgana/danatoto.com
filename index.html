@@ -818,11 +818,20 @@ ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*
 ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
 }
 ctx.closePath(); ctx.stroke();
+// --- GANTI BARIS 821 SAMPAI 824 DENGAN INI ---
 let b1 = genNo(7).substring(0,1);
 let b2 = genNo(8).substring(0,1);
 let b3 = genNo(9).substring(0,1);
 let b4 = genNo(10).substring(0,1);
 
+// Logika Anti-Kembar: Jika angka bawah sama dengan atas, maka otomatis +1
+if (b3 === b1) b3 = ((parseInt(b3) + 1) % 10).toString();
+if (b4 === b2) b4 = ((parseInt(b4) + 1) % 10).toString();
+
+// Baru masukkan ke gambar (Posisi tetap sesuai script Bos)
+ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+ctx.fillText(b1, 315, 470); ctx.fillText(b2, 485, 470);
+ctx.fillText(b3, 315, 595); ctx.fillText(b4, 485, 595);
 if(b1 === b3) b3 = ((parseInt(b1) + 1) % 10).toString();
 if(b2 === b4) b4 = ((parseInt(b2) + 1) % 10).toString();
 
