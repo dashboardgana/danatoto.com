@@ -819,20 +819,25 @@ for(let i=0; i<5; i++){
 }
 ctx.closePath(); ctx.stroke();
 
-// LOGIKA ANGKA BINTANG (FIX ANTI KEMBAR)
+// 1. Ambil 4 angka dasar (Simpan di variabel dulu)
 let b1 = genNo(7).substring(0,1);
 let b2 = genNo(8).substring(0,1);
 let b3 = genNo(9).substring(0,1);
 let b4 = genNo(10).substring(0,1);
 
-// Paksa beda: jika bawah sama dengan atas, otomatis tambah 1
+// 2. LOGIKA KUNCI: Paksa beda antara Atas & Bawah
 if(b3 === b1) b3 = ((parseInt(b1) + 1) % 10).toString();
 if(b4 === b2) b4 = ((parseInt(b2) + 1) % 10).toString();
 
-ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+// 3. Setting Font
+ctx.fillStyle = "#ffeb3b"; 
+ctx.font = "bold 55px Arial"; 
+ctx.textAlign = "center";
+
+// 4. Gambar angkanya (Panggil variabel b1, b2, b3, b4)
+// JANGAN panggil genNo() lagi di sini agar angka yang sudah diperbaiki tidak berubah
 ctx.fillText(b1, 315, 470); ctx.fillText(b2, 485, 470);
 ctx.fillText(b3, 315, 595); ctx.fillText(b4, 485, 595);
-
 // --- POSISI SUDUT KIRI & KANAN (GAMBAR FIX MUNCUL) ---
 await drawImg(hariIni.img2, 510, 480, 260, 410); // Kanan
 await drawImg(hariIni.img, 30, 550, 280, 400);  // Kiri (DARI NO-BG GANTI KE BIASA BIAR GAK HILANG)
