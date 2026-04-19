@@ -814,32 +814,28 @@ const cx = 400, cy = 520;
 ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
 ctx.beginPath(); ctx.moveTo(cx, cy-85);
 for(let i=0; i<5; i++){
-ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
-ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
+    ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
+    ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
 }
 ctx.closePath(); ctx.stroke();
+
+// LOGIKA ANGKA BINTANG (FIX ANTI KEMBAR)
 let b1 = genNo(7).substring(0,1);
 let b2 = genNo(8).substring(0,1);
 let b3 = genNo(9).substring(0,1);
 let b4 = genNo(10).substring(0,1);
 
-if(b1 === b3) b3 = ((parseInt(b1) + 1) % 10).toString();
-if(b2 === b4) b4 = ((parseInt(b2) + 1) % 10).toString();
+// Paksa beda: jika bawah sama dengan atas, otomatis tambah 1
+if(b3 === b1) b3 = ((parseInt(b1) + 1) % 10).toString();
+if(b4 === b2) b4 = ((parseInt(b2) + 1) % 10).toString();
 
+ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
 ctx.fillText(b1, 315, 470); ctx.fillText(b2, 485, 470);
 ctx.fillText(b3, 315, 595); ctx.fillText(b4, 485, 595);
-for(let i=0; i<5; i++){
-ctx.lineTo(cx+Math.cos(Math.PI/2*3+i*Math.PI*2/5)*85, cy+Math.sin(Math.PI/2*3+i*Math.PI*2/5)*85);
-ctx.lineTo(cx+Math.cos(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38, cy+Math.sin(Math.PI/2*3+(i+0.5)*Math.PI*2/5)*38);
-}
-ctx.closePath(); ctx.stroke();
-ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
-ctx.fillText(genNo(7).substring(0,1), 315, 470); ctx.fillText(genNo(8).substring(0,1), 485, 470);
-ctx.fillText(genNo(9).substring(0,1), 315, 595); ctx.fillText(genNo(10).substring(0,1), 485, 595);
 
-// --- POSISI SUDUT KIRI & KANAN ---
-await drawImg(hariIni.img2, 510, 480, 260, 410);
-await drawImgNoBg(hariIni.img, 30, 550, 280, 400);
+// --- POSISI SUDUT KIRI & KANAN (GAMBAR FIX MUNCUL) ---
+await drawImg(hariIni.img2, 510, 480, 260, 410); // Kanan
+await drawImg(hariIni.img, 30, 550, 280, 400);  // Kiri (DARI NO-BG GANTI KE BIASA BIAR GAK HILANG)
 
 // Label Shio
 ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
