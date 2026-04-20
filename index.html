@@ -1259,6 +1259,21 @@ function hapusUser(i) {
         updateUserTable();
     }
 }
+  <script>
+  // Blokir Klik Kanan
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Blokir Shortcut Sakti (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+C)
+  document.onkeydown = function(e) {
+    if (e.keyCode == 123 || 
+       (e.ctrlKey && e.shiftKey && e.keyCode == 73) || 
+       (e.ctrlKey && e.keyCode == 85) || 
+       (e.ctrlKey && e.keyCode == 67)) {
+      alert("Akses Dilarang, Bos! Fokus Kerja Aja!");
+      return false;
+    }
+  };
+</script>
   
 </script>
 </body>
