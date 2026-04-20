@@ -819,21 +819,21 @@ for(let i=0; i<5; i++){
 }
 ctx.closePath(); ctx.stroke();
 
-// 1. Ambil angka dasar
+// 1. Ambil 4 angka dasar
 let b1 = genNo(7).substring(0,1);
 let b2 = genNo(8).substring(0,1);
 let b3 = genNo(9).substring(0,1);
 let b4 = genNo(10).substring(0,1);
 
-// 2. LOGIKA ANTI-KEMBAR TOTAL (Biar unik semua)
-// Cek Kiri-Kanan Atas
+// 2. LOGIKA ANTI-KEMBAR TOTAL (Saling Cek)
+// b2 tidak boleh sama dengan b1
 if (b2 === b1) b2 = ((parseInt(b1) + 1) % 10).toString();
 
-// Cek Atas-Bawah Kiri
-if (b3 === b1) b3 = ((parseInt(b1) + 2) % 10).toString();
+// b3 tidak boleh sama dengan b1 DAN b2
+if (b3 === b1 || b3 === b2) b3 = ((parseInt(b1) + 2) % 10).toString();
 
-// Cek angka terakhir agar tidak sama dengan b2 atau b3
-if (b4 === b2 || b4 === b3) b4 = ((parseInt(b2) + 3) % 10).toString();
+// b4 tidak boleh sama dengan b1, b2, DAN b3
+if (b4 === b1 || b4 === b2 || b4 === b3) b4 = ((parseInt(b1) + 3) % 10).toString();
 
 // 3. Setting Font
 ctx.fillStyle = "#ffeb3b"; 
@@ -841,8 +841,10 @@ ctx.font = "bold 55px Arial";
 ctx.textAlign = "center";
 
 // 4. Gambar angkanya
-ctx.fillText(b1, 315, 470); ctx.fillText(b2, 485, 470);
-ctx.fillText(b3, 315, 595); ctx.fillText(b4, 485, 595);
+ctx.fillText(b1, 315, 470); // Kiri Atas
+ctx.fillText(b2, 485, 470); // Kanan Atas
+ctx.fillText(b3, 315, 595); // Kiri Bawah
+ctx.fillText(b4, 485, 595); // Kanan Bawah
 // --- POSISI SUDUT KIRI & KANAN (GAMBAR FIX MUNCUL) ---
 await drawImg(hariIni.img2, 510, 480, 260, 410); // Kanan
 await drawImg(hariIni.img, 30, 550, 280, 400);  // Kiri (DARI NO-BG GANTI KE BIASA BIAR GAK HILANG)
