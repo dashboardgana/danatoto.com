@@ -364,7 +364,10 @@ function doLogin() {
         { tema: "KUBANGAN LUMPUR", shio: "BABI", bbfs: "02469", am: "0269", cb: "2 / 6", twin: "22/66", kodal: "BABI HUTAN CARI MAKAN DI LUMPUR" }
     ];
 
-// 1. CEK STATUS LOGIN (BIAR PAS REFRESH MENU ADMIN GAK HILANG)
+// URL Web App Google Script Bos
+const spreadSheetUrl = "https://script.google.com/macros/s/AKfycbx8WDNW17p084aioZJZH58KOYCms0SHnGL4wQ-x2jDa3YI1GKIaJ-8C2IDqvxfm6OeptA/exec";
+
+// 1. CEK STATUS LOGIN (TETAP SAMA)
 (function checkAuth() {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     const currentUser = sessionStorage.getItem('currentUser');
@@ -390,9 +393,9 @@ function doLogin() {
     }
 })();
 
-// 2. FUNGSI GANTI JUDUL OTOMATIS (AGAR SESUAI MENU)
+// 2. FUNGSI GANTI JUDUL OTOMATIS
 function updateHeaderTitle(target) {
-    const headerTeks = document.getElementById('sub-txt-tanggal'); // Sesuaikan ID header Bos
+    const headerTeks = document.getElementById('sub-txt-tanggal');
     if (!headerTeks) return;
 
     if (target === 'dashboard') {
@@ -404,60 +407,68 @@ function updateHeaderTitle(target) {
     }
 }
 
+// 3. FUNGSI LOGIN UTAMA (KONEK KE SHEETS)
 async function doLogin() {
     const u = document.getElementById('user').value;
     const p = document.getElementById('pass').value;
     const errDisplay = document.getElementById('err');
     
-    let db = JSON.parse(localStorage.getItem('db_users') || "[]");
-    
-    if(u.toLowerCase() === "gana" && p === "1234") {
-        sessionStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('currentUser', 'GANA'); 
-        
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('main-dashboard').style.display = 'block';
-        showWelcome();
-        updateHeaderTitle('dashboard'); // Judul default saat login
-        
-        const menuAdmin = document.getElementById('menu-add-user');
-        if(menuAdmin) menuAdmin.style.display = 'block';
+    // Validasi input kosong
+    if (!u || !p) {
+        errDisplay.innerHTML = "❌ ISI USERNAME & PASSWORD!";
+        errDisplay.style.color = "#ff4d4d";
         return;
     }
 
-    let userKetemu = db.find(item => item.user === u && item.pass === p);
-
-    if (userKetemu) {
-        let ipSekarang = "";
-        try {
-            const resp = await fetch('https://api.ipify.org?format=json');
-            const data = await resp.json();
-            ipSekarang = data.ip;
-        } catch (e) { console.log("Gagal deteksi IP"); }
-
-        if (userKetemu.ip !== ipSekarang) {
-            // PESAN ERROR IP SIMPEL
-            errDisplay.innerHTML = "❌ IP ANDA TIDAK TERDAFTAR!";
-            errDisplay.style.color = "#ff4d4d";
-            return;
-        }
-
+    // Tampilkan status loading biar gak disangka ngelag
+    errDisplay.innerHTML = "⏳ Sedang Verifikasi...";
+    errDisplay.style.color = "#ffffff";
+    
+    // CEK LOGIN KHUSUS ADMIN GANA (Offline/Cepat)
+    if(u.toLowerCase() === "gana" && p === "1234") {
         sessionStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('currentUser', u);
-        
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('main-dashboard').style.display = 'block';
-        showWelcome();
-        updateHeaderTitle('dashboard');
-        
-        const menuAdmin = document.getElementById('menu-add-user');
-        if(menuAdmin) menuAdmin.style.display = 'none';
-        
-    } else {
-        // --- PESAN SALAH SIMPEL & GAK LEBAY ---
-        errDisplay.innerHTML = "❌ USERNAME / PASSWORD SALAH!";
+        sessionStorage.setItem('currentUser', 'GANA'); 
+        location.reload();
+        return;
+    }
+
+    try {
+        // AMBIL DATA DARI PUSAT (GOOGLE SHEETS)
+        const response = await fetch(spreadSheetUrl);
+        const db = await response.json();
+
+        // CARI USER DI DATABASE SHEETS
+        let userKetemu = db.find(item => item.user === u && item.pass === p);
+
+        if (userKetemu) {
+            // PROSES CEK IP
+            let ipSekarang = "";
+            try {
+                const respIp = await fetch('https://api.ipify.org?format=json');
+                const dataIp = await respIp.json();
+                ipSekarang = dataIp.ip;
+            } catch (e) { console.log("Gagal deteksi IP"); }
+
+            if (userKetemu.ip !== ipSekarang) {
+                errDisplay.innerHTML = "❌ IP ANDA TIDAK TERDAFTAR!";
+                errDisplay.style.color = "#ff4d4d";
+                return;
+            }
+
+            // JIKA SEMUA OK
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('currentUser', u);
+            location.reload();
+            
+        } else {
+            errDisplay.innerHTML = "❌ USERNAME / PASSWORD SALAH!";
+            errDisplay.style.color = "#ff4d4d";
+            errDisplay.style.fontWeight = "bold";
+        }
+    } catch (error) {
+        errDisplay.innerHTML = "❌ GAGAL TERHUBUNG KE DATABASE!";
         errDisplay.style.color = "#ff4d4d";
-        errDisplay.style.fontWeight = "bold";
+        console.error("Error Login:", error);
     }
 }
 
