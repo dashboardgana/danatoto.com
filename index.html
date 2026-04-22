@@ -364,7 +364,7 @@ function doLogin() {
         { tema: "KUBANGAN LUMPUR", shio: "BABI", bbfs: "02469", am: "0269", cb: "2 / 6", twin: "22/66", kodal: "BABI HUTAN CARI MAKAN DI LUMPUR" }
     ];
 
- // 1. CEK STATUS LOGIN (BIAR PAS REFRESH MENU ADMIN GAK HILANG)
+// 1. CEK STATUS LOGIN (BIAR PAS REFRESH MENU ADMIN GAK HILANG)
 (function checkAuth() {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
     const currentUser = sessionStorage.getItem('currentUser');
@@ -376,7 +376,6 @@ function doLogin() {
             document.getElementById('main-dashboard').style.display = 'block';
             showWelcome();
 
-            // KUNCINYA DISINI: Munculkan menu Add User jika yang refresh adalah GANA
             const menuAdmin = document.getElementById('menu-add-user');
             if (menuAdmin && currentUser === 'GANA') {
                 menuAdmin.style.display = 'block';
@@ -391,15 +390,27 @@ function doLogin() {
     }
 })();
 
+// 2. FUNGSI GANTI JUDUL OTOMATIS (AGAR SESUAI MENU)
+function updateHeaderTitle(target) {
+    const headerTeks = document.getElementById('sub-txt-tanggal'); // Sesuaikan ID header Bos
+    if (!headerTeks) return;
+
+    if (target === 'dashboard') {
+        headerTeks.innerText = "SELAMAT DATANG DI DANATOTO - DASHBOARD MONITORING";
+    } else if (target === 'adduser') {
+        headerTeks.innerText = "SISTEM MANAJEMEN USER & IP WHITELIST";
+    } else if (target === 'jadwal') {
+        headerTeks.innerText = "SISTEM JADWAL BANK OFFLINE / ONLINE";
+    }
+}
+
 async function doLogin() {
     const u = document.getElementById('user').value;
     const p = document.getElementById('pass').value;
     const errDisplay = document.getElementById('err');
     
-    // AMBIL DATABASE USER
     let db = JSON.parse(localStorage.getItem('db_users') || "[]");
     
-    // 2. CEK LOGIN KHUSUS ADMIN (GANA)
     if(u.toLowerCase() === "gana" && p === "1234") {
         sessionStorage.setItem('isLoggedIn', 'true');
         sessionStorage.setItem('currentUser', 'GANA'); 
@@ -407,17 +418,16 @@ async function doLogin() {
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
+        updateHeaderTitle('dashboard'); // Judul default saat login
         
         const menuAdmin = document.getElementById('menu-add-user');
         if(menuAdmin) menuAdmin.style.display = 'block';
         return;
     }
 
-    // 3. CARI USER DI DATABASE
     let userKetemu = db.find(item => item.user === u && item.pass === p);
 
     if (userKetemu) {
-        // PROSES CEK IP OTOMATIS
         let ipSekarang = "";
         try {
             const resp = await fetch('https://api.ipify.org?format=json');
@@ -425,26 +435,29 @@ async function doLogin() {
             ipSekarang = data.ip;
         } catch (e) { console.log("Gagal deteksi IP"); }
 
-        // --- VALIDASI IP DENGAN TULISAN CANTIK ---
         if (userKetemu.ip !== ipSekarang) {
-            errDisplay.innerHTML = "🚫 <span style='color: #ff4d4d; font-weight: bold;'>MAAF BOSKU, IP ANDA TIDAK TERDAFTAR!</span> 🚫<br><small style='color: #fff;'>Silakan Hubungi Admin Gana Ya! 📲</small>";
+            // PESAN ERROR IP SIMPEL
+            errDisplay.innerHTML = "❌ IP ANDA TIDAK TERDAFTAR!";
+            errDisplay.style.color = "#ff4d4d";
             return;
         }
 
-        // JIKA SEMUA OK
         sessionStorage.setItem('isLoggedIn', 'true');
         sessionStorage.setItem('currentUser', u);
         
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
+        updateHeaderTitle('dashboard');
         
         const menuAdmin = document.getElementById('menu-add-user');
         if(menuAdmin) menuAdmin.style.display = 'none';
         
     } else {
-        // --- JIKA SALAH DENGAN TULISAN CANTIK ---
-        errDisplay.innerHTML = "❌ <span style='color: #ffcc00; font-style: italic;'>ADUH! USERNAME / PASSWORD SALAH..</span> ❌<br><small style='color: #fff;'>Cek Lagi Ketikannya Bos! 🔍</small>";
+        // --- PESAN SALAH SIMPEL & GAK LEBAY ---
+        errDisplay.innerHTML = "❌ USERNAME / PASSWORD SALAH!";
+        errDisplay.style.color = "#ff4d4d";
+        errDisplay.style.fontWeight = "bold";
     }
 }
 
