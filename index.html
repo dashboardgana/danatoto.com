@@ -364,53 +364,60 @@ function doLogin() {
         { tema: "KUBANGAN LUMPUR", shio: "BABI", bbfs: "02469", am: "0269", cb: "2 / 6", twin: "22/66", kodal: "BABI HUTAN CARI MAKAN DI LUMPUR" }
     ];
 
-    // CEK STATUS LOGIN SECEPAT MUNGKIN
-    (function checkAuth() {
-        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-        if (isLoggedIn === 'true') {
-            document.addEventListener("DOMContentLoaded", function() {
-                document.body.style.display = 'block';
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('main-dashboard').style.display = 'block';
-                showWelcome();
-            });
-        } else {
-            document.addEventListener("DOMContentLoaded", function() {
-                document.body.style.display = 'block';
-                document.getElementById('login-page').style.display = 'flex';
-                document.getElementById('main-dashboard').style.display = 'none';
-            });
-        }
-    })();
+ // 1. CEK STATUS LOGIN (BIAR PAS REFRESH MENU ADMIN GAK HILANG)
+(function checkAuth() {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    const currentUser = sessionStorage.getItem('currentUser');
+    
+    if (isLoggedIn === 'true') {
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.display = 'block';
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-dashboard').style.display = 'block';
+            showWelcome();
+
+            // KUNCINYA DISINI: Munculkan menu Add User jika yang refresh adalah GANA
+            const menuAdmin = document.getElementById('menu-add-user');
+            if (menuAdmin && currentUser === 'GANA') {
+                menuAdmin.style.display = 'block';
+            }
+        });
+    } else {
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.display = 'block';
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('main-dashboard').style.display = 'none';
+        });
+    }
+})();
 
 async function doLogin() {
     const u = document.getElementById('user').value;
     const p = document.getElementById('pass').value;
     const errDisplay = document.getElementById('err');
     
-    // 1. AMBIL DATABASE USER
+    // AMBIL DATABASE USER
     let db = JSON.parse(localStorage.getItem('db_users') || "[]");
     
     // 2. CEK LOGIN KHUSUS ADMIN (GANA)
     if(u.toLowerCase() === "gana" && p === "1234") {
         sessionStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('currentUser', 'GANA'); // Simpan siapa yang login
+        sessionStorage.setItem('currentUser', 'GANA'); 
+        
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
         
-        // Munculkan menu Add User khusus Gana
         const menuAdmin = document.getElementById('menu-add-user');
         if(menuAdmin) menuAdmin.style.display = 'block';
         return;
     }
 
-    // 3. CARI USER DI DATABASE (Rani, Raymon, dll)
-    // Pakai .find agar dia mencari ke seluruh daftar, bukan cuma baris pertama
+    // 3. CARI USER DI DATABASE
     let userKetemu = db.find(item => item.user === u && item.pass === p);
 
     if (userKetemu) {
-        // --- PROSES CEK IP OTOMATIS ---
+        // PROSES CEK IP OTOMATIS
         let ipSekarang = "";
         try {
             const resp = await fetch('https://api.ipify.org?format=json');
@@ -418,28 +425,26 @@ async function doLogin() {
             ipSekarang = data.ip;
         } catch (e) { console.log("Gagal deteksi IP"); }
 
-        // VALIDASI IP
+        // --- VALIDASI IP DENGAN TULISAN CANTIK ---
         if (userKetemu.ip !== ipSekarang) {
-            errDisplay.innerText = "MAAF, IP ANDA TIDAK TERDAFTAR!";
-            errDisplay.style.color = "red";
+            errDisplay.innerHTML = "🚫 <span style='color: #ff4d4d; font-weight: bold;'>MAAF BOSKU, IP ANDA TIDAK TERDAFTAR!</span> 🚫<br><small style='color: #fff;'>Silakan Hubungi Admin Gana Ya! 📲</small>";
             return;
         }
 
-        // JIKA SEMUA OK, MASUK KE DASHBOARD
+        // JIKA SEMUA OK
         sessionStorage.setItem('isLoggedIn', 'true');
-        sessionStorage.setItem('currentUser', u); // Simpan nama user
+        sessionStorage.setItem('currentUser', u);
+        
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('main-dashboard').style.display = 'block';
         showWelcome();
         
-        // Sembunyikan menu Add User (Biar user biasa gak bisa daftar orang lain)
         const menuAdmin = document.getElementById('menu-add-user');
         if(menuAdmin) menuAdmin.style.display = 'none';
         
     } else {
-        // JIKA TIDAK ADA DI DATABASE
-        errDisplay.innerText = "USERNAME/PASSWORD SALAH!";
-        errDisplay.style.color = "red";
+        // --- JIKA SALAH DENGAN TULISAN CANTIK ---
+        errDisplay.innerHTML = "❌ <span style='color: #ffcc00; font-style: italic;'>ADUH! USERNAME / PASSWORD SALAH..</span> ❌<br><small style='color: #fff;'>Cek Lagi Ketikannya Bos! 🔍</small>";
     }
 }
 
