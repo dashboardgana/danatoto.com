@@ -1,4 +1,4 @@
-                                                                <!DOCTYPE html>
+                                                               <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -188,7 +188,6 @@
         .ups-text { color: #ff5252; font-size: 11px; font-weight: bold; text-align: center; margin-top: 12px; }
         
         .btn-copy {
-          
             width: 100%; padding: 10px; margin-top: 10px; background: #30363d;
             border: 1px solid #00d4ff; border-radius: 6px; color: #00d4ff;
             cursor: pointer; font-weight: bold;
@@ -679,15 +678,10 @@ async function doLogin() {
         document.getElementById('menu-syair').classList.add('active-menu');
         const grid = document.getElementById('main-grid');
         grid.innerHTML = `
-    <div class="syair-wrapper">
-        <canvas id="canvasSyair" width="700" height="800"></canvas>
-        <button class="btn-export" onclick="exportSyair()">📸 DOWNLOAD & POST KE SOSMED</button>
-        
-        <div style="margin-top: 15px; padding: 10px; border: 1px dashed #00d4ff; border-radius: 10px; text-align: center; background: rgba(0,0,0,0.3);">
-            <p id="textSyair" style="color: #fff; font-weight: bold; margin-bottom: 10px; font-size: 16px;">✨ Syair Danatoto ${tglStr} ✨</p>
-            <button class="btn-copy" onclick="copySyair()">📋 COPY TEXT SYAIR</button>
-        </div>
-    </div>`;
+            <div class="syair-wrapper">
+                <canvas id="canvasSyair" width="700" height="800"></canvas>
+                <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
+            </div>`;
         renderSyair();
     }
 
@@ -714,7 +708,7 @@ async function renderSyair() {
         { shio: "KAMBING", img: "https://i.ibb.co/h1htzPtq/kambing-transparan.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Kambing merumput di atas bukit, Udara segar tenang terasa.", p2: "Angka jitu naik sedikit, JP paus di depan mata." },
         { shio: "MONYET", img: "https://i.ibb.co/TX8Yhdn/monyet-transparan.png", img2: "https://i.ibb.co/tMpKXXVw/pohon-pisang.png", p1: "Pergi ke hutan memetik pisang, Terlihat monyet duduk berseri.", p2: "Angka keluar jangan sembarang hoki datang menghampiri." },
         { shio: "KERBAU", img: "https://i.ibb.co/gLj2qmWp/kerbau-transparan.png", img2: "https://i.ibb.co/pBWDZqqV/sawah-berlumpur.png", p1: "Si kerbau turun ke sawah, Lumpur tebal penuh cerita,", p2: "Kalau hati sedang resah, Jangan lupa tetap tertawa" },
-        { shio: "ANJING", img: "https://i.ibb.co/99XfS1gd/babi-transparan.png", img2: "https://i.ibb.co/2YCdpZtD/pintu-pagar.png", p1: "Pergi ke taman memetik melati, Melihat kupu terbang ke sana,", p2: "Kalau hati selalu bahagia di hati, Hidup pun terasa indah warnanya" },
+        { shio: "ANJING", img: "https://i.ibb.co/zHmQ0tz9/babi-transparan.png", img2: "https://i.ibb.co/2YCdpZtD/pintu-pagar.png", p1: "Pergi ke taman memetik melati, Melihat kupu terbang ke sana,", p2: "Kalau hati selalu bahagia di hati, Hidup pun terasa indah warnanya" },
         { shio: "BABI", img: "https://i.ibb.co/Pz5JC0XW/babi-transparan.png", img2: "https://i.ibb.co/Kjq3z4M/back.png", p1: "Babi gemuk tanda kemakmuran, Hidup tenang tanpa beban.", p2: "Ikuti terus alur keberuntungan, JP besar jadi kenyataan." }
     ];
 
@@ -1280,14 +1274,6 @@ function hapusUser(i) {
       return false;
     }
   };
-  function copySyair() {
-    var copyText = document.getElementById("textSyair").innerText;
-    navigator.clipboard.writeText(copyText).then(function() {
-        alert("Syair Berhasil di Copy Bos: " + copyText);
-    }).catch(function(err) {
-        alert("Gagal Copy, Coba Lagi!");
-    });
-}
 </script>
 
 </body>
