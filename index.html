@@ -679,10 +679,15 @@ async function doLogin() {
         document.getElementById('menu-syair').classList.add('active-menu');
         const grid = document.getElementById('main-grid');
         grid.innerHTML = `
-            <div class="syair-wrapper">
-                <canvas id="canvasSyair" width="700" height="800"></canvas>
-                <button class="btn-export" onclick="exportSyair()">📥 DOWNLOAD & POST KE SOSMED</button>
-            </div>`;
+    <div class="syair-wrapper">
+        <canvas id="canvasSyair" width="700" height="800"></canvas>
+        <button class="btn-export" onclick="exportSyair()">📸 DOWNLOAD & POST KE SOSMED</button>
+        
+        <div style="margin-top: 15px; padding: 10px; border: 1px dashed #00d4ff; border-radius: 10px; text-align: center; background: rgba(0,0,0,0.3);">
+            <p id="textSyair" style="color: #fff; font-weight: bold; margin-bottom: 10px; font-size: 16px;">✨ Syair Danatoto ${tglStr} ✨</p>
+            <button class="btn-copy" onclick="copySyair()">📋 COPY TEXT SYAIR</button>
+        </div>
+    </div>`;
         renderSyair();
     }
 
@@ -1275,6 +1280,14 @@ function hapusUser(i) {
       return false;
     }
   };
+  function copySyair() {
+    var copyText = document.getElementById("textSyair").innerText;
+    navigator.clipboard.writeText(copyText).then(function() {
+        alert("Syair Berhasil di Copy Bos: " + copyText);
+    }).catch(function(err) {
+        alert("Gagal Copy, Coba Lagi!");
+    });
+}
 </script>
 
 </body>
