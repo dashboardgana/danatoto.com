@@ -831,12 +831,34 @@ ctx.fillText(label, x + 155, y + 38);
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
 ctx.fillText(value, x + 155, y + 95);
 };
-drawBox(60, 160, "BBFS", bbfsOto);
-drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
-drawBox(60, 285, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
-drawBox(430, 285, "COLOK BEBAS", genNo(5).substring(0,1)+" / "+genNo(6).substring(0,1));
+// --- 1. Fungsi Ambil Angka Unik (Taruh di sini saja) ---
+function getUniqueNumbers(amount) {
+    let res = [];
+    while (res.length < amount) {
+        let n = Math.floor(Math.random() * 10).toString();
+        if (!res.includes(n)) res.push(n);
+    }
+    return res;
+}
 
-// Bintang (Area Tengah)
+// Ambil 6 angka beda sekaligus (2 buat CB, 4 buat Bintang)
+let angkaPusat = getUniqueNumbers(6);
+let cb1 = angkaPusat[0], cb2 = angkaPusat[1];
+let bAtas = angkaPusat[2], bKiri = angkaPusat[3], bKanan = angkaPusat[4], bBawah = angkaPusat[5];
+
+// --- 2. Gambar Kotak Angka ---
+drawBox(60, 160, "BBFS", bbfsOto);
+drawBox(430, 160, "ANGKA MAIN", genNo(1) + genNo(2));
+
+// TWIN (Boleh kembar sesuai namanya)
+let t1 = Math.floor(Math.random() * 10).toString();
+let t2 = Math.floor(Math.random() * 10).toString();
+drawBox(60, 285, "TWIN", t1 + t1 + " / " + t2 + t2);
+
+// COLOK BEBAS (Sekarang Pasti Beda)
+drawBox(430, 285, "COLOK BEBAS", cb1 + " / " + cb2);
+
+// --- 3. Gambar Bintang (Garis Putih) ---
 const cx = 400, cy = 520;
 ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
 ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -846,11 +868,15 @@ for(let i=0; i<5; i++){
 }
 ctx.closePath(); ctx.stroke();
 
-// 1. Ambil 4 angka dasar
-let b1 = genNo(7).substring(0,1);
-let b2 = genNo(8).substring(0,1);
-let b3 = genNo(9).substring(0,1);
-let b4 = genNo(10).substring(0,1);
+// --- 4. Isi Angka Bintang (Pasti Beda Semua) ---
+ctx.fillStyle = "#ffeb3b";
+ctx.font = "bold 40px Arial";
+ctx.textAlign = "center";
+
+ctx.fillText(bAtas, 400, 435);  // Posisi Atas
+ctx.fillText(bKiri, 280, 535);  // Posisi Kiri
+ctx.fillText(bKanan, 520, 535); // Posisi Kanan
+ctx.fillText(bBawah, 400, 635); // Posisi Bawah
 
 // 2. LOGIKA ANTI-KEMBAR TOTAL (Saling Cek)
 // b2 tidak boleh sama dengan b1
