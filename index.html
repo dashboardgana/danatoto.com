@@ -831,34 +831,20 @@ ctx.fillText(label, x + 155, y + 38);
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
 ctx.fillText(value, x + 155, y + 95);
 };
-// --- 1. Fungsi Ambil Angka Unik (Taruh di sini saja) ---
-function getUniqueNumbers(amount) {
-    let res = [];
-    while (res.length < amount) {
-        let n = Math.floor(Math.random() * 10).toString();
-        if (!res.includes(n)) res.push(n);
-    }
-    return res;
-}
+// --- 1. KOCOK ANGKA UNIK (Hanya ini tambahannya biar ga kembar) ---
+let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
 
-// Ambil 6 angka beda sekaligus (2 buat CB, 4 buat Bintang)
-let angkaPusat = getUniqueNumbers(6);
-let cb1 = angkaPusat[0], cb2 = angkaPusat[1];
-let bAtas = angkaPusat[2], bKiri = angkaPusat[3], bKanan = angkaPusat[4], bBawah = angkaPusat[5];
-
-// --- 2. Gambar Kotak Angka ---
+// --- 2. SCRIPT ASLI BOS (TIDAK ADA YANG DIUBAH POSISINYA) ---
 drawBox(60, 160, "BBFS", bbfsOto);
-drawBox(430, 160, "ANGKA MAIN", genNo(1) + genNo(2));
+drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
 
-// TWIN (Boleh kembar sesuai namanya)
-let t1 = Math.floor(Math.random() * 10).toString();
-let t2 = Math.floor(Math.random() * 10).toString();
-drawBox(60, 285, "TWIN", t1 + t1 + " / " + t2 + t2);
+// TWIN (Boleh kembar, pakai genNo asli Bos)
+drawBox(60, 285, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
 
-// COLOK BEBAS (Sekarang Pasti Beda)
-drawBox(430, 285, "COLOK BEBAS", cb1 + " / " + cb2);
+// COLOK BEBAS (Diambil dari hasil kocokan biar beda)
+drawBox(430, 285, "COLOK BEBAS", pool[0] + " / " + pool[1]);
 
-// --- 3. Gambar Bintang (Garis Putih) ---
+// Bintang (Area Tengah) - TETAP PAKAI PUNYA BOS
 const cx = 400, cy = 520;
 ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
 ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -868,15 +854,11 @@ for(let i=0; i<5; i++){
 }
 ctx.closePath(); ctx.stroke();
 
-// --- 4. Isi Angka Bintang (Pasti Beda Semua) ---
-ctx.fillStyle = "#ffeb3b";
-ctx.font = "bold 40px Arial";
-ctx.textAlign = "center";
-
-ctx.fillText(bAtas, 400, 435);  // Posisi Atas
-ctx.fillText(bKiri, 280, 535);  // Posisi Kiri
-ctx.fillText(bKanan, 520, 535); // Posisi Kanan
-ctx.fillText(bBawah, 400, 635); // Posisi Bawah
+// 1. Ambil 4 angka dasar (Diambil dari urutan kocokan berikutnya)
+let b1 = pool[2];
+let b2 = pool[3];
+let b3 = pool[4];
+let b4 = pool[5];
 
 // 2. LOGIKA ANTI-KEMBAR TOTAL (Saling Cek)
 // b2 tidak boleh sama dengan b1
