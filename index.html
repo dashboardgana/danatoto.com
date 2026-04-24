@@ -889,10 +889,10 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// --- FIX PANTUN: TAJAM, JELAS, & PAS DALAM KOTAK ---
-const pY = 650, pW = 750, pH = 135, pX = 325; // Kotak diperlebar maksimal (750px)
+// --- FIX PANTUN: ANTI-KELUAR KOTAK & TETAP TAJAM ---
+const pY = 650, pW = 740, pH = 135, pX = 330; // Kotak lebar & lega
 
-// 1. Kotak Navy Solid (Background Gelap Total)
+// 1. Kotak Navy Solid (Warna dasar biar teks putih nendang)
 ctx.fillStyle = "#050c23"; 
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 15); ctx.fill();
 
@@ -901,22 +901,26 @@ ctx.strokeStyle = "#ffffff";
 ctx.lineWidth = 6; 
 ctx.stroke();
 
-// 3. Efek Shadow (Ini yang bikin tajam di zoom 67%)
+// 3. Shadow Hitam (Biar teks tajam di zoom 67%)
 ctx.shadowColor = "black";
 ctx.shadowBlur = 8;
 ctx.shadowOffsetX = 3;
 ctx.shadowOffsetY = 3;
 
-// 4. Pakai Font Arial Bold (Lebih stabil, tidak melar ke samping)
+// 4. Setting Teks (Arial Bold paling stabil)
 ctx.fillStyle = "#ffffff"; 
 ctx.textAlign = "center";
-ctx.font = "bold 28px Arial"; // Ukuran 28px adalah titik paling pas (Tajam tapi muat)
+ctx.font = "bold 28px Arial"; 
 
-// 5. Penempatan Baris (Sudah diatur jaraknya agar pas di tengah kotak)
-ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 55); 
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 100); 
+// 5. TEKNIK ANTI-MELUBER (Pakai MaxWidth)
+// Kita kasih batas lebar 700px (lebih kecil dari lebar kotak 740px)
+// Jadi teks tidak akan pernah menyentuh garis putih
+const limit = 700; 
 
-// Reset Shadow agar bagian lain tidak ikut berbayang
+ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 55, limit); 
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 105, limit); 
+
+// Reset Shadow
 ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 }
 function exportSyair() {
