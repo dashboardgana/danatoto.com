@@ -720,8 +720,8 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    canvas.width = 800;
-    canvas.height = 1250;
+    canvas.width = 1400;
+    canvas.height = 800;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -891,13 +891,13 @@ ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center
 ctx.fillText("SHIO " + hariIni.shio, 140, 530);
 
 // Pantun
-const pY = 1030, pW = 670, pH = 135, pX = 65; // CUKUP GANTI 930 JADI 1030
+const pY = 600, pW = 650, pH = 135, pX = 720;
 ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-ctx.fillText(hariIni.p1, 400, pY + 55);
-ctx.fillText(hariIni.p2, 400, pY + 100);
+ctx.fillText(hariIni.p1, 1045, pY + 55);
+ctx.fillText(hariIni.p2, 1045, pY + 100);
 }
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
