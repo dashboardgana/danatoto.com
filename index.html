@@ -889,34 +889,35 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// --- FIX PANTUN RAKSASA: ANTI-BLUR & ANTI-PECEL (ZOOM 67% AMAN) ---
-const pY = 650, pW = 680, pH = 140, pX = 360; // Kotak dibuat lebih besar & lega
+// --- FIX PANTUN: SUPER TAJAM & PAS DALAM KOTAK ---
+const pY = 650, pW = 700, pH = 135, pX = 350; // Kotak diperlebar (700) agar muat teks besar
 
-// 1. Kotak Navy Gelap Solid (Wajib solid biar teks putih nendang)
+// 1. Kotak Navy Solid (Background Gelap Total agar teks Putih kontras)
 ctx.fillStyle = "#050c23"; 
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 15); ctx.fill();
 
 // 2. Stroke Putih Sangat Tebal (Bingkai)
 ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 7; 
+ctx.lineWidth = 6; 
 ctx.stroke();
 
-// 3. Shadow Hitam Pekat (Biar hurufnya punya 'garis tepi' hitam otomatis)
+// 3. Efek Shadow Hitam (WAJIB: Biar tulisan Putih tidak blur saat zoom)
 ctx.shadowColor = "black";
-ctx.shadowBlur = 10;
-ctx.shadowOffsetX = 4;
-ctx.shadowOffsetY = 4;
+ctx.shadowBlur = 8;
+ctx.shadowOffsetX = 3;
+ctx.shadowOffsetY = 3;
 
-// 4. Pakai Font IMPACT Ukuran JUMBO (38px)
+// 4. Pakai Font Arial Bold Ukuran Besar (32px)
+// Arial Bold lebih stabil lebarnya dibanding Impact
 ctx.fillStyle = "#ffffff"; 
 ctx.textAlign = "center";
-ctx.font = "bold 38px Impact"; // Ini font paling tebal, pasti kelihatan!
+ctx.font = "bold 32px Arial"; 
 
-// 5. Penempatan Baris (Jarak dijauhkan biar enak dibaca)
+// 5. Posisi Teks (Presisi di tengah kotak)
 ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 55); 
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 115); 
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 105); 
 
-// Reset Shadow biar tidak merembet ke mana-mana
+// Reset Shadow agar tidak merusak elemen gambar lain
 ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 }
 function exportSyair() {
