@@ -889,32 +889,39 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// --- PANTUN SUPER TAJAM & ANTI-BLUR ---
+// ========================================================
+// --- PERBAIKAN PANTUN SUPER EKSTREM (TAJAM & PAS) ---
+// ========================================================
 const pY = 665, pW = 620, pH = 110, pX = 390; 
 
-// 1. Kotak Navy Solid Gelap (Kontras Tinggi)
+// 1. Kotak Navy Solid Gelap Tanpa Transparansi (Biar Kontras Maksimal)
 ctx.fillStyle = "#050c23"; 
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 15); ctx.fill();
 
-// 2. Stroke Luar Putih Sangat Tebal
+// 2. Stroke Luar Putih Sangat Tebal (Bingkai Tegas saat Zoom Kecil)
 ctx.strokeStyle = "#ffffff"; 
 ctx.lineWidth = 6; 
 ctx.stroke();
 
-// 3. Efek Shadow Teks (Biar tulisan tidak menyatu dengan background)
-ctx.shadowColor = "black";
-ctx.shadowBlur = 4;
-ctx.shadowOffsetX = 2;
-ctx.shadowOffsetY = 2;
+// 3. Efek Shadow Teks (Rahasianya agar Teks Tidak Pecah)
+ctx.shadowColor = "rgba(0, 0, 0, 1)";
+ctx.shadowBlur = 6;
+ctx.shadowOffsetX = 3;
+ctx.shadowOffsetY = 3;
 
-// 4. Font "Verdana" Bold (Lebih tebal dari Arial)
+// 4. Pakai Font "IMPACT" (Ini font paling tebal, anti-Pecah di zoom kecil)
 ctx.fillStyle = "#ffffff"; 
 ctx.textAlign = "center";
-ctx.font = "bold 23px Verdana"; 
+ctx.font = "normal 24px Impact"; // Impact secara default sudah gemuk, 24px adalah batas aman agar pas di kotak
 
-// 5. Posisi Pas Tengah
-ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 45);
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 90);
+// 5. Penempatan Baris Teks yang Presisi agar Tidak Balapan
+ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 45); // Baris 1
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 90); // Baris 2
+
+// Reset Shadow agar tidak merusak elemen gambar lain
+ctx.shadowBlur = 0;
+ctx.shadowOffsetX = 0;
+ctx.shadowOffsetY = 0;
 
 // Reset Shadow agar tidak merusak gambar lain di bawahnya
 ctx.shadowBlur = 0;
