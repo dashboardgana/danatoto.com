@@ -803,96 +803,95 @@ const drawImg = (url, x, y, w, h) => {
     });
 };
 
-// --- 1. LOGIKA TANGGAL OTOMATIS INDONESIA ---
-var hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-var bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+// --- 1. LOGIKA TANGGAL OTOMATIS (PALING AMAN) ---
 var d = new Date();
-var tglLengkap = hariIndo[d.getDay()] + ", " + d.getDate() + " " + bulanIndo[d.getMonth()] + " " + d.getFullYear();
+var daftarHari = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+var daftarBulan = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+var tglFinal = daftarHari[d.getDay()] + ", " + d.getDate() + " " + daftarBulan[d.getMonth()] + " " + d.getFullYear();
 
-// --- 2. SETTING CANVAS (1400x800) ---
+// --- 2. SETTING CANVAS ---
 ctx.clearRect(0, 0, 1400, 800);
 await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800);
 await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 75, 220, 60);
 
-// 3. KOTAK TANGGAL & LINK (WARNA NAVY MEWAH - ANTI BLANK)
+// --- 3. KOTAK ATAS (NAVY MEWAH & GARIS CYAN) ---
+ctx.lineWidth = 5;
+ctx.strokeStyle = "#00f2ff";
 ctx.fillStyle = "#050c23";
-ctx.strokeStyle = "#00f2ff"; 
-ctx.lineWidth = 4;
 
-// Pakai rect standar agar stabil di semua browser
-ctx.beginPath(); ctx.rect(20, 20, 360, 52); ctx.fill(); ctx.stroke();
-ctx.beginPath(); ctx.rect(1080, 20, 300, 52); ctx.fill(); ctx.stroke();
+// Pakai fillRect & strokeRect (WAJIB BIAR GAK BLANK)
+ctx.fillRect(20, 20, 380, 55); ctx.strokeRect(20, 20, 380, 55);
+ctx.fillRect(1060, 20, 320, 55); ctx.strokeRect(1060, 20, 320, 55);
 
 ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
 ctx.font = "bold 22px Arial";
-ctx.fillText("📅 " + tglLengkap.toUpperCase(), 200, 55); 
+ctx.fillText("📅 " + tglFinal, 210, 57); 
 ctx.font = "bold 18px Arial";
-ctx.fillText("🔗 linklist.bio/Danatoto", 1230, 55);
+ctx.fillText("🔗 linklist.bio/Danatoto", 1220, 57);
 
-// 4. FUNGSI KOTAK ANGKA
-const drawBox = (x, y, label, value) => {
+// --- 4. FUNGSI KOTAK ANGKA (VERSI ANTI-ERROR) ---
+function buatKotak(x, y, label, value) {
     ctx.fillStyle = "#050c23";
     ctx.strokeStyle = "#00d4ff";
-    ctx.lineWidth = 5;
-    ctx.beginPath(); ctx.rect(x, y, 310, 115); ctx.fill(); ctx.stroke();
+    ctx.lineWidth = 6;
+    ctx.fillRect(x, y, 310, 115); ctx.strokeRect(x, y, 310, 115);
+    
     ctx.fillStyle = "#00f2ff"; ctx.font = "bold 26px Arial"; ctx.textAlign = "center";
-    ctx.fillText(label, x + 155, y + 38);
+    ctx.fillText(label, x + 155, y + 40);
     ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 62px Arial";
-    ctx.fillText(value, x + 155, y + 95);
-};
+    ctx.fillText(value, x + 155, y + 100);
+}
 
-let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
+var pool = ["0","1","2","3","4","5","6","7","8","9"].sort(function(){ return 0.5 - Math.random() });
 
-// 5. MENGGAMBAR KOTAK (POSISI NAIK)
-drawBox(50, 150, "BBFS", bbfsOto);
-drawBox(50, 280, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
-drawBox(1040, 150, "ANGKA MAIN", genNo(1)+genNo(2));
-drawBox(1040, 280, "COLOK BEBAS", pool[0] + " / " + pool[1]);
+// Gambar Kotak Sesuai Posisi Request Bos
+buatKotak(50, 150, "BBFS", bbfsOto);
+buatKotak(50, 280, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
+buatKotak(1040, 150, "ANGKA MAIN", genNo(1)+genNo(2));
+buatKotak(1040, 280, "COLOK BEBAS", pool[0] + " / " + pool[1]);
 
-// 6. AREA BINTANG (GLOW TEBAL & CANTIK)
-const cx = 700, cy = 255;
-const outerRad = 105; 
-const innerRad = 48;
-
+// --- 5. BINTANG MEWAH (TEBAL & GLOWING) ---
+var cx = 700, cy = 255, oR = 105, iR = 48;
 ctx.shadowBlur = 30; ctx.shadowColor = "#ffeb3b";
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 12;
-ctx.beginPath(); ctx.moveTo(cx, cy - outerRad);
-for(let i=0; i<5; i++){
-    ctx.lineTo(cx + Math.cos(Math.PI/2*3 + i*Math.PI*2/5) * outerRad, cy + Math.sin(Math.PI/2*3 + i*Math.PI*2/5) * outerRad);
-    ctx.lineTo(cx + Math.cos(Math.PI/2*3 + (i+0.5)*Math.PI*2/5) * innerRad, cy + Math.sin(Math.PI/2*3 + (i+0.5)*Math.PI*2/5) * innerRad);
+
+ctx.beginPath(); ctx.moveTo(cx, cy - oR);
+for(var i=0; i<5; i++){
+    ctx.lineTo(cx + Math.cos(Math.PI/2*3 + i*Math.PI*2/5) * oR, cy + Math.sin(Math.PI/2*3 + i*Math.PI*2/5) * oR);
+    ctx.lineTo(cx + Math.cos(Math.PI/2*3 + (i+0.5)*Math.PI*2/5) * iR, cy + Math.sin(Math.PI/2*3 + (i+0.5)*Math.PI*2/5) * iR);
 }
 ctx.closePath(); ctx.stroke();
-ctx.shadowBlur = 0; 
+ctx.shadowBlur = 0;
 
-ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 65px Arial"; ctx.textAlign = "center";
+ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 65px Arial";
 ctx.fillText(pool[2], cx - 105, cy - 45); 
 ctx.fillText(pool[3], cx + 105, cy - 45); 
 ctx.fillText(pool[4], cx - 105, cy + 105); 
 ctx.fillText(pool[5], cx + 105, cy + 105);
 
-// 7. AREA BAWAH
+// --- 6. AREA BAWAH ---
 await drawImg(hariIni.img, 50, 440, 320, 340); 
 await drawImg(hariIni.img2, 1070, 440, 320, 340); 
 
-// KETERANGAN SHIO NAIK
+// Label Shio
 ctx.fillStyle = "#050c23"; ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 3;
-ctx.beginPath(); ctx.rect(50, 415, 190, 48); ctx.fill(); ctx.stroke();
+ctx.fillRect(50, 415, 200, 48); ctx.strokeRect(50, 415, 200, 48);
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 22px Arial";
-ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 145, 448);
+ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 150, 448);
 
-// PANTUN (WARNA NAVY MEWAH)
-const pY = 665, pW = 640, pH = 125, pX = 380; 
+// Kotak Pantun
+var pY = 665, pW = 640, pH = 125, pX = 380; 
 ctx.fillStyle = "rgba(5, 12, 35, 0.95)";
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4;
-ctx.beginPath(); ctx.rect(pX, pY, pW, pH); ctx.fill(); ctx.stroke();
+ctx.fillRect(pX, pY, pW, pH); ctx.strokeRect(pX, pY, pW, pH);
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px Arial";
 ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 50);
 ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 95);
 
-// --- FUNGSI EXPORT (DILUAR LOGIKA DRAW) ---
+// --- 7. FUNGSI EXPORT ---
 function exportSyair() {
-    const canvas = document.getElementById('canvasSyair');
-    const link = document.createElement('a');
+    var canvas = document.getElementById('canvasSyair');
+    var link = document.createElement('a');
     link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
     link.href = canvas.toDataURL("image/png");
     link.click();
