@@ -889,15 +889,17 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// PANTUN (DITURUNKAN LAGI)
+// PANTUN (GANTI NAVY, TEKS PUTIH & JELAS)
 const pY = 665, pW = 620, pH = 120, pX = 390; 
-ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+ctx.fillStyle = "#050c23"; // Ganti Hitam ke Navy Gelap
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
-ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
-ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
+ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4; ctx.stroke(); // Garis putih dipertebal
+
+ctx.fillStyle = "#ffffff"; // Warna teks putih
+ctx.font = "bold 24px Arial"; // Font lebih besar dan Bold agar jelas
 ctx.textAlign = "center";
 ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 45);
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 90);
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 95); // Jarak baris disesuaikan agar pas
 }
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
