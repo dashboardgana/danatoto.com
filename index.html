@@ -862,22 +862,29 @@ ctx.fillText(pool[3], cx + 85, cy - 40);
 ctx.fillText(pool[4], cx - 85, cy + 85); 
 ctx.fillText(pool[5], cx + 85, cy + 85);
 
-// 6. AREA BAWAH: NAGA & AWAN (SEJAJAR)
-await drawImg(hariIni.img, 100, 440, 320, 340); // Naga di kiri
-await drawImg(hariIni.img2, 950, 440, 350, 340); // Awan di kanan
+// --- AREA BAWAH: NAGA & AWAN (DIKUNCI DI POJOK) ---
+// Naga di kiri bawah (X: 50 biar lebih ke pinggir)
+await drawImg(hariIni.img, 50, 440, 320, 340); 
+
+// Awan di KANAN MENTOK (X: 1000) supaya gak kena pantun
+await drawImg(hariIni.img2, 1000, 440, 350, 340); 
 
 // Label Shio (Di atas Naga)
-ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 450, 180, 45, 10); ctx.fill();
+ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 450, 180, 45, 10); ctx.fill();
 ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 190, 480);
+ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 480);
 
-// 7. PANTUN (TENGAH BAWAH)
-const pY = 640, pW = 650, pH = 125, pX = 375;
+// --- PANTUN (DIGESER KE TENGAH BIAR GAK KETUTUP AWAN) ---
+// pX kita set ke 380 biar dia ada di antara Naga dan Awan
+const pY = 640, pW = 600, pH = 125, pX = 385; 
 ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
+ctx.textAlign = "center";
+
+// Teks pantun otomatis di tengah kotak baru
 ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 50);
 ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 95);
 }
