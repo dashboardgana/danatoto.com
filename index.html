@@ -803,31 +803,51 @@ const drawImg = (url, x, y, w, h) => {
     });
 };
 
-// --- SETTING CANVAS LANDSCAPE (1400x800) ---
+// --- 1. SETTING CANVAS (1400x800) ---
 ctx.clearRect(0, 0, 1400, 800);
 await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800);
 
-// Logo Danatoto turun dikit aja
-await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 85, 220, 60);
+// Logo Danatoto - Posisi turun dikit sesuai permintaan
+await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 75, 220, 60);
 
-// 1. Kotak Tanggal & Link (SUDUT)
+// 2. KOTAK TANGGAL & LINK BIO (SUDUT)
 ctx.fillStyle = "black";
-ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill(); // Kiri
-ctx.beginPath(); ctx.roundRect(1130, 10, 260, 45, 10); ctx.fill(); // Kanan
-ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
-ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial";
-ctx.fillText(tglStr.toUpperCase(), 140, 40);
+ctx.strokeStyle = "white";
+ctx.lineWidth = 2;
+
+// Kotak Tanggal (Kiri)
+ctx.beginPath(); ctx.roundRect(20, 20, 260, 45, 10); ctx.fill(); ctx.stroke();
+// Kotak Link (Kanan)
+ctx.beginPath(); ctx.roundRect(1120, 20, 260, 45, 10); ctx.fill(); ctx.stroke();
+
+ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
+ctx.font = "bold 20px Arial";
+ctx.fillText(tglStr.toUpperCase(), 150, 50);
 ctx.font = "bold 16px Arial";
-ctx.fillText("linklist.bio/Danatoto", 1260, 40);
+ctx.fillText("linklist.bio/Danatoto", 1250, 50);
 
-// 2. AREA KIRI: KOTAK ANGKA (Pindah ke samping kiri biar rapi)
-drawBox(50, 160, "BBFS", bbfsOto);
-drawBox(380, 160, "ANGKA MAIN", genNo(1)+genNo(2));
-drawBox(50, 285, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
-drawBox(380, 285, "COLOK BEBAS", pool[0] + " / " + pool[1]);
+// 3. FUNGSI KOTAK ANGKA (Harus didefinisikan dulu biar muncul)
+const drawBox = (x, y, label, value) => {
+    ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
+    ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
+    ctx.fillText(label, x + 155, y + 38);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
+    ctx.fillText(value, x + 155, y + 95);
+};
 
-// 3. AREA KANAN: BINTANG & ANGKA (Sejajar kotak angka)
-const cx = 1050, cy = 250;
+// Kocok Angka
+let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
+
+// 4. MENGGAMBAR KOTAK ANGKA (AREA KIRI)
+drawBox(70, 160, "BBFS", bbfsOto);
+drawBox(410, 160, "ANGKA MAIN", genNo(1)+genNo(2));
+drawBox(70, 290, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
+drawBox(410, 290, "COLOK BEBAS", pool[0] + " / " + pool[1]);
+
+// 5. AREA BINTANG (SAMPING KOTAK ANGKA)
+const cx = 1050, cy = 255;
 ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
 ctx.beginPath(); ctx.moveTo(cx, cy-85);
 for(let i=0; i<5; i++){
@@ -842,27 +862,24 @@ ctx.fillText(pool[3], cx + 85, cy - 40);
 ctx.fillText(pool[4], cx - 85, cy + 85); 
 ctx.fillText(pool[5], cx + 85, cy + 85);
 
-// 4. AREA BAWAH: NAGA & AWAN (SEJAJAR)
-// Naga di kiri bawah
-await drawImg(hariIni.img, 100, 420, 320, 350);
-// Awan di kanan bawah (Sejajar Naga)
-await drawImg(hariIni.img2, 950, 420, 350, 350);
+// 6. AREA BAWAH: NAGA & AWAN (SEJAJAR)
+await drawImg(hariIni.img, 100, 440, 320, 340); // Naga di kiri
+await drawImg(hariIni.img2, 950, 440, 350, 340); // Awan di kanan
 
-// Label Shio (Pindah ke atas Naga)
-ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 430, 180, 45, 10); ctx.fill();
+// Label Shio (Di atas Naga)
+ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(100, 450, 180, 45, 10); ctx.fill();
 ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 190, 460);
+ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 190, 480);
 
-// 5. PANTUN (TENGAH BAWAH)
-const pY = 650, pW = 600, pH = 120, pX = 400;
+// 7. PANTUN (TENGAH BAWAH)
+const pY = 640, pW = 650, pH = 125, pX = 375;
 ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
 ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 50);
 ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 95);
-}
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
 const link = document.createElement('a');
