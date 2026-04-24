@@ -755,96 +755,88 @@ const bbfsOto = (() => {
 
 // FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
 const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
-return new Promise((resolve) => {
-const img = new Image();
-img.crossOrigin = "anonymous";
-img.src = url;
-img.onload = () => {
-const tempCanvas = document.createElement('canvas');
-const tempCtx = tempCanvas.getContext('2d');
-tempCanvas.width = img.width;
-tempCanvas.height = img.height;
-tempCtx.drawImage(img, 0, 0);
-
-const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-const data = imgData.data;
-for (let i = 0; i < data.length; i += 4) {
-if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
-data[i+3] = 0;
-}
-}
-tempCtx.putImageData(imgData, 0, 0);
-
-const padding = 15;
-const innerW = targetW - (padding * 2);
-const innerH = targetH - (padding * 2);
-
-const scale = Math.min(innerW / img.width, innerH / img.height);
-const drawW = img.width * scale;
-const drawH = img.height * scale;
-
-const drawX = targetX + (targetW - drawW) / 2;
-const drawY = targetY + (targetH - drawH) / 2;
-
-ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
-resolve();
-};
-img.onerror = () => resolve();
-});
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = url;
+        img.onload = () => {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = img.width;
+            tempCanvas.height = img.height;
+            tempCtx.drawImage(img, 0, 0);
+            const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imgData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
+                    data[i+3] = 0;
+                }
+            }
+            tempCtx.putImageData(imgData, 0, 0);
+            const padding = 15;
+            const innerW = targetW - (padding * 2);
+            const innerH = targetH - (padding * 2);
+            const scale = Math.min(innerW / img.width, innerH / img.height);
+            const drawW = img.width * scale;
+            const drawH = img.height * scale;
+            const drawX = targetX + (targetW - drawW) / 2;
+            const drawY = targetY + (targetH - drawH) / 2;
+            ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
+            resolve();
+        };
+        img.onerror = () => resolve();
+    });
 };
 
 const drawImg = (url, x, y, w, h) => {
-return new Promise((resolve) => {
-const img = new Image();
-img.crossOrigin = "anonymous";
-img.src = url;
-img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
-img.onerror = () => resolve();
-});
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = url;
+        img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
+        img.onerror = () => resolve();
+    });
 };
 
+// --- SETTING CANVAS LANDSCAPE (1400x800) ---
 ctx.clearRect(0, 0, 1400, 800);
 await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800);
-await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 290, 85, 220, 60);
+await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 45, 220, 60); // Logo digeser sedikit ke tengah
 
-// 1. Kotak Tanggal (SUDUT KIRI)
+// 1. Kotak Tanggal (TETAP SUDUT KIRI)
 ctx.fillStyle = "black";
 ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
 ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 20px Arial";
 ctx.fillText(tglStr.toUpperCase(), 140, 40);
 
-// 2. Kotak Link Bio (SUDUT KANAN) - TAMBAHAN BARU
+// 2. Kotak Link Bio (SUDUT KANAN JAUH)
 ctx.fillStyle = "black";
-ctx.beginPath(); ctx.roundRect(530, 10, 260, 45, 10); ctx.fill();
+ctx.beginPath(); ctx.roundRect(1130, 10, 260, 45, 10); ctx.fill();
 ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial";
-ctx.fillText("linklist.bio/Danatoto", 660, 40);
+ctx.fillText("linklist.bio/Danatoto", 1260, 40);
 
-// Kotak Angka
+// Kotak Angka (Fungsi Asli)
 const drawBox = (x, y, label, value) => {
-ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
-ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
-ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
-ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
-ctx.fillText(label, x + 155, y + 38);
-ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
-ctx.fillText(value, x + 155, y + 95);
+    ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
+    ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
+    ctx.fillText(label, x + 155, y + 38);
+    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
+    ctx.fillText(value, x + 155, y + 95);
 };
-// --- 1. KOCOK ANGKA UNIK (Hanya ini tambahannya biar ga kembar) ---
+
 let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
 
-// --- 2. SCRIPT ASLI BOS (TIDAK ADA YANG DIUBAH POSISINYA) ---
+// --- AREA KIRI: KOTAK ANGKA ---
 drawBox(60, 160, "BBFS", bbfsOto);
 drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
-
-// TWIN (Boleh kembar, pakai genNo asli Bos)
 drawBox(60, 285, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
-
-// COLOK BEBAS (Diambil dari hasil kocokan biar beda)
 drawBox(430, 285, "COLOK BEBAS", pool[0] + " / " + pool[1]);
 
-// Bintang (Area Tengah) - TETAP PAKAI PUNYA BOS
+// Bintang (Area Tengah Kiri)
 const cx = 400, cy = 520;
 ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
 ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -854,35 +846,22 @@ for(let i=0; i<5; i++){
 }
 ctx.closePath(); ctx.stroke();
 
-// 1. Ambil 4 angka dasar (Diambil dari urutan kocokan berikutnya)
-let b1 = pool[2];
-let b2 = pool[3];
-let b3 = pool[4];
-let b4 = pool[5];
-
-// 2. LOGIKA ANTI-KEMBAR TOTAL (Saling Cek)
-// b2 tidak boleh sama dengan b1
+let b1 = pool[2], b2 = pool[3], b3 = pool[4], b4 = pool[5];
 if (b2 === b1) b2 = ((parseInt(b1) + 1) % 10).toString();
-
-// b3 tidak boleh sama dengan b1 DAN b2
 if (b3 === b1 || b3 === b2) b3 = ((parseInt(b1) + 2) % 10).toString();
-
-// b4 tidak boleh sama dengan b1, b2, DAN b3
 if (b4 === b1 || b4 === b2 || b4 === b3) b4 = ((parseInt(b1) + 3) % 10).toString();
 
-// 3. Setting Font
-ctx.fillStyle = "#ffeb3b"; 
-ctx.font = "bold 55px Arial"; 
-ctx.textAlign = "center";
+ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 55px Arial"; ctx.textAlign = "center";
+ctx.fillText(b1, 315, 470);
+ctx.fillText(b2, 485, 470);
+ctx.fillText(b3, 315, 595);
+ctx.fillText(b4, 485, 595);
 
-// 4. Gambar angkanya
-ctx.fillText(b1, 315, 470); // Kiri Atas
-ctx.fillText(b2, 485, 470); // Kanan Atas
-ctx.fillText(b3, 315, 595); // Kiri Bawah
-ctx.fillText(b4, 485, 595); // Kanan Bawah
-// --- POSISI SUDUT KIRI & KANAN (GAMBAR FIX MUNCUL) ---
-await drawImg(hariIni.img2, 510, 480, 260, 410); // Kanan
-await drawImg(hariIni.img, 30, 550, 280, 400);  // Kiri (DARI NO-BG GANTI KE BIASA BIAR GAK HILANG)
+// --- AREA KANAN: GAMBAR & PANTUN ---
+// Naga diletakkan di sudut kanan atas agar lebar kesamping nampak jelas
+await drawImg(hariIni.img2, 850, 160, 450, 450); 
+// Shio di bawah Naga
+await drawImg(hariIni.img, 30, 550, 280, 400); 
 
 // Label Shio
 ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 500, 180, 45, 10); ctx.fill();
@@ -890,15 +869,14 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
 ctx.fillText("SHIO " + hariIni.shio, 140, 530);
 
-// Pantun
-const pY = 600, pW = 650, pH = 135, pX = 720;
+// Pantun (DIRAPIKAN DI AREA KANAN BAWAH)
+const pY = 620, pW = 600, pH = 135, pX = 770; // Geser X ke 770 agar pas di kanan
 ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
-ctx.fillText(hariIni.p1, 1045, pY + 55);
-ctx.fillText(hariIni.p2, 1045, pY + 100);
-}
+ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 55);
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 100);
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
 const link = document.createElement('a');
