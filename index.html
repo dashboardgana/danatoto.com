@@ -765,6 +765,7 @@ const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
             tempCanvas.width = img.width;
             tempCanvas.height = img.height;
             tempCtx.drawImage(img, 0, 0);
+
             const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
             const data = imgData.data;
             for (let i = 0; i < data.length; i += 4) {
@@ -773,14 +774,18 @@ const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
                 }
             }
             tempCtx.putImageData(imgData, 0, 0);
+
             const padding = 15;
             const innerW = targetW - (padding * 2);
             const innerH = targetH - (padding * 2);
+
             const scale = Math.min(innerW / img.width, innerH / img.height);
             const drawW = img.width * scale;
             const drawH = img.height * scale;
+
             const drawX = targetX + (targetW - drawW) / 2;
             const drawY = targetY + (targetH - drawH) / 2;
+
             ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
             resolve();
         };
@@ -801,9 +806,9 @@ const drawImg = (url, x, y, w, h) => {
 // --- SETTING CANVAS LANDSCAPE (1400x800) ---
 ctx.clearRect(0, 0, 1400, 800);
 await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800);
-await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 45, 220, 60); // Logo digeser sedikit ke tengah
+await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 45, 220, 60); // Logo ditaruh tengah atas
 
-// 1. Kotak Tanggal (TETAP SUDUT KIRI)
+// 1. Kotak Tanggal (SUDUT KIRI)
 ctx.fillStyle = "black";
 ctx.beginPath(); ctx.roundRect(10, 10, 260, 45, 10); ctx.fill();
 ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
@@ -817,7 +822,7 @@ ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.font = "bold 16px Arial";
 ctx.fillText("linklist.bio/Danatoto", 1260, 40);
 
-// Kotak Angka (Fungsi Asli)
+// Kotak Angka
 const drawBox = (x, y, label, value) => {
     ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
     ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
@@ -836,7 +841,7 @@ drawBox(430, 160, "ANGKA MAIN", genNo(1)+genNo(2));
 drawBox(60, 285, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
 drawBox(430, 285, "COLOK BEBAS", pool[0] + " / " + pool[1]);
 
-// Bintang (Area Tengah Kiri)
+// Bintang (Area Tengah)
 const cx = 400, cy = 520;
 ctx.strokeStyle='#ffffff'; ctx.lineWidth=8;
 ctx.beginPath(); ctx.moveTo(cx, cy-85);
@@ -858,9 +863,9 @@ ctx.fillText(b3, 315, 595);
 ctx.fillText(b4, 485, 595);
 
 // --- AREA KANAN: GAMBAR & PANTUN ---
-// Naga diletakkan di sudut kanan atas agar lebar kesamping nampak jelas
-await drawImg(hariIni.img2, 850, 160, 450, 450); 
-// Shio di bawah Naga
+// Awan/Img2 dibuat lebar ke samping sudut kanan
+await drawImg(hariIni.img2, 850, 140, 500, 450); 
+// Gambar Naga/Img 
 await drawImg(hariIni.img, 30, 550, 280, 400); 
 
 // Label Shio
@@ -869,14 +874,16 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
 ctx.fillText("SHIO " + hariIni.shio, 140, 530);
 
-// Pantun (DIRAPIKAN DI AREA KANAN BAWAH)
-const pY = 620, pW = 600, pH = 135, pX = 770; // Geser X ke 770 agar pas di kanan
+// Pantun (Geser ke Area Kanan Bawah)
+const pY = 620, pW = 600, pH = 135, pX = 770;
 ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial"; ctx.textAlign = "center";
+// Teks otomatis di tengah kotak
 ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 55);
 ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 100);
+}
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
 const link = document.createElement('a');
