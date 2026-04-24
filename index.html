@@ -889,44 +889,35 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// ========================================================
-// --- PERBAIKAN PANTUN SUPER EKSTREM (TAJAM & PAS) ---
-// ========================================================
-const pY = 665, pW = 620, pH = 110, pX = 390; 
+// --- FIX PANTUN: RAPI DALAM KOTAK & ANTI PECAH ---
+const pY = 665, pW = 580, pH = 110, pX = 410; // Lebar pW diperkecil agar ada jarak aman
 
-// 1. Kotak Navy Solid Gelap Tanpa Transparansi (Biar Kontras Maksimal)
+// 1. Kotak Navy Solid (Background Gelap Total)
 ctx.fillStyle = "#050c23"; 
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 15); ctx.fill();
 
-// 2. Stroke Luar Putih Sangat Tebal (Bingkai Tegas saat Zoom Kecil)
+// 2. Stroke Putih Tebal (Bingkai)
 ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 6; 
+ctx.lineWidth = 5; 
 ctx.stroke();
 
-// 3. Efek Shadow Teks (Rahasianya agar Teks Tidak Pecah)
-ctx.shadowColor = "rgba(0, 0, 0, 1)";
-ctx.shadowBlur = 6;
-ctx.shadowOffsetX = 3;
-ctx.shadowOffsetY = 3;
+// 3. Efek Shadow Hitam (Biar teks Putih menyala)
+ctx.shadowColor = "black";
+ctx.shadowBlur = 5;
+ctx.shadowOffsetX = 2;
+ctx.shadowOffsetY = 2;
 
-// 4. Pakai Font "IMPACT" (Ini font paling tebal, anti-Pecah di zoom kecil)
+// 4. Pakai Font "Arial Narrow" Bold (Ramping tapi Tebal)
 ctx.fillStyle = "#ffffff"; 
 ctx.textAlign = "center";
-ctx.font = "normal 24px Impact"; // Impact secara default sudah gemuk, 24px adalah batas aman agar pas di kotak
+ctx.font = "bold 21px 'Arial Narrow'"; 
 
-// 5. Penempatan Baris Teks yang Presisi agar Tidak Balapan
-ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 45); // Baris 1
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 90); // Baris 2
+// 5. Posisi Teks (Presisi di tengah kotak)
+ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 45);
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 85);
 
-// Reset Shadow agar tidak merusak elemen gambar lain
-ctx.shadowBlur = 0;
-ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = 0;
-
-// Reset Shadow agar tidak merusak gambar lain di bawahnya
-ctx.shadowBlur = 0;
-ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = 0;
+// Reset Shadow
+ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 }
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
