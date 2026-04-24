@@ -720,8 +720,8 @@ async function renderSyair() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    canvas.width = 800;
-    canvas.height = 1100;
+    canvas.width = 1000;
+    canvas.height = 1000;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
