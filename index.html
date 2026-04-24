@@ -889,19 +889,26 @@ ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// --- PERBAIKAN AREA PANTUN (PAS DI DALAM KOTAK) ---
+// --- PERBAIKAN PANTUN: ANTI-BLUR & TETAP JELAS DI ZOOM KECIL ---
 const pY = 665, pW = 620, pH = 110, pX = 390; 
-ctx.fillStyle = "rgba(5, 12, 35, 0.95)"; // Navy Gelap Mewah agar serasi
-ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
-ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 
-ctx.fillStyle = "#ffffff"; // Teks Putih Jelas
+// 1. Kotak Navy Solid (Bukan transparan biar teks kontras)
+ctx.fillStyle = "#050c23"; 
+ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 15); ctx.fill();
+
+// 2. Garis Pinggir Putih Tebal
+ctx.strokeStyle = "#ffffff"; 
+ctx.lineWidth = 5; // Ditebalkan jadi 5 biar tajam
+ctx.stroke();
+
+// 3. Setting Teks Putih Bold Ekstrim
+ctx.fillStyle = "#ffffff"; 
 ctx.textAlign = "center";
-ctx.font = "bold 20px Arial"; // Ukuran 20px Bold biar tidak keluar kotak
+ctx.font = "bold 22px Arial"; // Ukuran 22px adalah batas paling aman biar tidak keluar kotak
 
-// Tulisan Pantun diposisikan pas di tengah kotak
-ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 45);
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 85);
+// 4. Posisi Teks (Jarak Baris Diatur Ulang)
+ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 42);
+ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 88);
 }
 function exportSyair() {
 const canvas = document.getElementById('canvasSyair');
