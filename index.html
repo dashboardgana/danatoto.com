@@ -803,12 +803,11 @@ const drawImg = (url, x, y, w, h) => {
     });
 };
 
-// --- 1. LOGIKA TANGGAL OTOMATIS (JUMAT, 24 APRIL 2026) ---
+// --- 1. LOGIKA TANGGAL DENGAN NAMA HARI (CONTOH: JUMAT, 24 APRIL 2026) ---
 var d = new Date();
-var daftarHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-var daftarBulan = ["April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Januari", "Februari", "Maret"]; 
-// Catatan: daftarBulan disesuaikan jika sistem d.getMonth() Bos berbeda, tapi ini standar Indo.
-var tglLengkap = daftarHari[d.getDay()] + ", " + d.getDate() + " " + daftarBulan[d.getMonth()] + " " + d.getFullYear();
+var daftarHari = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+var daftarBulan = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+var hariIniLengkap = daftarHari[d.getDay()] + ", " + d.getDate() + " " + daftarBulan[d.getMonth()] + " " + d.getFullYear();
 
 // --- 2. SETTING CANVAS (1400x800) ---
 ctx.clearRect(0, 0, 1400, 800);
@@ -817,32 +816,34 @@ await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kj
 // Logo Danatoto
 await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 75, 220, 60);
 
-// 3. KOTAK TANGGAL & LINK BIO (NAVY & PUTIH JELAS)
-ctx.fillStyle = "#050c23"; // GANTI HITAM KE NAVY
+// 3. KOTAK TANGGAL & LINK BIO (GANTI WARNA NAVY & TULISAN PUTIH JELAS)
+ctx.fillStyle = "#050c23"; // GANTI HITAM KE NAVY MEWAH
 ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 3;
+ctx.lineWidth = 4; // DIPERTEBAL BIAR JELAS
 
-// Kotak Tanggal (Kiri) - Diperlebar sedikit ke 350 agar muat nama hari panjang
-ctx.beginPath(); ctx.roundRect(20, 20, 350, 48, 12); ctx.fill(); ctx.stroke();
+// Kotak Tanggal (Kiri) - Diperlebar sedikit agar muat "JUMAT, 24 APRIL 2026"
+ctx.beginPath(); ctx.roundRect(20, 20, 360, 48, 12); ctx.fill(); ctx.stroke();
 // Kotak Link (Kanan)
-ctx.beginPath(); ctx.roundRect(1100, 20, 280, 48, 12); ctx.fill(); ctx.stroke();
+ctx.beginPath(); ctx.roundRect(1080, 20, 300, 48, 12); ctx.fill(); ctx.stroke();
 
 ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
 ctx.font = "bold 20px Arial";
-// Tambah Simbol Kalender + TANGGAL OTOMATIS
-ctx.fillText("📅 " + tglLengkap.toUpperCase(), 195, 52); 
+// Tambah Simbol Kalender + HARI LENGKAP
+ctx.fillText("📅 " + hariIniLengkap, 200, 52); 
 ctx.font = "bold 16px Arial";
 // Tambah Simbol Link
-ctx.fillText("🔗 linklist.bio/Danatoto", 1240, 52);
+ctx.fillText("🔗 linklist.bio/Danatoto", 1230, 52);
 
-// 4. FUNGSI KOTAK ANGKA
+// 4. FUNGSI KOTAK ANGKA (DENGAN WARNA BARU)
 const drawBox = (x, y, label, value) => {
-    ctx.fillStyle = "rgba(5, 12, 35, 0.98)"; // NAVY
+    ctx.fillStyle = "rgba(5, 12, 35, 0.98)"; // NAVY GELAP
     ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
-    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
+    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 5; ctx.stroke();
+    
     ctx.fillStyle = "#00f2ff"; ctx.font = "bold 24px Arial"; ctx.textAlign = "center";
     ctx.fillText(label, x + 155, y + 38);
-    // GANTI KUNING KE PUTIH
+    
+    // GANTI TULISAN KUNING KE PUTIH BIAR JELAS
     ctx.fillStyle = "#ffffff"; ctx.font = "bold 58px Arial";
     ctx.fillText(value, x + 155, y + 95);
 };
@@ -850,20 +851,20 @@ const drawBox = (x, y, label, value) => {
 // Kocok Angka (Anti-Kembar)
 let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
 
-// 5. MENGGAMBAR KOTAK ANGKA
+// 5. MENGGAMBAR KOTAK ANGKA (POSISI NAIK)
 drawBox(50, 150, "BBFS", bbfsOto);
 drawBox(50, 280, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
 
 drawBox(1040, 150, "ANGKA MAIN", genNo(1)+genNo(2));
 drawBox(1040, 280, "COLOK BEBAS", pool[0] + " / " + pool[1]);
 
-// 6. AREA BINTANG
+// 6. AREA BINTANG (STRUKTUR ASLI DENGAN WARNA BARU)
 const cx = 700, cy = 255;
 const outerRad = 95; 
 const innerRad = 42;
 
 ctx.shadowBlur = 30;
-ctx.shadowColor = "#ffffff"; // GANTI GLOW KUNING KE PUTIH
+ctx.shadowColor = "#ffffff"; 
 ctx.strokeStyle = "#ffffff"; 
 ctx.lineWidth = 10; 
 
@@ -886,7 +887,7 @@ ctx.fillText(pool[3], cx + 95, cy - 45);
 ctx.fillText(pool[4], cx - 95, cy + 95); 
 ctx.fillText(pool[5], cx + 95, cy + 95);
 
-// 7. AREA BAWAH
+// --- 7. AREA BAWAH ---
 await drawImg(hariIni.img, 50, 440, 320, 340); 
 await drawImg(hariIni.img2, 1070, 440, 320, 340); 
 
@@ -896,9 +897,9 @@ ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 20px Arial";
 ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
 
-// PANTUN (GANTI HITAM KE NAVY)
+// PANTUN (GANTI HITAM KE NAVY MEWAH)
 const pY = 665, pW = 620, pH = 120, pX = 390; 
-ctx.fillStyle = "rgba(5, 12, 35, 0.90)"; // NAVY
+ctx.fillStyle = "rgba(5, 12, 35, 0.90)";
 ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; ctx.stroke();
 ctx.fillStyle = "#ffffff"; ctx.font = "bold 21px Arial";
