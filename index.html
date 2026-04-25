@@ -873,11 +873,29 @@ const drawBox = (x, y, label, value) => {
     ctx.fillText(value, x + 155, y + 95);
 };
 
-// Kocok Angka (Anti-Kembar)
-let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
-// Baris 878: Bikin angka 2D BB otomatis
-let angka2D = pool[2] + pool[3]; 
-let angka2DBB = pool[3] + pool[2];
+// --- 1. KUNCI TANGGAL (Biar gak ganti-ganti pas login ulang) ---
+let seed = tglStr.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+let myRnd = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+};
+
+// --- 2. KOCOK POOL (Hasilnya pasti unik 0-9, gak ada yang kembar) ---
+let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => myRnd() - 0.5);
+
+// --- 3. AMBIL JATAH ANGKA (Gak bakal ada yang sama satu sama lain) ---
+let bbfs = pool.slice(0, 7).join('');       // Ambil 7 angka awal
+let am   = pool.slice(2, 7).join('');       // Ambil 5 angka beda
+let cb1  = pool[0];                         // Angka pertama
+let cb2  = pool[1];                         // Angka kedua
+
+// --- 4. LOGIKA TWIN (Kembar tapi beda angka) ---
+let twin1 = pool[8] + pool[8];              // Misal: 77
+let twin2 = pool[9] + pool[9];              // Misal: 55 (Pasti beda dari twin1)
+
+// --- 5. LOGIKA COLOK BEBAS 2D (BB) ---
+let angka2D = pool[2] + pool[3];            // Misal: 42
+let angka2DBB = pool[3] + pool[2];          // Jadi: 24
 // --- 4. MENGGAMBAR KOTAK ANGKA (SEJAJAR & NAIK) ---
 // Baris Atas (Y = 100)
 drawBox(50, 100, "BBFS", bbfsOto); 
