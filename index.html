@@ -883,27 +883,26 @@ let myRnd = () => {
 // --- 2. KOCOK POOL (Hasilnya pasti unik 0-9, gak ada yang kembar) ---
 let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => myRnd() - 0.5);
 
-// --- 3. AMBIL JATAH ANGKA (Gak bakal ada yang sama satu sama lain) ---
-let bbfs = pool.slice(0, 7).join('');       // Ambil 7 angka awal
-let am   = pool.slice(2, 7).join('');       // Ambil 5 angka beda
-let cb1  = pool[0];                         // Angka pertama
-let cb2  = pool[1];                         // Angka kedua
+// --- 3. AMBIL JATAH ANGKA (Variabel Pengunci) ---
+let bbfs = pool.slice(0, 7).join('');       
+let am   = pool.slice(2, 7).join('');       
+let cb1  = pool[0];                         
+let cb2  = pool[1];                         
+let twin1 = pool[8] + pool[8];              
+let twin2 = pool[9] + pool[9];              
+let angka2D = pool[2] + pool[3];            
+let angka2DBB = pool[3] + pool[2];          
 
-// --- 4. LOGIKA TWIN (Kembar tapi beda angka) ---
-let twin1 = pool[8] + pool[8];              // Misal: 77
-let twin2 = pool[9] + pool[9];              // Misal: 55 (Pasti beda dari twin1)
-
-// --- 5. LOGIKA COLOK BEBAS 2D (BB) ---
-let angka2D = pool[2] + pool[3];            // Misal: 42
-let angka2DBB = pool[3] + pool[2];          // Jadi: 24
-// --- 4. MENGGAMBAR KOTAK ANGKA (SEJAJAR & NAIK) ---
+// --- 4. MENGGAMBAR KOTAK ANGKA (PASTI SAMA SEHARIAN) ---
 // Baris Atas (Y = 100)
-drawBox(50, 100, "BBFS", bbfsOto); 
-drawBox(1040, 100, "ANGKA MAIN", genNo(1) + genNo(2));
+drawBox(50, 100, "BBFS", bbfs); 
+drawBox(1040, 100, "ANGKA MAIN", am);
 
 // Baris Bawah (Y = 230)
-drawBox(50, 230, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(5).substring(0,1) + genNo(5).substring(0,1));
-drawBox(1040, 230, "COLOK BEBAS", pool[0] + " / " + pool[1]);
+drawBox(50, 230, "TWIN", twin1 + " / " + twin2);
+drawBox(1040, 230, "COLOK BEBAS", cb1 + " / " + cb2);
+
+// Kotak Colok Bebas 2D di atas Pantun (Y = 475)
 drawBox(540, 475, "COLOK BEBAS 2D", angka2D + " / " + angka2DBB);
 
 // 5. AREA BINTANG (CANTIK, BERCERITA & TIDAK PECAH)
