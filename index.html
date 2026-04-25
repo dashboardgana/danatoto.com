@@ -827,7 +827,33 @@ ctx.fillText("📅 " + tglStr.toUpperCase(), 160, 52);
 ctx.font = "bold 16px Arial";
 // Tambah Simbol Link
 ctx.fillText("🔗 linklist.bio/Danatoto", 1240, 52);
+// --- 3. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
+const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
 
+ctx.fillStyle = "#050c23"; 
+ctx.beginPath(); 
+ctx.roundRect(sX, sY, sW, sH, 12); 
+ctx.fill();
+
+ctx.strokeStyle = "#ffffff"; 
+ctx.lineWidth = 4; 
+ctx.stroke();
+
+// Efek Shadow biar tajam di zoom 67%
+ctx.shadowColor = "black";
+ctx.shadowBlur = 8;
+ctx.shadowOffsetX = 3;
+ctx.shadowOffsetY = 3;
+
+ctx.fillStyle = "#ffeb3b"; 
+ctx.textAlign = "center";
+ctx.font = "bold 26px Arial"; 
+
+// Pastikan variabel 'shio' sudah benar panggilannya
+ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), sX + (sW / 2), sY + 38);
+
+// Reset Shadow (PENTING!)
+ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 // 3. FUNGSI KOTAK ANGKA
 const drawBox = (x, y, label, value) => {
     ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
