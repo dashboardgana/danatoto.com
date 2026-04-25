@@ -868,12 +868,14 @@ const drawBox = (x, y, label, value) => {
 // Kocok Angka (Anti-Kembar)
 let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
 
-// 4. MENGGAMBAR KOTAK ANGKA (KIRI & KANAN AGAK NAIK SIKIT)
-drawBox(50, 150, "BBFS", bbfsOto);
-drawBox(50, 280, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(4).substring(0,1) + genNo(4).substring(0,1));
+// --- 4. MENGGAMBAR KOTAK ANGKA (SEJAJAR & NAIK) ---
+// Baris Atas (Y = 100)
+drawBox(50, 100, "BBFS", bbfsOto); 
+drawBox(1040, 100, "ANGKA MAIN", genNo(1) + genNo(2));
 
-drawBox(1040, 150, "ANGKA MAIN", genNo(1)+genNo(2));
-drawBox(1040, 280, "COLOK BEBAS", pool[0] + " / " + pool[1]);
+// Baris Bawah (Y = 230)
+drawBox(50, 230, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(5).substring(0,1) + genNo(5).substring(0,1));
+drawBox(1040, 230, "COLOK BEBAS", pool[0] + " / " + pool[1]);
 
 // 5. AREA BINTANG (CANTIK, BERCERITA & TIDAK PECAH)
 const cx = 700, cy = 255;
