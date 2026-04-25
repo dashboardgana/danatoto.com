@@ -908,13 +908,7 @@ ctx.fillText(pool[5], cx + 95, cy + 95);
 // --- 6. AREA BAWAH ---
 await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
 await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
-
-// Label Shio NAIK (Aman buat Harimau/Hewan Tinggi)
-ctx.fillStyle = "black"; ctx.beginPath(); ctx.roundRect(50, 415, 180, 45, 10); ctx.fill();
-ctx.strokeStyle = "#ffeb3b"; ctx.lineWidth = 2; ctx.stroke();
-ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 20px Arial";
-ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), 140, 445);
-
+  
 // --- FIX PANTUN: ANTI-KELUAR KOTAK & TETAP TAJAM ---
 const pY = 650, pW = 740, pH = 135, pX = 330; // Kotak lebar & lega
 
