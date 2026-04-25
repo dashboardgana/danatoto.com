@@ -810,23 +810,31 @@ await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kj
 // Logo Danatoto - Tetap di posisi pas
 await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 75, 220, 60);
 
-// 2. KOTAK TANGGAL & LINK BIO (DIBUAT LEBIH JELAS & ADA SIMBOL)
-ctx.fillStyle = "black";
+// --- 2. REVISI KOTAK ATAS: BIAR GAK KECIL PAS ZOOM 67% ---
+ctx.fillStyle = "#050c23"; // Warna Navy Gelap (Biar Senada)
 ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 3; // Garis lebih tebal biar jelas
+ctx.lineWidth = 4; // Garis ditebalkan biar gak pecah pas zoom
 
-// Kotak Tanggal (Kiri)
-ctx.beginPath(); ctx.roundRect(20, 20, 280, 48, 12); ctx.fill(); ctx.stroke();
-// Kotak Link (Kanan)
-ctx.beginPath(); ctx.roundRect(1100, 20, 280, 48, 12); ctx.fill(); ctx.stroke();
+// Buat Kotak Lebih Gede & Tinggi (Y=20, Tinggi=60)
+ctx.beginPath(); ctx.roundRect(20, 20, 320, 60, 12); ctx.fill(); ctx.stroke();
+ctx.beginPath(); ctx.roundRect(1040, 20, 340, 60, 12); ctx.fill(); ctx.stroke();
 
-ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
-ctx.font = "bold 20px Arial";
-// Tambah Simbol Kalender
-ctx.fillText("📅 " + tglStr.toUpperCase(), 160, 52); 
-ctx.font = "bold 16px Arial";
-// Tambah Simbol Link
-ctx.fillText("🔗 linklist.bio/Danatoto", 1240, 52);
+// --- TEKS HARUS BOLD & GEDE (ANTI SEMUT) ---
+ctx.shadowColor = "black";
+ctx.shadowBlur = 8; // Kasih bayangan biar teksnya "nongol"
+
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
+
+// Font Tanggal: Naik ke 28px (Biar Sangar)
+ctx.font = "bold 28px Arial"; 
+ctx.fillText("📅 " + tglStr.toUpperCase(), 180, 60);
+
+// Font Link: Naik ke 24px
+ctx.font = "bold 24px Arial"; 
+ctx.fillText("🔗 linklist.bio/Danatoto", 1210, 60);
+
+ctx.shadowBlur = 0; // Reset bayangan
 // --- 3. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
 const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
 
