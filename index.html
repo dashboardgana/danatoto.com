@@ -874,7 +874,8 @@ const drawBox = (x, y, label, value) => {
 };
 
 // Kocok Angka (Anti-Kembar)
-let seed = tglStr.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+let hariIni = new Date().toDateString(); 
+let seed = hariIni.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
 let myRnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
 let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => myRnd() - 0.5);
 
