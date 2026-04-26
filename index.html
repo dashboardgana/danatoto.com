@@ -874,7 +874,7 @@ const drawBox = (x, y, label, value) => {
 };
 
 // Kocok Angka (Anti-Kembar)
-let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.sin(new Date().getDate() + new Date().getMonth()) - 0.5);  
+letlet pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.sin(new Date().getDate() * 100) - 0.5);  
 // Baris 878: Bikin angka 2D BB otomatis
 let angka2D = pool[2] + pool[3];
 let angka2DBB = pool[3] + pool[2];
