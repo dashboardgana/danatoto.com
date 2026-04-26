@@ -874,7 +874,9 @@ const drawBox = (x, y, label, value) => {
 };
 
 // Kocok Angka (Anti-Kembar)
-let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.random() - 0.5);
+let seed = tglStr.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+let myRnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => myRnd() - 0.5);
 
 // Baris 878: Bikin angka 2D BB otomatis
 let angka2D = pool[2] + pool[3];
@@ -883,7 +885,7 @@ let angka2DBB = pool[3] + pool[2];
 // --- 4. MENGGAMBAR KOTAK ANGKA (SEJAJAR & NAIK) ---
 
 // Baris Atas (Y = 100)
-drawBox(50, 100, "BBFS", genNo(7)); 
+drawBox(50, 100, "BBFS", pool.slice(0, 7).join(''));
 drawBox(1040, 100, "ANGKA MAIN", genNo(1) + genNo(2));
 
 // Baris Bawah (Y = 230)
