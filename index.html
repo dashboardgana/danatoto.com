@@ -919,7 +919,16 @@ ctx.fillText(pool[2], cx - 95, cy - 45);
 ctx.fillText(pool[3], cx + 95, cy - 45); 
 ctx.fillText(pool[4], cx - 95, cy + 95); 
 ctx.fillText(pool[5], cx + 95, cy + 95);
+// --- LOGO PASARAN DI BAWAH ANGKA 4 ---
+let logoPasaran = new Image();
+logoPasaran.crossOrigin = "anonymous"; 
+logoPasaran.src = "https://i.ibb.co/1VDNVKz/logo-pasaran.png";
 
+logoPasaran.onload = function() {
+    // Koordinat x: 410, y: 410 ini di bawah angka 4 (pool[4])
+    // 80, 80 adalah ukuran lebarnya
+    ctx.drawImage(logoPasaran, 410, 410, 80, 80); 
+};
 // --- 6. AREA BAWAH ---
 await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
 await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
