@@ -878,7 +878,8 @@ let seed = tglStr.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
 let myRnd = () => {
     seed = (seed * 9301 + 49297) % 233280;
     return seed / 233280;
-  
+}; // <--- TADI DI SINI KURANG KURUNG TUTUP INI BOS, MAKANYA BLANK!
+
 // --- 2. KOCOK POOL ---
 let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => myRnd() - 0.5);
 
@@ -889,7 +890,7 @@ let twin = pool[8] + pool[8] + " / " + pool[9] + pool[9];
 let cb   = pool[0] + " / " + pool[1];
 let c2d  = pool[2] + pool[3] + " / " + pool[3] + pool[2];
 
-// --- 4. GAMBAR KOTAK (Disederhanakan biar gak blank) ---
+// --- 4. GAMBAR KOTAK (SUDAH DIPERBAIKI) ---
 drawBox(50, 100, "BBFS", bbfs); 
 drawBox(1040, 100, "ANGKA MAIN", am);
 drawBox(50, 230, "TWIN", twin);
