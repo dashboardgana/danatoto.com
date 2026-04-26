@@ -874,11 +874,7 @@ const drawBox = (x, y, label, value) => {
 };
 
 // Kocok Angka (Anti-Kembar)
-let hariIni = new Date().toDateString(); 
-let seed = hariIni.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-let myRnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
-let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => myRnd() - 0.5);
-
+let pool = ["0","1","2","3","4","5","6","7","8","9"].sort(() => Math.sin(new Date().getDate()) - 0.5);  
 // Baris 878: Bikin angka 2D BB otomatis
 let angka2D = pool[2] + pool[3];
 let angka2DBB = pool[3] + pool[2];
