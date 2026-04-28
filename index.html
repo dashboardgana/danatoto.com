@@ -811,30 +811,41 @@ await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kj
 // Logo Danatoto - Tetap di posisi pas
 await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 50, 220, 115);
 
-// --- 2. REVISI KOTAK ATAS: BIAR GAK KECIL PAS ZOOM 67% ---
-ctx.fillStyle = "#050c23"; // Warna Navy Gelap (Biar Senada)
-ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 4; // Garis ditebalkan biar gak pecah pas zoom
-
-// Buat Kotak Lebih Gede & Tinggi (Y=20, Tinggi=60)
-ctx.beginPath(); ctx.roundRect(20, 20, 320, 60, 12); ctx.fill(); ctx.stroke();
-ctx.beginPath(); ctx.roundRect(1040, 20, 340, 60, 12); ctx.fill(); ctx.stroke();
-
-// --- TEKS HARUS BOLD & GEDE (ANTI SEMUT) ---
-ctx.shadowColor = "black";
-ctx.shadowBlur = 8; // Kasih bayangan biar teksnya "nongol"
-
-ctx.fillStyle = "#ffffff";
+// --- 2. REVISI KOTAK ATAS: GAYA ELEGANT GLASS & GLOW ---
+ctx.save();
 ctx.textAlign = "center";
+ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+ctx.shadowBlur = 10;
 
-// Font Tanggal: Naik ke 28px (Biar Sangar)
-ctx.font = "bold 28px Arial"; 
-ctx.fillText("📅 " + tglStr.toUpperCase(), 180, 60);
+// A. KOTAK TANGGAL (Kiri Atas) - Glassmorphism
+ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; // Efek kaca transparan
+ctx.beginPath();
+ctx.roundRect(20, 20, 320, 60, 30); // Ujung bulat biar elegan
+ctx.fill();
+ctx.strokeStyle = "#4fc3f7"; ctx.lineWidth = 3; ctx.stroke(); // Border biru neon tipis
 
-// Font Link: Naik ke 24px
-ctx.font = "900 26px sans-serif"; 
-ctx.fillText("🔗 linklist.bio/Danatoto", 1210, 60);
+// Teks Tanggal + Simbol
+ctx.font = "bold 28px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.fillText("📅  " + tglStr.toUpperCase(), 180, 60);
 
+// B. KOTAK LINK (Kanan Atas) - Premium Gradient
+let gradAtas = ctx.createLinearGradient(1040, 20, 1380, 20);
+gradAtas.addColorStop(0, "#0d47a1"); // Biru gelap mewah
+gradAtas.addColorStop(1, "#1976d2"); // Biru terang
+
+ctx.fillStyle = gradAtas;
+ctx.beginPath();
+ctx.roundRect(1040, 20, 340, 60, [15, 30, 15, 30]); // Bentuk asimetris unik
+ctx.fill();
+ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
+
+// Teks Link + Simbol
+ctx.font = "900 24px sans-serif";
+ctx.fillStyle = "#ffffff";
+ctx.fillText("🔗  linklist.bio/Danatoto", 1210, 60);
+
+ctx.restore();
 ctx.shadowBlur = 0; // Reset bayangan
 // --- 3. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
 const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
