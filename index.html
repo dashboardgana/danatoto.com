@@ -842,25 +842,40 @@ ctx.shadowBlur = 5; ctx.shadowColor = "black";
 ctx.fillText("📅  " + tglStr.toUpperCase(), 180, 60);
 
 
-// B. KOTAK LINK (Kanan Atas) - Royal Blue Glossy
+// --- B. KOTAK LINK (Kanan Atas) - ROYAL BLUE DIAMOND EDITION ---
+ctx.save();
+// 1. Bayangan luar biar kotak "timbul"
+ctx.shadowBlur = 20;
+ctx.shadowColor = "rgba(0, 191, 255, 0.6)"; 
+
+// 2. Background Gradasi Kristal (Biru Tua ke Biru Safir)
 let gradLink = ctx.createLinearGradient(1040, 20, 1040, 80);
-gradLink.addColorStop(0, "#003366"); // Royal Blue
+gradLink.addColorStop(0, "#001a33"); // Navy sangat gelap
+gradLink.addColorStop(0.5, "#003366"); // Royal Blue
 gradLink.addColorStop(1, "#001a33"); 
 
 ctx.fillStyle = gradLink;
-ctx.shadowColor = "rgba(0, 191, 255, 0.5)"; // Glow biru neon
 ctx.beginPath();
-ctx.roundRect(1040, 20, 340, 60, 30); 
+ctx.roundRect(1040, 20, 340, 60, 30); // Bentuk Kapsul (Sama dengan Tanggal biar Simetris)
 ctx.fill();
 
-// Border Chrome/Silver Neon
+// 3. Border Chrome Neon (Biar Tajam & Elegant)
 ctx.strokeStyle = "#4fc3f7"; 
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Teks Link
-ctx.font = "900 22px 'Segoe UI', sans-serif";
+// 4. Garis Kilauan (Highlight) di bagian atas kotak
+ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+ctx.lineWidth = 1.5;
+ctx.beginPath();
+ctx.arc(1070, 50, 20, Math.PI, 1.5 * Math.PI); // Lengkungan kilau di pojok kiri atas
+ctx.stroke();
+
+// 5. Teks Link + Simbol
+ctx.font = "900 24px 'Segoe UI', sans-serif";
+ctx.textAlign = "center";
 ctx.fillStyle = "#FFFFFF";
+ctx.shadowBlur = 5; ctx.shadowColor = "black";
 ctx.fillText("🔗  linklist.bio/Danatoto", 1210, 60);
 
 ctx.restore();
