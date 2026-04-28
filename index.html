@@ -986,38 +986,43 @@ logoPasaran.onload = function() {
 await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
 await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
   
-// --- FIX PANTUN: ANTI-KELUAR KOTAK & TETAP TAJAM ---
-const pY = 650, pW = 740, pH = 135, pX = 330; // Kotak lebar & lega
+// --- FIX PANTUN: ELEGANT GOLD & GLASS EDITION ---
+const pY = 640, pW = 520, pH = 135, pX = 260; 
 
-// 1. Kotak Navy Solid (Warna dasar biar teks putih nendang)
-ctx.fillStyle = "#050c23"; 
-ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 15); ctx.fill();
+ctx.save();
+// 1. Efek Glow Mewah (Emas Menyala)
+ctx.shadowColor = "rgba(212, 175, 55, 0.7)";
+ctx.shadowBlur = 25;
 
-// 2. Stroke Putih Tebal (Bingkai)
-ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 6; 
+// 2. Kotak Glassmorphism (Background gelap agar teks putih tajam)
+ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+ctx.beginPath();
+ctx.roundRect(pX, pY, pW, pH, 30); // Sudut bulat elegant
+ctx.fill();
+
+// 3. Garis Frame EMAS BERKILAU (Pengganti garis putih biasa)
+let goldStroke = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
+goldStroke.addColorStop(0, "#D4AF37"); // Gold
+goldStroke.addColorStop(0.5, "#FFF5B7"); // Kilau Cahaya
+goldStroke.addColorStop(1, "#B8860B"); // Gold Gelap
+ctx.strokeStyle = goldStroke;
+ctx.lineWidth = 5; // Garis tegas biar nampak mahal
 ctx.stroke();
 
-// 3. Shadow Hitam (Biar teks tajam di zoom 67%)
-ctx.shadowColor = "black";
-ctx.shadowBlur = 8;
-ctx.shadowOffsetX = 3;
-ctx.shadowOffsetY = 3;
-
-// 4. Setting Teks (Arial Bold paling stabil)
-ctx.fillStyle = "#ffffff"; 
+// 4. Setting Teks Otomatis (Anti-Keluar Kotak)
 ctx.textAlign = "center";
-ctx.font = "bold 28px Arial"; 
+ctx.fillStyle = "#ffffff";
+ctx.shadowBlur = 10; ctx.shadowColor = "black";
+ctx.font = "italic bold 21px 'Georgia', serif"; // Font bergaya sastra mewah
 
-// 5. TEKNIK ANTI-MELUBER (Pakai MaxWidth)
-// Kita kasih batas lebar 700px (lebih kecil dari lebar kotak 740px)
-// Jadi teks tidak akan pernah menyentuh garis putih
-const limit = 700; 
+const centerK = pX + (pW / 2);
+const limitTeks = pW - 50; // Batas aman agar teks tidak sentuh garis emas
 
-ctx.fillText(hariIni.p1, pX + (pW / 2), pY + 55, limit); 
-ctx.fillText(hariIni.p2, pX + (pW / 2), pY + 105, limit); 
+ctx.fillText(hariIni.p1, centerK, pY + 55, limitTeks);
+ctx.fillText(hariIni.p2, centerK, pY + 100, limitTeks);
 
-// Reset Shadow
+ctx.restore();
+// --- RESET SHADOW AGAR TIDAK MERUSAK ELEMENT LAIN ---
 ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 }
 function exportSyair() {
