@@ -986,43 +986,47 @@ logoPasaran.onload = function() {
 await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
 await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
   
-// --- FIX PANTUN: ELEGANT GOLD & GLASS EDITION ---
-const pY = 640, pW = 520, pH = 135, pX = 260; 
+// --- FIX PANTUN: SILVER CRYSTAL NEON (TEPAT DI TENGAH) ---
+// pX diatur ke 340 agar posisi kotak kembalike tengah dashboard
+const pY = 650, pW = 720, pH = 135, pX = 340; 
 
 ctx.save();
-// 1. Efek Glow Mewah (Emas Menyala)
-ctx.shadowColor = "rgba(212, 175, 55, 0.7)";
-ctx.shadowBlur = 25;
 
-// 2. Kotak Glassmorphism (Background gelap agar teks putih tajam)
+// 1. Efek Glow Silver (Beda dengan emas di kotak tanggal!)
+ctx.shadowColor = "rgba(255, 255, 255, 0.6)";
+ctx.shadowBlur = 20;
+
+// 2. Background Glassmorphism (Hitam Pekat Elegant)
 ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
 ctx.beginPath();
-ctx.roundRect(pX, pY, pW, pH, 30); // Sudut bulat elegant
+ctx.roundRect(pX, pY, pW, pH, 20); 
 ctx.fill();
 
-// 3. Garis Frame EMAS BERKILAU (Pengganti garis putih biasa)
-let goldStroke = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
-goldStroke.addColorStop(0, "#D4AF37"); // Gold
-goldStroke.addColorStop(0.5, "#FFF5B7"); // Kilau Cahaya
-goldStroke.addColorStop(1, "#B8860B"); // Gold Gelap
-ctx.strokeStyle = goldStroke;
-ctx.lineWidth = 5; // Garis tegas biar nampak mahal
+// 3. Garis Frame SILVER NEON (Biar GAK KEMBAR sama kotak tanggal)
+let silverGrad = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
+silverGrad.addColorStop(0, "#ffffff"); // Putih Terang
+silverGrad.addColorStop(0.5, "#bdc3c7"); // Abu Silver
+silverGrad.addColorStop(1, "#ffffff");
+
+ctx.strokeStyle = silverGrad;
+ctx.lineWidth = 4; // Garis tegas biar nampak mewah di-post
 ctx.stroke();
 
-// 4. Setting Teks Otomatis (Anti-Keluar Kotak)
+// 4. Setting Teks Otomatis (Anti-Keluar & Center Locking)
 ctx.textAlign = "center";
 ctx.fillStyle = "#ffffff";
 ctx.shadowBlur = 10; ctx.shadowColor = "black";
-ctx.font = "italic bold 21px 'Georgia', serif"; // Font bergaya sastra mewah
+ctx.font = "italic bold 23px 'Georgia', serif"; // Ukuran font pas di mata
 
-const centerK = pX + (pW / 2);
-const limitTeks = pW - 50; // Batas aman agar teks tidak sentuh garis emas
+// Rumus sakti biar teks GAK GESER (Tetap di as tengah kotak)
+const midPoint = pX + (pW / 2);
+const limitSafe = pW - 60; // Kunci biar teks gak tabrak garis silver
 
-ctx.fillText(hariIni.p1, centerK, pY + 55, limitTeks);
-ctx.fillText(hariIni.p2, centerK, pY + 100, limitTeks);
+ctx.fillText(hariIni.p1, midPoint, pY + 55, limitSafe);
+ctx.fillText(hariIni.p2, midPoint, pY + 100, limitSafe);
 
+// 5. Penutup Akhir (Wajib biar efek gak bocor ke element lain)
 ctx.restore();
-// --- RESET SHADOW AGAR TIDAK MERUSAK ELEMENT LAIN ---
 ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 }
 function exportSyair() {
