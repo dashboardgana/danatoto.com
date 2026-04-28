@@ -986,46 +986,45 @@ logoPasaran.onload = function() {
 await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
 await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
   
-// --- FIX PANTUN: SILVER CRYSTAL NEON (TEPAT DI TENGAH) ---
-// pX diatur ke 340 agar posisi kotak kembalike tengah dashboard
-const pY = 650, pW = 720, pH = 135, pX = 340; 
+// --- FIX PANTUN: DIAMOND ELECTRIC BLUE (GANTI BARIS 989-1021) ---
+const pY = 650, pW = 720, pH = 130, pX = 340; 
 
 ctx.save();
 
-// 1. Efek Glow Silver (Beda dengan emas di kotak tanggal!)
-ctx.shadowColor = "rgba(255, 255, 255, 0.6)";
-ctx.shadowBlur = 20;
+// 1. EFEK CAHAYA (NEON BLUE GLOW) - Biar nendang pas di-post!
+ctx.shadowColor = "rgba(0, 255, 255, 0.8)"; 
+ctx.shadowBlur = 25;
 
-// 2. Background Glassmorphism (Hitam Pekat Elegant)
-ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+// 2. BACKGROUND KOTAK (HITAM ONYX PEKAT) - Biar teks putih "loncat" keluar
+ctx.fillStyle = "rgba(5, 5, 5, 0.9)"; 
 ctx.beginPath();
 ctx.roundRect(pX, pY, pW, pH, 20); 
 ctx.fill();
 
-// 3. Garis Frame SILVER NEON (Biar GAK KEMBAR sama kotak tanggal)
-let silverGrad = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
-silverGrad.addColorStop(0, "#ffffff"); // Putih Terang
-silverGrad.addColorStop(0.5, "#bdc3c7"); // Abu Silver
-silverGrad.addColorStop(1, "#ffffff");
+// 3. GARIS FRAME BIRU BERLIAN (Bukan Abu-abu, ini warna Electric!)
+let diamondGrad = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
+diamondGrad.addColorStop(0, "#00ffff"); // Cyan Neon
+diamondGrad.addColorStop(0.5, "#ffffff"); // Kilauan Berlian
+diamondGrad.addColorStop(1, "#00ccff"); // Deep Blue Neon
 
-ctx.strokeStyle = silverGrad;
-ctx.lineWidth = 4; // Garis tegas biar nampak mewah di-post
+ctx.strokeStyle = diamondGrad;
+ctx.lineWidth = 5; // Garis tegas dan mengkilap
 ctx.stroke();
 
-// 4. Setting Teks Otomatis (Anti-Keluar & Center Locking)
-ctx.textAlign = "center";
+// 4. SETTING TEKS (PASTI DI TENGAH & ANTI-MELUBER)
+ctx.textAlign = "center"; 
 ctx.fillStyle = "#ffffff";
 ctx.shadowBlur = 10; ctx.shadowColor = "black";
-ctx.font = "italic bold 23px 'Georgia', serif"; // Ukuran font pas di mata
+ctx.font = "italic bold 24px 'Georgia', serif";
 
-// Rumus sakti biar teks GAK GESER (Tetap di as tengah kotak)
-const midPoint = pX + (pW / 2);
-const limitSafe = pW - 60; // Kunci biar teks gak tabrak garis silver
+const asTengah = pX + (pW / 2);
+const batasAman = pW - 60; 
 
-ctx.fillText(hariIni.p1, midPoint, pY + 55, limitSafe);
-ctx.fillText(hariIni.p2, midPoint, pY + 100, limitSafe);
+// Memanggil pantun otomatis Bos
+ctx.fillText(hariIni.p1, asTengah, pY + 50, batasAman); 
+ctx.fillText(hariIni.p2, asTengah, pY + 100, batasAman);
 
-// 5. Penutup Akhir (Wajib biar efek gak bocor ke element lain)
+// 5. PENUTUP (Wajib sesuai script Bos agar tidak rusak)
 ctx.restore();
 ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 }
