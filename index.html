@@ -811,38 +811,56 @@ await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kj
 // Logo Danatoto - Tetap di posisi pas
 await drawImg('https://lh3.googleusercontent.com/u/0/d/11TGE6OTIhq_pR5cb7ZPfwQGnrbQrhClD', 590, 50, 220, 115);
 
-// --- 2. REVISI KOTAK ATAS: GAYA ELEGANT GLASS & GLOW ---
+// --- 2. REVISI KOTAK ATAS: PREMIUM ELEGANT EDITION ---
 ctx.save();
-ctx.textAlign = "center";
-ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-ctx.shadowBlur = 10;
+ctx.shadowBlur = 15;
 
-// A. KOTAK TANGGAL (Kiri Atas) - Glassmorphism
-ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; // Efek kaca transparan
+// A. KOTAK TANGGAL (Kiri Atas) - Deep Glass Gold
+let gradTgl = ctx.createLinearGradient(20, 20, 20, 80);
+gradTgl.addColorStop(0, "rgba(40, 40, 40, 0.9)"); // Gelap mewah
+gradTgl.addColorStop(1, "rgba(20, 20, 20, 1.0)"); 
+
+ctx.fillStyle = gradTgl;
+ctx.shadowColor = "rgba(212, 175, 55, 0.4)"; // Glow emas tipis
 ctx.beginPath();
-ctx.roundRect(20, 20, 320, 60, 30); // Ujung bulat biar elegan
+ctx.roundRect(20, 20, 320, 60, 30); // Bentuk kapsul sempurna
 ctx.fill();
-ctx.strokeStyle = "#4fc3f7"; ctx.lineWidth = 3; ctx.stroke(); // Border biru neon tipis
 
-// Teks Tanggal + Simbol
-ctx.font = "bold 28px Arial";
-ctx.fillStyle = "#ffffff";
+// Border Emas (Luxury Gold Line)
+ctx.strokeStyle = ctx.createLinearGradient(20, 20, 340, 80);
+ctx.strokeStyle.addColorStop(0, "#D4AF37"); // Gold
+ctx.strokeStyle.addColorStop(0.5, "#FFF5B7"); // Highlighting Gold
+ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
+ctx.lineWidth = 3;
+ctx.stroke();
+
+// Teks Tanggal
+ctx.font = "bold 26px 'Segoe UI', Arial, sans-serif";
+ctx.textAlign = "center";
+ctx.fillStyle = "#FFFFFF";
+ctx.shadowBlur = 5; ctx.shadowColor = "black";
 ctx.fillText("📅  " + tglStr.toUpperCase(), 180, 60);
 
-// B. KOTAK LINK (Kanan Atas) - Premium Gradient
-let gradAtas = ctx.createLinearGradient(1040, 20, 1380, 20);
-gradAtas.addColorStop(0, "#0d47a1"); // Biru gelap mewah
-gradAtas.addColorStop(1, "#1976d2"); // Biru terang
 
-ctx.fillStyle = gradAtas;
+// B. KOTAK LINK (Kanan Atas) - Royal Blue Glossy
+let gradLink = ctx.createLinearGradient(1040, 20, 1040, 80);
+gradLink.addColorStop(0, "#003366"); // Royal Blue
+gradLink.addColorStop(1, "#001a33"); 
+
+ctx.fillStyle = gradLink;
+ctx.shadowColor = "rgba(0, 191, 255, 0.5)"; // Glow biru neon
 ctx.beginPath();
-ctx.roundRect(1040, 20, 340, 60, [15, 30, 15, 30]); // Bentuk asimetris unik
+ctx.roundRect(1040, 20, 340, 60, 30); 
 ctx.fill();
-ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
 
-// Teks Link + Simbol
-ctx.font = "900 24px sans-serif";
-ctx.fillStyle = "#ffffff";
+// Border Chrome/Silver Neon
+ctx.strokeStyle = "#4fc3f7"; 
+ctx.lineWidth = 3;
+ctx.stroke();
+
+// Teks Link
+ctx.font = "900 22px 'Segoe UI', sans-serif";
+ctx.fillStyle = "#FFFFFF";
 ctx.fillText("🔗  linklist.bio/Danatoto", 1210, 60);
 
 ctx.restore();
