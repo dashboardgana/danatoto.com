@@ -981,10 +981,27 @@ ctx.fillText(pool[3], cx - 90, cy + 110); // Angka 3 (Bawah kiri)
 ctx.fillText(pool[8], cx + 90, cy + 110); // Angka 8 (Bawah kanan)
 
 ctx.restore();
-// --- LOGO PASARAN DI BAWAH ANGKA 4 ---
+
+// --- DAFTAR 10 LOGO PASARAN (GANTI LINK DI SINI) ---
+const daftarLogo = [
+  "https://i.ibb.co/k2SzGvNr/logo-pasaran.png", // Logo Hari ke-1
+  "https://i.ibb.co/99QGxMQF/logo-pasaran.png",
+  "https://i.ibb.co/zvr4ntk/logo-pasaran.png",
+  "https://i.ibb.co/GfBykJyR/logo-pasaran.png",
+  "https://i.ibb.co/Wp6DwVZm/logo-pasaran.png",
+  "https://i.ibb.co/60nQYL4K/logo-pasaran.png",
+  "https://i.ibb.co/qLyKMt4c/logo-pasaran.png",
+  "https://i.ibb.co/3xqwQDS/logo-pasaran.png",
+  "https://i.ibb.co/svj2rqk7/logo-pasaran.png",
+  "https://i.ibb.co/6JWRCMbs/logo-pasaran.png"
+];
+
+// Rumus otomatis pilih logo berdasarkan tanggal hari ini
+let indexLogo = new Date().getDate() % daftarLogo.length;
+
 let logoPasaran = new Image();
-logoPasaran.crossOrigin = "anonymous"; 
-logoPasaran.src = "https://i.ibb.co/6JWRCMbs/logo-pasaran.png";
+logoPasaran.crossOrigin = "anonymous";
+logoPasaran.src = daftarLogo[indexLogo]; // Otomatis ambil dari daftar di atas
 
 logoPasaran.onload = function() {
     // Koordinat x: 410, y: 410 ini di bawah angka 4 (pool[4])
