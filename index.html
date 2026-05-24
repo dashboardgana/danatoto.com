@@ -1221,7 +1221,7 @@ if (imgLogo) {
   ctx.drawImage(imgLogo, lX, -35, lW, lH); 
 }
 
-// 2. DAFTAR SEKARANG & GOOGLE BOX (FIX PERSIS SEPERTI CONTOH)
+// 2. DAFTAR SEKARANG & GOOGLE BOX (KODE FIX TERAKHIR - JAMINAN TAJAM)
         const rX = 1300; const rY = 20;
         ctx.save();
         let grad = ctx.createLinearGradient(rX, rY, rX + 280, rY + 45);
@@ -1231,26 +1231,26 @@ if (imgLogo) {
         ctx.fillStyle = "#000"; ctx.font = "bold 22px Arial"; ctx.textAlign = "center";
         ctx.fillText("DAFTAR SEKARANG", rX + 140, rY + 30);
         
-        // Kotak pencarian Google putih
-        drawRoundedJP(ctx, rX + 10, rY + 55, 260, 40, 18);
+        // KOTAK GOOGLE PUTIH (Tinggi disetel 38 agar pas di tengah)
+        drawRoundedJP(ctx, rX + 10, rY + 55, 260, 38, 18);
         ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
         
-        // 1. Gambar Logo G (Google) - Bulat Sempurna di Kiri
+        // LOGO GOOGLE (HURUF G) - Bulat Sempurna, Pas di Kiri kotak
         if (imgG) {
-            ctx.drawImage(imgG, rX + 24, rY + 63, 24, 24);
+            ctx.drawImage(imgG, rX + 25, rY + 63, 20, 20);
         }
         
-        // 2. PANDUAN UTAMA: Menggambar Gambar Logo DANATOTO di dalam kotak (Bukan pakai teks ketikan lagi)
-        if (imgLogo) {
-            // Menggambar gambar logo asli agar gemuk, tebal, tajam, dan tidak lonjong
-            ctx.drawImage(imgLogo, rX + 60, rY + 61, 160, 28);
-        }
+        // ICON KACA PEMBESAR (🔍) - Jelas dan Rapi sebelum teks
+        ctx.fillStyle = "#555";
+        ctx.font = "16px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("🔍", rX + 52, rY + 79);
         
-        // 3. Gambar Icon Kaca Pembesar (🔍) di Ujung Kanan Kotak
-        ctx.fillStyle = "#888"; 
-        ctx.font = "18px Arial"; 
-        ctx.textAlign = "right";
-        ctx.fillText("🔍", rX + 250, rY + 82);
+        // TEKS DANATOTO - DIJAMIN TAJAM & TEBAL (Menggunakan italic bold 18px)
+        ctx.fillStyle = "#555"; 
+        ctx.font = "italic bold 18px Arial"; 
+        ctx.textAlign = "left";
+        ctx.fillText("DANATOTO", rX + 78, rY + 80); 
         
         ctx.restore();
 
