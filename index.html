@@ -1210,7 +1210,7 @@ async function prosesRakitHP() {
 
         if (imgBg) ctx.drawImage(imgBg, 0, 0, 1600, 900);
 
-  // 1. RENDER LOGO DANATOTO (DIPERBESAR & RATAPROPORSIAL)
+       // 1. RENDER LOGO DANATOTO (DIPERBESAR & RATAPROPORSIAL)
 if (imgLogo) {
   // Ukuran dinaikkan merata agar tidak lonjong (Rasio asli dipertahankan)
   const lW = 294; // Lebar baru (Naik sekitar 40%)
@@ -1235,18 +1235,18 @@ ctx.fillText("DAFTAR SEKARANG", rX + 140, rY + 30);
 drawRoundedJP(ctx, rX + 10, rY + 55, 260, 42, 18);
 ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
 
-// REVISI LOGO GOOGLE (imgG): Ukuran dinaikkan dari 18x18 jadi 24x24 (Rata bulat & jelas)
+// FIX LOGO GOOGLE (imgG): Ukuran sudah diganti ke 24x24 biar BULAT RATA & JELAS
 if (imgG) {
-  // Posisi Y disesuaikan (rY + 64) agar pas di tengah-tengah kotak putih
-  ctx.drawImage(imgG, rX + 25, rY + 64, 18, 18); 
+  // Posisi Y disesuaikan ke (rY + 64) dan ukuran di ujung diganti ke 24, 24
+  ctx.drawImage(imgG, rX + 24, rY + 64, 24, 24); 
 }
 
-// REVISI TEKS PENCARIAN GOOGLE: Font dinaikkan jadi 18px dan digeser ke kanan sedikit (rX + 58) agar tidak menabrak logo G
+// REVISI TEKS PENCARIAN GOOGLE: Font 18px digeser pas di sebelah logo Google agar rapi
 ctx.fillStyle = "#555"; 
 ctx.font = "italic 18px Arial"; 
 ctx.textAlign = "left";
-// Jarak tulisan diturunkan sedikit (rY + 81) agar lurus dengan Logo Google
-ctx.fillText("🔍 DANATOTO", rX + 58, rY + 81);
+// Jarak tulisan disesuaikan ke (rY + 82) agar lurus sejajar dengan Logo Google
+ctx.fillText("🔍 DANATOTO", rX + 56, rY + 82);
 ctx.restore();
 
         // 3. RENDER HP (LOGIKA SMART DETECT: FULL vs PROPORTIONAL)
