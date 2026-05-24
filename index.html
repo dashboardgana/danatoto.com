@@ -1238,7 +1238,7 @@ ctx.fillStyle = "rgba(255, 255, 255, 0.95)"; ctx.fill();
 // REVISI LOGO GOOGLE (imgG): Ukuran dinaikkan dari 18x18 jadi 24x24 (Rata bulat & jelas)
 if (imgG) {
   // Posisi Y disesuaikan (rY + 64) agar pas di tengah-tengah kotak putih
-  ctx.drawImage(imgG, rX + 25, rY + 64, 24, 24); 
+  if (imgG) ctx.drawImage(imgG, rX + 25, rY + 63, 18, 18);
 }
 
 // REVISI TEKS PENCARIAN GOOGLE: Font dinaikkan jadi 18px dan digeser ke kanan sedikit (rX + 58) agar tidak menabrak logo G
