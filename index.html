@@ -725,7 +725,7 @@ async function renderSyair() {
     canvas.height = 800;
 
     const d = new Date();
-    const tglStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const tglStr = d.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
     
     const daftarHarian = [
         { shio: "TIKUS", img: "https://i.ibb.co/CpD5srf3/tikus-transparan.png", img2: "https://i.ibb.co/NdjPyrYh/rumah-tua.png", p1: "Tikus kecil berlari cepat, Masuk lubang saat malam,", p2: "Kalau ingin hidup hebat, Jangan takut terus melangkah" },
