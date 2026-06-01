@@ -1008,16 +1008,11 @@ logoPasaran.onload = function() {
     // 80, 80 adalah ukuran lebarnya
    ctx.drawImage(logoPasaran, 535, 310, 390, 250);  
 };
-// --- 6. AREA BAWAH (FIX UKURAN LAMA & BEBAS ERROR) ---
+// --- 6. AREA BAWAH ---
 await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
-await drawImg(hariIni.img2, 1070, 440, 320, 340); // Ukuran & posisi lama kamu dikunci mati di sini
-  
-    // 2. Gambar Background Pasangan di sebelah kanan bawah (Gubuk/Rumah Tua otomatis mengikuti hari)
-    // Koordinat X=710 dan Y=475 disesuaikan agar posisinya pas menggantikan gubuk lama
-    await drawImg(hariIni.img2, 710, 475, 220, 165);
-}
-  
-// --- FIX PANTUN: DIAMOND ELECTRIC BLUE (GANTI BARIS 989-1021) ---
+await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
+
+  // --- FIX PANTUN: DIAMOND ELECTRIC BLUE (GANTI BARIS 989-1021) ---
 const pY = 650, pW = 720, pH = 130, pX = 340; 
 
 ctx.save();
