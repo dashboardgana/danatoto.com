@@ -740,7 +740,7 @@ async function renderSyair() {
         { shio: "ANJING", img: "https://i.ibb.co/1GtSxtNk/anjing-transparan.png", img2: "https://i.ibb.co/2YCdpZtD/pintu-pagar.png", p1: "Pergi ke taman memetik melati, Melihat kupu terbang ke sana,", p2: "Kalau hati selalu bahagia di hati, Hidup pun terasa indah warnanya" },
     ];
 
-const idx = d.getDate() % daftarHarian.length;
+const idx = (d.getDate() - 1) % daftarHarian.length;
 const hariIni = daftarHarian[idx];
 
 const seed = d.getDate() + d.getMonth() + d.getFullYear();
