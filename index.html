@@ -834,13 +834,22 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Teks Tanggal
-ctx.font = "bold 26px 'Segoe UI', Arial, sans-serif";
-ctx.textAlign = "center";
+// Baris 837 - FIX TANGGAL PAS DI TENGAH KOTAK (COPAS DARI SINI)
+// 1. Gambar icon kalender kecilnya dulu di sebelah kiri dalam kotak
+ctx.font = "bold 16px Arial";
+ctx.textAlign = "left";
 ctx.fillStyle = "#FFFFFF";
 ctx.shadowBlur = 5; ctx.shadowColor = "black";
-ctx.fillText("📅  " + tglStr.toUpperCase(), 180, 60);
+ctx.fillText("📅", 140, 60); 
 
+// 2. Gambar teks hari & tanggal otomatis pas di tengah kotak hitam
+ctx.font = "bold 13px 'Segoe UI', Arial, sans-serif"; // Ukuran dikunci 13px agar muat sempurna
+ctx.textAlign = "center"; // Rata tengah agar seimbang kiri-kanan
+ctx.fillText(tglStr, 235, 60); // Koordinat X disetel ke 235 (titik tengah kotak kiri kamu)
+
+// 3. Kembalikan settingan textAlign ke left agar tidak merusak kode di bawahnya
+ctx.textAlign = "left";
+ctx.shadowBlur = 0; // Reset shadow agar teks lain tidak ikut nge-blur
 
 // --- B. KOTAK LINK (Kanan Atas) - THE EXECUTIVE BADGE (UNIK) ---
 ctx.save();
