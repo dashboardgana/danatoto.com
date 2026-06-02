@@ -834,33 +834,27 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// === KODE FIX FINAL: TANGGAL DINAMIS AKURAT & PAS DI KOTAK ===
-const dLive = new Date();
-const daftarHari = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
-const daftarBulan = ["JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER", "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI"];
+// === BARIS 837 - KODE FINAL DIANGLISA TOTAL (PASTI PAS & ANTI-DOUBLE) ===
+const d = new Date();
+const tglStr = d.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
 
-// Membuat format teks "HARI, DD BULAN YYYY" secara manual agar anti-macet
-let namaHariLive = daftarHari[dLive.getDay()];
-let tglLive = String(dLive.getDate()).padStart(2, '0');
-let bulanLive = daftarBulan[dLive.getMonth()];
-let tahunLive = dLive.getFullYear();
-let tglStrLive = `${namaHariLive}, ${tglLive} ${bulanLive} ${tahunLive}`;
+// 1. Ambil rumus koordinat tengah kotak asli milikmu
+const textX = 60 + 260 / 2; 
 
-// Setting gambar ke Canvas
-ctx.font = "bold 15px 'Segoe UI', Arial, sans-serif"; // Ukuran pas di dalam kotak emas
+// 2. Gunakan font ukuran 16px agar pas padat memenuhi kotak hitam tanpa keluar dari garis emas
+ctx.font = "bold 16px 'Segoe UI', Arial, sans-serif"; 
 ctx.textAlign = "center"; 
 ctx.fillStyle = "#FFFFFF";
-ctx.shadowBlur = 5; ctx.shadowColor = "black";
+ctx.shadowBlur = 5; 
+ctx.shadowColor = "black";
 
-const textX = 60 + 260 / 2; // Rumus kotak asli kamu
-ctx.fillText("📅 " + tglStrLive, textX, 60); 
+// 3. HANYA ADA SATU PERINTAH CETAK DI SINI (Menghapus total masalah double)
+ctx.fillText("📅  " + tglStr, textX, 60); 
 
-ctx.shadowBlur = 0; // Reset aman
-
-// 2. Gambar teks hari & tanggal otomatis pas di tengah kotak hitam
-ctx.font = "bold 13px 'Segoe UI', Arial, sans-serif"; // Ukuran dikunci 13px agar muat sempurna
-ctx.textAlign = "center"; // Rata tengah agar seimbang kiri-kanan
-ctx.fillText(tglStr, 235, 60); // Koordinat X disetel ke 235 (titik tengah kotak kiri kamu)
+// 4. RESET TOTAL: Mengembalikan settingan canvas agar tidak merusak baris kode di bawahnya
+ctx.shadowBlur = 0; 
+ctx.textAlign = "left"; 
+// === SAMPAI BARIS 863 SELESAI DENGAN BERSIH DAN AMAN ===
 
 // 3. Kembalikan settingan textAlign ke left agar tidak merusak kode di bawahnya
 ctx.textAlign = "left";
