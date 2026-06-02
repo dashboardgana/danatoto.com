@@ -834,16 +834,13 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Baris 837 - FIX TANGGAL PAS MEMENUHI KOTAK DAN TIDAK KELUAR GARIS (COPAS DARI SINI)
-ctx.font = "bold 15px 'Segoe UI', Arial, sans-serif"; // Ukuran diturunkan dari 26px ke 15px agar pas mengisi kotak
-ctx.textAlign = "left"; // Dikembalikan ke rata kiri bawaan aslimu
+// Teks Tanggal
+ctx.font = "bold 26px 'Segoe UI', Arial, sans-serif";
+ctx.textAlign = "center";
 ctx.fillStyle = "#FFFFFF";
 ctx.shadowBlur = 5; ctx.shadowColor = "black";
-
-// Menggunakan koordinat asli kamu (180, 60) agar icon dan tulisan berjejer rapi mengisi kotak
-ctx.fillText("📅 " + tglStr, 180, 60); 
-
-ctx.shadowBlur = 0; // Reset shadow aman
+ctx.fillText("📅  " + tglStr.toUpperCase(), 170, 50);
+01-06-202601-06-2026
 
 // 2. Gambar teks hari & tanggal otomatis pas di tengah kotak hitam
 ctx.font = "bold 13px 'Segoe UI', Arial, sans-serif"; // Ukuran dikunci 13px agar muat sempurna
