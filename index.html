@@ -834,14 +834,26 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Baris 837 - KODE KUNCI MATI (MURNI SCRIPT ASLIMU, HANYA UKURAN FONT DIKECILKAN BIAR PAS)
-ctx.font = "bold 15px 'Segoe UI', Arial, sans-serif"; // UKURAN DIKUNCI 15px AGAR PAS DI KOTAK DAN TIDAK OFFSIZE
-ctx.textAlign = "center"; // Kembali ke rata tengah asli bawaanmu
+// === KODE FIX FINAL: TANGGAL DINAMIS AKURAT & PAS DI KOTAK ===
+const dLive = new Date();
+const daftarHari = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+const daftarBulan = ["JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER", "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI"];
+
+// Membuat format teks "HARI, DD BULAN YYYY" secara manual agar anti-macet
+let namaHariLive = daftarHari[dLive.getDay()];
+let tglLive = String(dLive.getDate()).padStart(2, '0');
+let bulanLive = daftarBulan[dLive.getMonth()];
+let tahunLive = dLive.getFullYear();
+let tglStrLive = `${namaHariLive}, ${tglLive} ${bulanLive} ${tahunLive}`;
+
+// Setting gambar ke Canvas
+ctx.font = "bold 15px 'Segoe UI', Arial, sans-serif"; // Ukuran pas di dalam kotak emas
+ctx.textAlign = "center"; 
 ctx.fillStyle = "#FFFFFF";
 ctx.shadowBlur = 5; ctx.shadowColor = "black";
 
-const textX = 60 + 260 / 2; // Rumus kotak asli kamu, tidak diganggu gugat
-ctx.fillText("📅  " + tglStr, textX, 60); 
+const textX = 60 + 260 / 2; // Rumus kotak asli kamu
+ctx.fillText("📅 " + tglStrLive, textX, 60); 
 
 ctx.shadowBlur = 0; // Reset aman
 
