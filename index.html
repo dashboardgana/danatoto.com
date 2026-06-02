@@ -834,24 +834,16 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Baris 837 - KODE KUNCI MATI TANGGAL (OTOMATIS PAS KOTAK & HAPUS DOUBLE)
-ctx.textAlign = "left"; 
+// Baris 837 - KODE KUNCI MATI (MURNI SCRIPT ASLIMU, HANYA UKURAN FONT DIKECILKAN BIAR PAS)
+ctx.font = "bold 15px 'Segoe UI', Arial, sans-serif"; // UKURAN DIKUNCI 15px AGAR PAS DI KOTAK DAN TIDAK OFFSIZE
+ctx.textAlign = "center"; // Kembali ke rata tengah asli bawaanmu
 ctx.fillStyle = "#FFFFFF";
 ctx.shadowBlur = 5; ctx.shadowColor = "black";
 
-// Trik deteksi ukuran dinamis agar selalu pas sesuai kotak emas kamu
-let ukuranFont = 24; 
-ctx.font = "bold " + ukuranFont + "px 'Segoe UI', Arial, sans-serif";
-while (ctx.measureText("📅 " + tglStr).width > 240 && ukuranFont > 12) {
-    ukuranFont--;
-    ctx.font = "bold " + ukuranFont + "px 'Segoe UI', Arial, sans-serif";
-}
+const textX = 60 + 260 / 2; // Rumus kotak asli kamu, tidak diganggu gugat
+ctx.fillText("📅  " + tglStr, textX, 60); 
 
-// Menggunakan koordinat murni bawaan awal kamu agar posisinya presisi kembali
-ctx.fillText("📅 " + tglStr, 125, 62); 
-
-ctx.shadowBlur = 0; // Reset shadow biar aman
-// --- SELESAI DAN BERSIH TOTAL ---
+ctx.shadowBlur = 0; // Reset aman
 
 // 2. Gambar teks hari & tanggal otomatis pas di tengah kotak hitam
 ctx.font = "bold 13px 'Segoe UI', Arial, sans-serif"; // Ukuran dikunci 13px agar muat sempurna
