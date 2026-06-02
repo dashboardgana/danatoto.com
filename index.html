@@ -834,13 +834,17 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Teks Tanggal
-ctx.font = "bold 26px 'Segoe UI', Arial, sans-serif";
-ctx.textAlign = "center";
+// Baris 837 - FIX KODE TANGGAL BAWAAN (JAMINAN PAS & BERSIH)
+ctx.font = "bold 18px 'Segoe UI', Arial, sans-serif"; // Ukuran diturunkan ke 18px agar pas di dalam kotak hitam
+ctx.textAlign = "center"; // Tetap pakai center bawaan asli kamu agar rapi rata tengah
 ctx.fillStyle = "#FFFFFF";
 ctx.shadowBlur = 5; ctx.shadowColor = "black";
-ctx.fillText("📅  " + tglStr.toUpperCase(), 170, 50);
-01-06-202601-06-2026
+
+// Koordinat X digeser ke 250 agar teks panjang "SELASA, 02 JUNI 2026" duduk pas di tengah kotak
+ctx.fillText("📅  " + tglStr, 250, 60); 
+
+ctx.shadowBlur = 0; // Reset shadow aman
+ctx.textAlign = "left"; // Dikembalikan ke left agar tidak membentur teks lain di bawahnya
 
 // 2. Gambar teks hari & tanggal otomatis pas di tengah kotak hitam
 ctx.font = "bold 13px 'Segoe UI', Arial, sans-serif"; // Ukuran dikunci 13px agar muat sempurna
