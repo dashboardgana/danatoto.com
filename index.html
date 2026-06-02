@@ -834,36 +834,29 @@ ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// === BARIS 837 - KODE FINAL DIANGLISA TOTAL (PASTI PAS & ANTI-DOUBLE) ===
+// ==========================================
+// FIX FINAL TANGGAL KOTAK ATAS (ANTI DOUBLE & PAS KOTAK)
+// ==========================================
 const d = new Date();
 const tglStr = d.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
 
-// 1. Ambil rumus koordinat tengah kotak asli milikmu
+// 1. Ambil posisi tengah kotak asli milikmu
 const textX = 60 + 260 / 2; 
 
-// 2. Gunakan font ukuran 16px agar pas padat memenuhi kotak hitam tanpa keluar dari garis emas
-ctx.font = "bold 16px 'Segoe UI', Arial, sans-serif"; 
+// 2. Set ukuran font 15px (Pas memenuhi kotak hitam, tidak menabrak garis emas)
+ctx.font = "bold 15px 'Segoe UI', Arial, sans-serif"; 
 ctx.textAlign = "center"; 
 ctx.fillStyle = "#FFFFFF";
 ctx.shadowBlur = 5; 
 ctx.shadowColor = "black";
 
-// 3. HANYA ADA SATU PERINTAH CETAK DI SINI (Menghapus total masalah double)
+// 3. Hanya ada SATU cetakan teks di sini agar tidak double lagi
 ctx.fillText("📅  " + tglStr, textX, 60); 
 
-// 4. RESET TOTAL: Mengembalikan settingan canvas agar tidak merusak baris kode di bawahnya
+// 4. Reset canvas agar aman untuk kode di bawahnya
 ctx.shadowBlur = 0; 
 ctx.textAlign = "left"; 
-// === SAMPAI BARIS 863 SELESAI DENGAN BERSIH DAN AMAN ===
-
-// 3. Kembalikan settingan textAlign ke left agar tidak merusak kode di bawahnya
-ctx.textAlign = "left";
-ctx.shadowBlur = 0; // Reset shadow agar teks lain tidak ikut nge-blur
-
-// --- B. KOTAK LINK (Kanan Atas) - THE EXECUTIVE BADGE (UNIK) ---
-ctx.save();
-ctx.shadowBlur = 15;
-ctx.shadowColor = "rgba(0, 255, 204, 0.4)"; // Glow Mint Crystal
+// ==========================================
 
 // 1. Background "Emerald Night" (Hijau-Biru Gelap Mewah)
 let gradLinkUnik = ctx.createLinearGradient(1040, 20, 1380, 80);
