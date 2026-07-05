@@ -873,36 +873,19 @@ for(let i = 1050; i < 1370; i += 10) {
     ctx.moveTo(i, 20); ctx.lineTo(i - 20, 80);
     ctx.stroke();
 }
-// 2. Border "Cyber Neon" (Perpaduan Putih & Mint)
-ctx.strokeStyle = "#00ffcc"; 
-ctx.lineWidth = 2.5;
-ctx.stroke();
-
-// 3. Efek Scanline (Garis-garis halus biar kesan teknologi)
-ctx.strokeStyle = "rgba(0, 255, 204, 0.1)";
-for(let i = 1050; i < 1370; i += 10) {
-    ctx.beginPath();
-    ctx.moveTo(i, 20); ctx.lineTo(i - 20, 80);
-    ctx.stroke();
-}
-
+// 4. Teks Link + Simbol
 const linkText = "🔗 desty.page/danaofficial026";
 
 ctx.font = "bold 22px 'Verdana', sans-serif";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
 ctx.fillStyle = "#ffffff";
 ctx.shadowBlur = 4;
 ctx.shadowColor = "#000000";
 
-const textWidth = ctx.measureText(linkText).width;
-const padding = 20;
-
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillText(linkText, 1190, 40);
-ctx.restore();
-ctx.shadowBlur = 0; // Reset bayangan
+ctx.fillText(linkText, 1215, 50);
   
-// --- 3. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
+// --- 5. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
 const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
 
 ctx.fillStyle = "#050c23"; 
