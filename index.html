@@ -851,13 +851,13 @@ gradLinkUnik.addColorStop(1, "#002b2b");
 ctx.fillStyle = gradLinkUnik;
 ctx.beginPath();
 // BENTUK ASIMETRIS: Sudut kiri tajam, sudut kanan tumpul (Biar GAK KEMBAR)
-ctx.moveTo(startX, 20);
-ctx.lineTo(startX + kotakLebar, 20);
+ctx.moveTo(1040, 20);
+ctx.lineTo(1350, 20);
 ctx.quadraticCurveTo(1380, 20, 1380, 50); // Lengkungan kanan atas
-ctx.lineTo(startX + kotakLebar, 50);
+ctx.lineTo(1380, 20);
 ctx.quadraticCurveTo(1380, 80, 1350, 80); // Lengkungan kanan bawah
-ctx.lineTo(startX, 80);
-ctx.lineTo(startX, 50); // Sudut miring di kiri (Hexagon style)
+ctx.lineTo(1070, 80);
+ctx.lineTo(1040, 50); // Sudut miring di kiri (Hexagon style)
 ctx.closePath();
 ctx.fill();
 
