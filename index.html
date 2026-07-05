@@ -851,13 +851,14 @@ gradLinkUnik.addColorStop(1, "#002b2b");
 ctx.fillStyle = gradLinkUnik;
 ctx.beginPath();
 // BENTUK ASIMETRIS: Sudut kiri tajam, sudut kanan tumpul (Biar GAK KEMBAR)
+// Menggambar kotak dengan ukuran yang proporsional
 ctx.moveTo(1040, 20);
-ctx.lineTo(1400, 20));
-ctx.quadraticCurveTo(1380, 20, 1380, 50); // Lengkungan kanan atas
-ctx.lineTo(1430, 50);
-ctx.quadraticCurveTo(1380, 80, 1350, 80); // Lengkungan kanan bawah
+ctx.lineTo(1380, 20); // Kembali ke ukuran yang lebih stabil
+ctx.quadraticCurveTo(1400, 20, 1400, 50); // Lengkungan kanan atas
+ctx.lineTo(1400, 50); 
+ctx.quadraticCurveTo(1400, 80, 1380, 80); // Lengkungan kanan bawah
 ctx.lineTo(1070, 80);
-ctx.lineTo(1040, 50); // Sudut miring di kiri (Hexagon style)
+ctx.lineTo(1040, 50); // Sudut miring di kiri
 ctx.closePath();
 ctx.fill();
 
@@ -883,8 +884,7 @@ ctx.fillStyle = "#ffffff";
 ctx.shadowBlur = 4;
 ctx.shadowColor = "#000000";
 
-ctx.fillText(linkText, 1195, 47);
-  
+ctx.fillText(linkText, 1220, 50);  
 // --- 5. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
 const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
 
