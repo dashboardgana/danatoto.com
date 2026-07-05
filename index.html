@@ -850,27 +850,29 @@ gradLinkUnik.addColorStop(1, "#002b2b");
 
 ctx.fillStyle = gradLinkUnik;
 ctx.beginPath();
-const linkText = "🔗 desty.page/danaofficial026";
-
-ctx.font = "bold 22px 'Verdana', sans-serif";
-const textWidth = ctx.measureText(linkText).width;
-
-const x = 1040;
-const y = 20;
-const h = 60;
-const w = textWidth + 70; // otomatis mengikuti panjang tulisan
-
-ctx.beginPath();
-ctx.moveTo(x, y);
-ctx.lineTo(x + w - 30, y);
-ctx.quadraticCurveTo(x + w, y, x + w, y + 30);
-ctx.lineTo(x + w, y + h - 30);
-ctx.quadraticCurveTo(x + w, y + h, x + w - 30, y + h);
-ctx.lineTo(x + 30, y + h);
-ctx.lineTo(x, y + 30);
+// BENTUK ASIMETRIS: Sudut kiri tajam, sudut kanan tumpul (Biar GAK KEMBAR)
+ctx.moveTo(1040, 20); 
+ctx.lineTo(1350, 20);
+ctx.quadraticCurveTo(1380, 20, 1380, 50); // Lengkungan kanan atas
+ctx.lineTo(1380, 50);
+ctx.quadraticCurveTo(1380, 80, 1350, 80); // Lengkungan kanan bawah
+ctx.lineTo(1070, 80);
+ctx.lineTo(1040, 50); // Sudut miring di kiri (Hexagon style)
 ctx.closePath();
 ctx.fill();
 
+// 2. Border "Cyber Neon" (Perpaduan Putih & Mint)
+ctx.strokeStyle = "#00ffcc"; 
+ctx.lineWidth = 2.5;
+ctx.stroke();
+
+// 3. Efek Scanline (Garis-garis halus biar kesan teknologi)
+ctx.strokeStyle = "rgba(0, 255, 204, 0.1)";
+for(let i = 1050; i < 1370; i += 10) {
+    ctx.beginPath();
+    ctx.moveTo(i, 20); ctx.lineTo(i - 20, 80);
+    ctx.stroke();
+}
 // 2. Border "Cyber Neon" (Perpaduan Putih & Mint)
 ctx.strokeStyle = "#00ffcc"; 
 ctx.lineWidth = 2.5;
