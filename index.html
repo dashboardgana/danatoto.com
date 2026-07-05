@@ -874,15 +874,22 @@ for(let i = 1050; i < 1370; i += 10) {
     ctx.stroke();
 }
 
-// 4. Teks Link + Simbol
-ctx.font = "bold 22px 'Verdana', sans-serif";
-ctx.textAlign = "center";
-ctx.fillStyle = "#ffffff";
-ctx.shadowBlur = 4; ctx.shadowColor = "#000000";
-ctx.fillText("🔗desty.page/danaofficial026", 1190, 40);
+const linkText = "🔗 desty.page/danaofficial026";
 
+ctx.font = "bold 22px 'Verdana', sans-serif";
+ctx.fillStyle = "#ffffff";
+ctx.shadowBlur = 4;
+ctx.shadowColor = "#000000";
+
+const textWidth = ctx.measureText(linkText).width;
+const padding = 20;
+
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText(linkText, 1190, 40);
 ctx.restore();
 ctx.shadowBlur = 0; // Reset bayangan
+  
 // --- 3. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
 const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
 
