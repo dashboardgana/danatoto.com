@@ -853,10 +853,10 @@ ctx.beginPath();
 // BENTUK ASIMETRIS: Sudut kiri tajam, sudut kanan tumpul (Biar GAK KEMBAR)
 // Menggambar kotak dengan ukuran yang proporsional
 ctx.moveTo(1040, 20);
-ctx.lineTo(1380, 20); // Kembali ke ukuran yang lebih stabil
-ctx.quadraticCurveTo(1400, 20, 1400, 50); // Lengkungan kanan atas
-ctx.lineTo(1400, 50); 
-ctx.quadraticCurveTo(1400, 80, 1380, 80); // Lengkungan kanan bawah
+ctx.lineTo(1420, 20); // Kembali ke ukuran yang lebih stabil
+ctx.quadraticCurveTo(1440, 20, 1440, 50); // Lengkungan kanan atas
+ctx.lineTo(1440, 50); 
+ctx.quadraticCurveTo(1440, 80, 1420, 80); // Lengkungan kanan bawah
 ctx.lineTo(1040, 80);
 ctx.lineTo(1040, 50); // Sudut miring di kiri
 ctx.closePath();
@@ -883,7 +883,7 @@ ctx.textBaseline = "middle";
 ctx.fillStyle = "#ffffff";
 ctx.shadowBlur = 4;
 ctx.shadowColor = "#000000";
-ctx.fillText(linkText, 1245, 50);  
+ctx.fillText(linkText, 1220, 50);  
   
 // --- 5. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
 const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
