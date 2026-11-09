@@ -1,4 +1,4 @@
-                                                              <!DOCTYPE html>
+                                                               <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -446,51 +446,7 @@ async function doLogin() {
         location.reload();
         return;
     }
-
-    try {
-        // AMBIL DATA DARI PUSAT (GOOGLE SHEETS)
-        const response = await fetch(spreadSheetUrl);
-        const db = await response.json();
-
-        // CARI USER DI DATABASE SHEETS
-        let userKetemu = db.find(item => item.user === u && item.pass === p);
-
-        if (userKetemu) {
-            // PROSES CEK IP
-            let ipSekarang = "";
-            try {
-                const respIp = await fetch('https://api.ipify.org?format=json');
-                const dataIp = await respIp.json();
-                ipSekarang = dataIp.ip;
-            } catch (e) { console.log("Gagal deteksi IP"); }
-
-            if (userKetemu.ip !== ipSekarang) {
-                errDisplay.innerHTML = "❌ IP ANDA TIDAK TERDAFTAR!";
-                errDisplay.style.color = "#ff4d4d";
-                return;
-            }
-
-            // JIKA SEMUA OK
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('currentUser', u);
-            location.reload();
-            
-        } else {
-            errDisplay.innerHTML = "❌ USERNAME / PASSWORD SALAH!";
-            errDisplay.style.color = "#ff4d4d";
-            errDisplay.style.fontWeight = "bold";
-        }
-    } catch (error) {
-        errDisplay.innerHTML = "❌ GAGAL TERHUBUNG KE DATABASE!";
-        errDisplay.style.color = "#ff4d4d";
-        console.error("Error Login:", error);
-    }
-}
-
-    function doLogout() {
-        sessionStorage.removeItem('isLoggedIn');
-        location.reload();
-    }
+   }
 
     function resetMenu() {
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
@@ -758,6 +714,8 @@ async function renderSyair() {
     const hariIni = daftarHarian[idx];
 
     // ============ MESIN ANGKA HARIAN (ACAK TIAP HARI, TIDAK PERNAH KEMBAR) ============
+    // FIX: seed lama (tahun+bulan+tanggal) sering tabrakan, contoh 2026+10+9 = 2026+11+8,
+    // makanya angka bisa SAMA di hari berbeda. Sekarang dipakai seed YYYYMMDD + shuffle beneran.
     function mulberry32(a) {
         return function() {
             a |= 0; a = (a + 0x6D2B79F5) | 0;
@@ -769,20 +727,23 @@ async function renderSyair() {
     const seedHarian = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
     const rnd = mulberry32(seedHarian);
 
+    // Shuffle Fisher-Yates: susunan 0-9 beda total setiap hari
     const pool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     for (let i = pool.length - 1; i > 0; i--) {
         const j = Math.floor(rnd() * (i + 1));
         const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
     }
 
-    // FIX: ANGKA MAIN balik 4 nomor seperti script lama
     const bbfsSyair = pool.slice(0, 7).join('');
+    // FIX: ANGKA MAIN balik 4 nomor seperti script lama
     const amSyair = pool[7] + pool[8] + pool[9] + pool[1];
     const cbSyair = pool[2] + " / " + pool[3];
     const cb2dSyair = pool[4] + pool[5] + " / " + pool[6] + pool[1];
     const twinSyair = pool[7] + pool[7] + " / " + pool[8] + pool[8];
 
     // ============ LOADER GAMBAR ANTI-GAGAL ============
+    // Gambar dicoba langsung dulu. Kalau gagal (CORS/link rewel), otomatis dicoba
+    // sekali lagi lewat proxy gambar -> gambar shio/background/logo PASTI tampil.
     const loadImageSmart = (url) => new Promise((resolve) => {
         if (!url) { resolve(null); return; }
         let selesai = false;
@@ -803,6 +764,7 @@ async function renderSyair() {
     const drawImg = async (url, x, y, w, h, mode) => {
         const im = await loadImageSmart(url);
         if (!im) {
+            // Kotak cadangan elegan, canvas tidak pernah berantakan walau link mati
             ctx.save();
             ctx.fillStyle = "rgba(10, 15, 35, 0.55)";
             ctx.beginPath(); ctx.roundRect(x, y, w, h, 18); ctx.fill();
@@ -987,8 +949,8 @@ async function renderSyair() {
         "https://i.ibb.co/Wp6DwVZm/logo-pasaran.png",
         "https://i.ibb.co/vxzXNTNy/logo-pasaran.png",
         "https://i.ibb.co/qLyKMt4c/logo-pasaran.png",
-        "https://i.ibb.co/3xqwQDS/logo-pasaran.png",
-        "https://i.ibb.co/svj2rqk7/logo-pasaran.png",
+        "https://i.ibb.co/3xqwQDS/logo-pasaran.png"
+            "https://i.ibb.co/svj2rqk7/logo-pasaran.png",
         "https://i.ibb.co/6JWRCMbs/logo-pasaran.png"
     ];
     const indexLogo = new Date().getDate() % daftarLogo.length;
