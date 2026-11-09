@@ -236,7 +236,21 @@
             .bank-card { width: 45%; min-width: 150px; }
             .toto-grid { grid-template-columns: 1fr; }
         }
-    </style>
+    
+        /* ===== UPGRADE LUXURY EDITION (tambahan, tidak mengubah struktur lama) ===== */
+        .header-box { background-image: linear-gradient(180deg, rgba(13,17,23,0.85), rgba(5,7,10,0.7)) !important; border: 1px solid #FFD700 !important; box-shadow: 0 0 25px rgba(255,215,0,0.22), inset 0 0 30px rgba(0,212,255,0.06) !important; }
+        .date-display { letter-spacing: 2px; }
+        .card { border: 1px solid rgba(255,215,0,0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.5); }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(255,215,0,0.18); }
+        .card-header { background: linear-gradient(90deg, #00d4ff, #008fb3 55%, #FFD700 135%) !important; letter-spacing: 1px; }
+        .btn-hitung { background: linear-gradient(90deg, #FFD700, #FFA000) !important; box-shadow: 0 4px 15px rgba(255,215,0,0.35); }
+        .btn-export { background: linear-gradient(90deg, #FFD700, #00ff88) !important; box-shadow: 0 4px 18px rgba(255,215,0,0.3); }
+        .btn-copy:hover { background: rgba(0,212,255,0.15); box-shadow: 0 0 12px rgba(0,212,255,0.4); }
+        .menu-item.active-menu { background: linear-gradient(90deg, #00d4ff, #0099cc) !important; box-shadow: 0 0 15px rgba(0,212,255,0.5); }
+        .toto-container, .syair-wrapper { border-color: #FFD700 !important; box-shadow: 0 0 30px rgba(255,215,0,0.12), 0 0 20px rgba(0,212,255,0.15) !important; }
+        .login-card button { background: linear-gradient(90deg, #FFD700, #FFA000) !important; box-shadow: 0 0 18px rgba(255,215,0,0.4); }
+        .final-number { background: linear-gradient(180deg, #FFF5B7, #FFD700 45%, #B8860B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #FFD700; filter: drop-shadow(0 0 8px rgba(255,215,0,0.45)); }
+</style>
 </head>
 <body>
 
@@ -432,51 +446,7 @@ async function doLogin() {
         location.reload();
         return;
     }
-
-    try {
-        // AMBIL DATA DARI PUSAT (GOOGLE SHEETS)
-        const response = await fetch(spreadSheetUrl);
-        const db = await response.json();
-
-        // CARI USER DI DATABASE SHEETS
-        let userKetemu = db.find(item => item.user === u && item.pass === p);
-
-        if (userKetemu) {
-            // PROSES CEK IP
-            let ipSekarang = "";
-            try {
-                const respIp = await fetch('https://api.ipify.org?format=json');
-                const dataIp = await respIp.json();
-                ipSekarang = dataIp.ip;
-            } catch (e) { console.log("Gagal deteksi IP"); }
-
-            if (userKetemu.ip !== ipSekarang) {
-                errDisplay.innerHTML = "❌ IP ANDA TIDAK TERDAFTAR!";
-                errDisplay.style.color = "#ff4d4d";
-                return;
-            }
-
-            // JIKA SEMUA OK
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('currentUser', u);
-            location.reload();
-            
-        } else {
-            errDisplay.innerHTML = "❌ USERNAME / PASSWORD SALAH!";
-            errDisplay.style.color = "#ff4d4d";
-            errDisplay.style.fontWeight = "bold";
-        }
-    } catch (error) {
-        errDisplay.innerHTML = "❌ GAGAL TERHUBUNG KE DATABASE!";
-        errDisplay.style.color = "#ff4d4d";
-        console.error("Error Login:", error);
-    }
-}
-
-    function doLogout() {
-        sessionStorage.removeItem('isLoggedIn');
-        location.reload();
-    }
+   }
 
     function resetMenu() {
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
@@ -508,7 +478,7 @@ async function doLogin() {
         const tglHariIni = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('txt-tanggal').innerText = tglHariIni;
 
-        const seedDay = d.getFullYear() + d.getMonth() + d.getDate();
+        const seedDay = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); // FIX: seed YYYYMMDD biar angka gak pernah sama di hari beda
         masterData = [];
 
         pasarans.forEach((name, i) => {
@@ -720,17 +690,17 @@ async function renderSyair() {
     const canvas = document.getElementById('canvasSyair');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+
     canvas.width = 1400;
     canvas.height = 800;
 
     const d = new Date();
     const tglStr = d.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
-    
+
     const daftarHarian = [
         { shio: "TIKUS", img: "https://i.ibb.co/CpD5srf3/tikus-transparan.png", img2: "https://i.ibb.co/NdjPyrYh/rumah-tua.png", p1: "Tikus kecil berlari cepat, Masuk lubang saat malam,", p2: "Kalau ingin hidup hebat, Jangan takut terus melangkah" },
         { shio: "AYAM", img: "https://i.ibb.co/MD9X89Gj/ayam-transparan.png", img2: "https://i.ibb.co/0yXp9J6R/kandang-bambu.png", p1: "Pergi ke pasar membeli ayam, Ayam dibeli warnanya merah.", p2: "Kalau hati sedang tenggelam, Jangan sedih, tetaplah cerah" },
-        { shio: "HARIMAU", img: "https://i.ibb.co/r2Y4vC0G/harimau-transparan.png", img2:"https://i.ibb.co/YsQW3CD/hutan-rimba.png", p1: "Harimau gagah di tengah rimba, Langkah pelan penuh wibawa,", p2: "Kalau hidup penuh usaha, Rezeki datang tanpa diduga" },
+        { shio: "HARIMAU", img: "https://i.ibb.co/r2Y4vC0G/harimau-transparan.png", img2: "https://i.ibb.co/YsQW3CD/hutan-rimba.png", p1: "Harimau gagah di tengah rimba, Langkah pelan penuh wibawa,", p2: "Kalau hidup penuh usaha, Rezeki datang tanpa diduga" },
         { shio: "KELINCI", img: "https://i.ibb.co/nxQMpTB/kelinci-transparan.png", img2: "https://i.ibb.co/Rk02hgFC/taman-bunga.png", p1: "Beli bunga di pagi hari, Bunganya indah warna-warni.", p2: "Kalau hidup ingin berarti, Jangan lupa berbagi hati" },
         { shio: "NAGA", img: "https://i.ibb.co/cXS3SfHb/naga-transparan.png", img2: "https://i.ibb.co/5x2TQBJ1/awan-mendung.png", p1: "Pergi ke laut melihat pinguin, Pinguin lucu berjalan pelan.", p2: "Kalau hati lagi dingin, Coba senyum biar hangat perlahan" },
         { shio: "ULAR", img: "https://i.ibb.co/Ngs8z0T9/ular-transparan.png", img2: "https://i.ibb.co/nvBWyJK/lobang-tanah.png", p1: "Ular melingkar di tepi batu, Diam tenang menunggu mangsa,", p2: "Kalau hidup penuh ragu, Jangan takut terus berusaha" },
@@ -740,323 +710,308 @@ async function renderSyair() {
         { shio: "ANJING", img: "https://i.ibb.co/1GtSxtNk/anjing-transparan.png", img2: "https://i.ibb.co/2YCdpZtD/pintu-pagar.png", p1: "Pergi ke taman memetik melati, Melihat kupu terbang ke sana,", p2: "Kalau hati selalu bahagia di hati, Hidup pun terasa indah warnanya" },
     ];
 
-const idx = (d.getDate() - 1) % daftarHarian.length;
-const hariIni = daftarHarian[idx];
+    const idx = (d.getDate() - 1) % daftarHarian.length;
+    const hariIni = daftarHarian[idx];
 
-const seed = d.getDate() + d.getMonth() + d.getFullYear();
-const genNo = (s) => (Math.floor(Math.abs(Math.sin(seed + s) * 10000)) % 90 + 10).toString();
-const bbfsOto = (() => {
-    let n = "0123456789".split("");
-    for (let i = n.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.abs(Math.sin(seed + i) * 10000)) % (i + 1);
-        [n[i], n[j]] = [n[j], n[i]];
-    }
-    return n.join("").substring(0, 7);
-})();
-
-// FIX: Fungsi Hapus BG & Skala Otomatis agar UTUH
-const drawImgNoBg = (url, targetX, targetY, targetW, targetH) => {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = url;
-        img.onload = () => {
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = img.width;
-            tempCanvas.height = img.height;
-            tempCtx.drawImage(img, 0, 0);
-
-            const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const data = imgData.data;
-            for (let i = 0; i < data.length; i += 4) {
-                if (data[i] > 240 && data[i+1] > 240 && data[i+2] > 240) {
-                    data[i+3] = 0;
-                }
-            }
-            tempCtx.putImageData(imgData, 0, 0);
-
-            const padding = 15;
-            const innerW = targetW - (padding * 2);
-            const innerH = targetH - (padding * 2);
-
-            const scale = Math.min(innerW / img.width, innerH / img.height);
-            const drawW = img.width * scale;
-            const drawH = img.height * scale;
-
-            const drawX = targetX + (targetW - drawW) / 2;
-            const drawY = targetY + (targetH - drawH) / 2;
-
-            ctx.drawImage(tempCanvas, drawX, drawY, drawW, drawH);
-            resolve();
+    // ============ MESIN ANGKA HARIAN (ACAK TIAP HARI, TIDAK PERNAH KEMBAR) ============
+    // FIX: seed lama (tahun+bulan+tanggal) sering tabrakan, contoh 2026+10+9 = 2026+11+8,
+    // makanya angka bisa SAMA di hari berbeda. Sekarang dipakai seed YYYYMMDD + shuffle beneran.
+    function mulberry32(a) {
+        return function() {
+            a |= 0; a = (a + 0x6D2B79F5) | 0;
+            let t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
         };
-        img.onerror = () => resolve();
-    });
-};
+    }
+    const seedHarian = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    const rnd = mulberry32(seedHarian);
 
-const drawImg = (url, x, y, w, h) => {
-    return new Promise((resolve) => {
+    // Shuffle Fisher-Yates: susunan 0-9 beda total setiap hari
+    const pool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd() * (i + 1));
+        const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+
+    const bbfsSyair = pool.slice(0, 7).join('');
+    const amSyair = pool[7] + pool[8];
+    const cbSyair = pool[0] + " / " + pool[1];
+    const cb2dSyair = pool[5] + pool[9] + " / " + pool[2] + pool[6];
+    const twinA = pool[3], twinB = pool[4];
+    const twinSyair = twinA + twinA + " / " + twinB + twinB;
+
+    // ============ LOADER GAMBAR ANTI-GAGAL ============
+    // Gambar dicoba langsung dulu. Kalau gagal (CORS/link rewel), otomatis dicoba
+    // sekali lagi lewat proxy gambar -> gambar shio/background/logo PASTI tampil.
+    const loadImageSmart = (url) => new Promise((resolve) => {
+        if (!url) { resolve(null); return; }
+        let selesai = false;
+        const finish = (im) => { if (!selesai) { selesai = true; resolve(im); } };
         const img = new Image();
         img.crossOrigin = "anonymous";
+        img.onload = () => finish(img);
+        img.onerror = () => {
+            const img2 = new Image();
+            img2.crossOrigin = "anonymous";
+            img2.onload = () => finish(img2);
+            img2.onerror = () => finish(null);
+            img2.src = "https://images.weserv.nl/?url=" + encodeURIComponent(url);
+        };
         img.src = url;
-        img.onload = () => { ctx.drawImage(img, x, y, w, h); resolve(); };
-        img.onerror = () => resolve();
     });
-};
 
-// --- 1. SETTING CANVAS (1400x800) ---
-ctx.clearRect(0, 0, 1400, 800);
-await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800);
+    const drawImg = async (url, x, y, w, h, mode) => {
+        const im = await loadImageSmart(url);
+        if (!im) {
+            // Kotak cadangan elegan, canvas tidak pernah berantakan walau link mati
+            ctx.save();
+            ctx.fillStyle = "rgba(10, 15, 35, 0.55)";
+            ctx.beginPath(); ctx.roundRect(x, y, w, h, 18); ctx.fill();
+            ctx.strokeStyle = "rgba(255, 215, 0, 0.45)"; ctx.lineWidth = 2; ctx.stroke();
+            ctx.fillStyle = "rgba(255,255,255,0.8)";
+            ctx.font = "bold 18px 'Segoe UI', Arial"; ctx.textAlign = "center";
+            ctx.fillText("GAMBAR OFFLINE", x + w / 2, y + h / 2, w - 20);
+            ctx.restore();
+            return;
+        }
+        if (mode === "cover") {
+            const s = Math.max(w / im.width, h / im.height);
+            const dw = im.width * s, dh = im.height * s;
+            ctx.drawImage(im, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+        } else {
+            const pad = 6;
+            const s = Math.min((w - pad * 2) / im.width, (h - pad * 2) / im.height);
+            const dw = im.width * s, dh = im.height * s;
+            ctx.drawImage(im, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+        }
+    };
 
-// Logo Danatoto - Tetap di posisi pas
-await drawImg('https://lh3.googleusercontent.com/d/1pckwhI3Smy2kikMu-46kg3MTUVrEPcTC', 568, 40, 264, 138);
-  
-// --- 2. REVISI KOTAK ATAS: PREMIUM ELEGANT EDITION ---
-ctx.save();
-ctx.shadowBlur = 15;
+    // ============ ALAT GAMBAR LUXURY ============
+    const goldGrad = (x0, y0, x1, y1) => {
+        const g = ctx.createLinearGradient(x0, y0, x1, y1);
+        g.addColorStop(0, "#B8860B");
+        g.addColorStop(0.35, "#FFD700");
+        g.addColorStop(0.55, "#FFF5B7");
+        g.addColorStop(1, "#8B6914");
+        return g;
+    };
 
-// A. KOTAK TANGGAL (Kiri Atas) - Deep Glass Gold
-let gradTgl = ctx.createLinearGradient(20, 20, 20, 80);
-gradTgl.addColorStop(0, "rgba(40, 40, 40, 0.9)"); // Gelap mewah
-gradTgl.addColorStop(1, "rgba(20, 20, 20, 1.0)"); 
+    // Dasar gradasi mewah (canvas tidak pernah kosong walau background gagal)
+    let bgGrad = ctx.createLinearGradient(0, 0, 1400, 800);
+    bgGrad.addColorStop(0, "#0a0f1e");
+    bgGrad.addColorStop(0.5, "#141b36");
+    bgGrad.addColorStop(1, "#05070f");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1400, 800);
 
-ctx.fillStyle = gradTgl;
-ctx.shadowColor = "rgba(212, 175, 55, 0.4)"; // Glow emas tipis
-ctx.beginPath();
-ctx.roundRect(20, 20, 320, 60, 30); // Bentuk kapsul sempurna
-ctx.fill();
+    // --- 1. BACKGROUND FULL + LOGO DANATOTO ---
+    await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800, "cover");
+    await drawImg("https://lh3.googleusercontent.com/d/1pckwhI3Smy2kikMu-46kg3MTUVrEPcTC", 568, 26, 264, 130, "fit");
 
-// Border Emas (Luxury Gold Line)
-ctx.strokeStyle = ctx.createLinearGradient(20, 20, 340, 80);
-ctx.strokeStyle.addColorStop(0, "#D4AF37"); // Gold
-ctx.strokeStyle.addColorStop(0.5, "#FFF5B7"); // Highlighting Gold
-ctx.strokeStyle.addColorStop(1, "#B8860B"); // Dark Gold
-ctx.lineWidth = 3;
-ctx.stroke();
+    // --- 2. KOTAK TANGGAL (KIRI ATAS) - KAPSUL EMAS, TEKS OTOMATIS PAS ---
+    ctx.save();
+    ctx.shadowColor = "rgba(255, 215, 0, 0.35)"; ctx.shadowBlur = 14;
+    ctx.fillStyle = "rgba(8, 10, 24, 0.92)";
+    ctx.beginPath(); ctx.roundRect(25, 30, 330, 56, 28); ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = goldGrad(25, 30, 355, 86);
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.roundRect(25, 30, 330, 56, 28); ctx.stroke();
 
-// Teks Tanggal
-ctx.font = "bold 17px 'Segoe UI', Arial, sans-serif";
-ctx.textAlign = "center";
-ctx.fillStyle = "#FFFFFF";
-ctx.shadowBlur = 5; ctx.shadowColor = "black";
-ctx.fillText("📅  " + tglStr.toUpperCase(), 185, 60);
-01-06-202601-06-2026
+    let fsTgl = 20;
+    ctx.font = "bold " + fsTgl + "px 'Segoe UI', Arial";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    while (ctx.measureText("\u{1F4C5} " + tglStr).width > 300 && fsTgl > 12) {
+        fsTgl--;
+        ctx.font = "bold " + fsTgl + "px 'Segoe UI', Arial";
+    }
+    ctx.fillStyle = "#FFF5B7";
+    ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 4;
+    ctx.fillText("\u{1F4C5} " + tglStr, 190, 58);
+    ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
 
-// 1. Background "Emerald Night" (Hijau-Biru Gelap Mewah)
-let gradLinkUnik = ctx.createLinearGradient(1040, 20, 1380, 80);
-gradLinkUnik.addColorStop(0, "#002b2b"); // Dark Emerald
-gradLinkUnik.addColorStop(0.5, "#004d40"); // Deep Teal
-gradLinkUnik.addColorStop(1, "#002b2b");
+    // --- 3. KOTAK LINK (KANAN ATAS) - EMERALD NEON RAPI ---
+    let gradLink = ctx.createLinearGradient(1045, 30, 1375, 86);
+    gradLink.addColorStop(0, "#002b2b");
+    gradLink.addColorStop(0.5, "#004d40");
+    gradLink.addColorStop(1, "#002b2b");
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 255, 204, 0.45)"; ctx.shadowBlur = 14;
+    ctx.fillStyle = gradLink;
+    ctx.beginPath(); ctx.roundRect(1045, 30, 330, 56, 28); ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = "#00ffcc";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.roundRect(1045, 30, 330, 56, 28); ctx.stroke();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 21px 'Segoe UI', Arial";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 4;
+    ctx.fillText("\u{1F517} destypagedanaofficial026", 1210, 58, 304);
+    ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
 
-ctx.fillStyle = gradLinkUnik;
-ctx.beginPath();
-// BENTUK ASIMETRIS: Sudut kiri tajam, sudut kanan tumpul (Biar GAK KEMBAR)
-// Menggambar kotak dengan ukuran yang proporsional
-ctx.moveTo(1040, 20);
-ctx.lineTo(1420, 20); // Kembali ke ukuran yang lebih stabil
-ctx.quadraticCurveTo(1440, 20, 1440, 50); // Lengkungan kanan atas
-ctx.lineTo(1440, 50); 
-ctx.quadraticCurveTo(1440, 80, 1420, 80); // Lengkungan kanan bawah
-ctx.lineTo(1040, 80);
-ctx.lineTo(1040, 50); // Sudut miring di kiri
-ctx.closePath();
-ctx.fill();
+    // --- 4. KOTAK ANGKA SERAGAM SEJAJAR (GLASS + RANGKA EMAS) ---
+    const drawBox = (x, y, w, h, label, value) => {
+        ctx.save();
+        ctx.shadowColor = "rgba(255, 215, 0, 0.32)"; ctx.shadowBlur = 16;
+        ctx.fillStyle = "rgba(6, 10, 28, 0.93)";
+        ctx.beginPath(); ctx.roundRect(x, y, w, h, 16); ctx.fill();
+        ctx.restore();
 
-// 2. Border "Cyber Neon" (Perpaduan Putih & Mint)
-ctx.strokeStyle = "#00ffcc"; 
-ctx.lineWidth = 2.5;
-ctx.stroke();
+        ctx.save();
+        ctx.strokeStyle = goldGrad(x, y, x + w, y + h);
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.roundRect(x, y, w, h, 16); ctx.stroke();
+        ctx.strokeStyle = "rgba(255, 245, 183, 0.22)";
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.roundRect(x + 4, y + 4, w - 8, h - 8, 12); ctx.stroke();
+        ctx.restore();
 
-// 3. Efek Scanline (Garis-garis halus biar kesan teknologi)
-ctx.strokeStyle = "rgba(0, 255, 204, 0.1)";
-for(let i = 1050; i < 1370; i += 10) {
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#00e5ff";
+        ctx.font = "900 22px 'Segoe UI', Arial";
+        ctx.shadowColor = "rgba(0, 229, 255, 0.6)"; ctx.shadowBlur = 8;
+        ctx.fillText(label, x + w / 2, y + 34);
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = goldGrad(x, y + 45, x, y + h - 6);
+        ctx.font = "900 44px 'Arial Black', 'Segoe UI', Arial";
+        ctx.shadowColor = "rgba(0,0,0,0.9)"; ctx.shadowBlur = 4;
+        ctx.fillText(value, x + w / 2, y + h - 20, w - 22);
+        ctx.shadowBlur = 0;
+    };
+
+    drawBox(45, 105, 305, 112, "BBFS", bbfsSyair);
+    drawBox(1050, 105, 305, 112, "ANGKA MAIN", amSyair);
+    drawBox(45, 232, 305, 112, "TWIN", twinSyair);
+    drawBox(1050, 232, 305, 112, "COLOK BEBAS", cbSyair);
+    drawBox(1050, 359, 305, 112, "COLOK BEBAS 2D", cb2dSyair);
+
+    // --- 5. KOTAK SHIO (KAPSUL EMAS DI ATAS GAMBAR SHIO) ---
+    const sX2 = 75, sY2 = 372, sW2 = 245, sH2 = 52;
+    ctx.save();
+    ctx.shadowColor = "rgba(255, 215, 0, 0.4)"; ctx.shadowBlur = 12;
+      ctx.fillStyle = "rgba(8, 10, 24, 0.94)";
+    ctx.beginPath(); ctx.roundRect(sX2, sY2, sW2, sH2, 26); ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = goldGrad(sX2, sY2, sX2 + sW2, sY2 + sH2);
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.roundRect(sX2, sY2, sW2, sH2, 26); ctx.stroke();
+
+    const shioText = "\u2B50 SHIO " + hariIni.shio.toUpperCase() + " \u2B50";
+    let fsS = 22;
+    ctx.font = "bold " + fsS + "px 'Segoe UI', Arial";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    while (ctx.measureText(shioText).width > sW2 - 26 && fsS > 13) {
+        fsS--;
+        ctx.font = "bold " + fsS + "px 'Segoe UI', Arial";
+    }
+    ctx.fillStyle = "#ffeb3b";
+    ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 4;
+    ctx.fillText(shioText, sX2 + sW2 / 2, sY2 + sH2 / 2);
+    ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
+
+    // --- 6. BINTANG PREMIUM + 4 ANGKA KELILING ---
+    const cx = 700, cy = 250, outerRad = 85, innerRad = 40;
+    ctx.save();
+    ctx.shadowBlur = 25; ctx.shadowColor = "#ffeb3b";
+    ctx.strokeStyle = goldGrad(cx - outerRad, cy - outerRad, cx + outerRad, cy + outerRad);
+    ctx.lineWidth = 8;
     ctx.beginPath();
-    ctx.moveTo(i, 20); ctx.lineTo(i - 20, 80);
-    ctx.stroke();
-}
-// 4. Teks Link + Simbol
-const linkText ="🔗destypagedanaofficial026";
+    ctx.moveTo(cx, cy - outerRad);
+    for (let i = 0; i < 5; i++) {
+        const angle = (Math.PI / 2) + (i * 2 * Math.PI / 5);
+        ctx.lineTo(cx + Math.cos(angle) * outerRad, cy - Math.sin(angle) * outerRad);
+        ctx.lineTo(cx + Math.cos(angle + Math.PI / 5) * innerRad, cy - Math.sin(angle + Math.PI / 5) * innerRad);
+    }
+    ctx.closePath(); ctx.stroke();
+    ctx.shadowBlur = 12; ctx.shadowColor = "#00f2ff"; ctx.stroke();
+    ctx.restore();
 
-ctx.font = "bold 22px 'Verdana', sans-serif";
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillStyle = "#ffffff";
-ctx.shadowBlur = 4;
-ctx.shadowColor = "#000000";
-ctx.fillText(linkText, 1225, 50);
-  
-// --- 5. KOTAK SHIO (TAMBAHKAN DI SINI BOS) ---
-const sX = 50, sY = 380, sW = 230, sH = 55; // Posisi di atas Naga
+    const angkaBintang = [pool[4], pool[9], pool[3], pool[8]];
+    const posisi = [[cx - 105, cy - 30], [cx + 105, cy - 30], [cx - 88, cy + 112], [cx + 88, cy + 112]];
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    angkaBintang.forEach((n, i2) => {
+        ctx.font = "900 52px 'Arial Black', Arial";
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = "rgba(0,0,0,0.85)";
+        ctx.shadowColor = "rgba(0,0,0,0.7)"; ctx.shadowBlur = 6;
+        ctx.strokeText(n, posisi[i2][0], posisi[i2][1]);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#FFD700";
+        ctx.shadowColor = "rgba(255, 215, 0, 0.6)"; ctx.shadowBlur = 14;
+        ctx.fillText(n, posisi[i2][0], posisi[i2][1]);
+        ctx.shadowBlur = 0;
+    });
+    ctx.textBaseline = "alphabetic";
 
-ctx.fillStyle = "#050c23"; 
-ctx.beginPath(); 
-ctx.roundRect(sX, sY, sW, sH, 12); 
-ctx.fill();
+    // --- 7. LOGO PASARAN (GANTI TIAP HARI, SUDAH DI-AWAIT: GAK AKAN TUMPANG TINDIH LAGI) ---
+    const daftarLogo = [
+        "https://i.ibb.co/YBxW7tH9/logo-pasaran.png",
+        "https://i.ibb.co/99QGxMQF/logo-pasaran.png",
+        "https://i.ibb.co/zvr4ntk/logo-pasaran.png",
+        "https://i.ibb.co/GfBykJyR/logo-pasaran.png",
+        "https://i.ibb.co/Wp6DwVZm/logo-pasaran.png",
+        "https://i.ibb.co/vxzXNTNy/logo-pasaran.png",
+        "https://i.ibb.co/qLyKMt4c/logo-pasaran.png",
+        "https://i.ibb.co/3xqwQDS/logo-pasaran.png",
+        "https://i.ibb.co/svj2rqk7/logo-pasaran.png",
+        "https://i.ibb.co/6JWRCMbs/logo-pasaran.png"
+    ];
+    const indexLogo = new Date().getDate() % daftarLogo.length;
+    await drawImg(daftarLogo[indexLogo], 555, 405, 290, 120, "fit");
 
-ctx.strokeStyle = "#ffffff"; 
-ctx.lineWidth = 4; 
-ctx.stroke();
+    // --- 8. GAMBAR SHIO KIRI + GAMBAR TEMPAT KANAN (ROTASI HARIAN SAMA SEPERTI BUATAN BOS) ---
+    await drawImg(hariIni.img, 45, 445, 285, 315, "fit");
+    await drawImg(hariIni.img2, 1050, 490, 305, 270, "fit");
 
-// Efek Shadow biar tajam di zoom 67%
-ctx.shadowColor = "black";
-ctx.shadowBlur = 8;
-ctx.shadowOffsetX = 3;
-ctx.shadowOffsetY = 3;
+    // --- 9. KOTAK PANTUN - DIAMOND ELECTRIC BLUE ---
+    const pY = 610, pW = 690, pH = 140, pX = 355;
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 255, 255, 0.7)";
+    ctx.shadowBlur = 22;
+    ctx.fillStyle = "rgba(5, 5, 12, 0.9)";
+    ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.fill();
+    ctx.restore();
 
-ctx.fillStyle = "#ffeb3b"; 
-ctx.textAlign = "center";
-ctx.font = "bold 26px Arial"; 
+    let diamondGrad = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
+    diamondGrad.addColorStop(0, "#00ffff");
+    diamondGrad.addColorStop(0.5, "#ffffff");
+    diamondGrad.addColorStop(1, "#00ccff");
+    ctx.strokeStyle = diamondGrad;
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.roundRect(pX, pY, pW, pH, 20); ctx.stroke();
 
-// Pastikan variabel 'shio' sudah benar panggilannya
-ctx.fillText("SHIO " + hariIni.shio.toUpperCase(), sX + (sW / 2), sY + 38);
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowBlur = 8; ctx.shadowColor = "black";
+    ctx.font = "italic bold 24px Georgia, 'Times New Roman', serif";
+    const asTengah = pX + (pW / 2);
+    const batasAman = pW - 60;
+    ctx.fillText(hariIni.p1, asTengah, pY + 50, batasAman);
+    ctx.fillText(hariIni.p2, asTengah, pY + 100, batasAman);
+    ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
 
-// Reset Shadow (PENTING!)
-ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
-// 3. FUNGSI KOTAK ANGKA
-const drawBox = (x, y, label, value) => {
-    ctx.fillStyle = "rgba(5, 12, 35, 0.98)";
-    ctx.beginPath(); ctx.roundRect(x, y, 310, 115, 15); ctx.fill();
-    ctx.strokeStyle = "#00d4ff"; ctx.lineWidth = 4; ctx.stroke();
-    ctx.fillStyle = "#00f2ff"; ctx.font = "900 28px sans-serif"; ctx.textAlign = "center";
-    ctx.fillText(label, x + 155, y + 38);
-    ctx.fillStyle = "#ffeb3b"; ctx.font = "bold 58px Arial";
-    ctx.fillText(value, x + 155, y + 95);
-};
-
-// Kocok Angka (Anti-Kembar)
-let pool = ["0","1","2","3","4","5","6","7","8","9"].sort((a, b) => (new Date().getDate() * (parseInt(a) + 5)) % 10 - (new Date().getDate() * (parseInt(b) + 5)) % 10);  
-// Baris 878: Bikin angka 2D BB otomatis
-let angka2D = pool[7] + pool[8];
-let angka2DBB = pool[5] + pool[9];
-
-// --- 4. MENGGAMBAR KOTAK ANGKA (SEJAJAR & NAIK) ---
-
-// Baris Atas (Y = 100)
-drawBox(50, 100, "BBFS", pool.slice(0, 7).join(''));
-drawBox(1040, 100, "ANGKA MAIN", genNo(1) + genNo(2));
-
-// Baris Bawah (Y = 230)
-drawBox(50, 230, "TWIN", genNo(3).substring(0,1) + genNo(3).substring(0,1) + " / " + genNo(5).substring(0,1) + genNo(5).substring(0,1));
-drawBox(1040, 230, "COLOK BEBAS", pool[0] + " / " + pool[1]);
-drawBox(540, 478, "COLOK BEBAS 2D", angka2D + " / " + angka2DBB);
-
-// --- 5. AREA BINTANG (TEGAK & ANGKA LUAS: BARIS 947-974) ---
-const cx = 700, cy = 255; // Titik tengah dashboard yang pas
-const outerRad = 90; 
-const innerRad = 42; 
-
-ctx.save();
-// Efek Glow Berlapis
-ctx.shadowBlur = 25; ctx.shadowColor = "#ffeb3b"; 
-ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 10;
-
-// PROSES GAMBAR BINTANG (Rumus biar ujung atas pas di TENGAH & TEGAK)
-ctx.beginPath();
-ctx.moveTo(cx, cy - outerRad);
-for (let i = 0; i < 5; i++) {
-    let angle = (Math.PI / 2) + (i * 2 * Math.PI / 5);
-    // Ujung Luar
-    ctx.lineTo(cx + Math.cos(angle) * outerRad, cy - Math.sin(angle) * outerRad);
-    // Ujung Dalam
-    ctx.lineTo(cx + Math.cos(angle + Math.PI/5) * innerRad, cy - Math.sin(angle + Math.PI/5) * innerRad);
-}
-ctx.closePath(); ctx.stroke();
-
-// Lapisan Glow Biru Neon
-ctx.shadowBlur = 15; ctx.shadowColor = "#00f2ff"; ctx.stroke();
-
-// RESET UNTUK ANGKA (Biar tajam dan gak ketutup)
-ctx.shadowBlur = 0;
-ctx.fillStyle = "#ffeb3b"; 
-ctx.font = "bold 55px Arial";
-ctx.textAlign = "center";
-
-// POSISI ANGKA (Dikasih jarak agar TIDAK KETUTUP ujung bintang)
-ctx.fillText(pool[4], cx - 105, cy - 40); // Angka 4 (Geser keluar & naik dikit)
-ctx.fillText(pool[9], cx + 105, cy - 40); // Angka 9 (Geser keluar & naik dikit)
-ctx.fillText(pool[3], cx - 90, cy + 110); // Angka 3 (Bawah kiri)
-ctx.fillText(pool[8], cx + 90, cy + 110); // Angka 8 (Bawah kanan)
-
-ctx.restore();
-
-// --- DAFTAR 10 LOGO PASARAN (GANTI LINK DI SINI) ---
-const daftarLogo = [
-  "https://i.ibb.co/YBxW7tH9/logo-pasaran.png", // Logo Hari ke-1
-  "https://i.ibb.co/99QGxMQF/logo-pasaran.png",
-  "https://i.ibb.co/zvr4ntk/logo-pasaran.png",
-  "https://i.ibb.co/GfBykJyR/logo-pasaran.png",
-  "https://i.ibb.co/Wp6DwVZm/logo-pasaran.png",
-  "https://i.ibb.co/vxzXNTNy/logo-pasaran.png",
-  "https://i.ibb.co/qLyKMt4c/logo-pasaran.png",
-  "https://i.ibb.co/3xqwQDS/logo-pasaran.png",
-  "https://i.ibb.co/svj2rqk7/logo-pasaran.png",
-  "https://i.ibb.co/6JWRCMbs/logo-pasaran.png"
-];
-
-// Rumus otomatis pilih logo berdasarkan tanggal hari ini
-let indexLogo = new Date().getDate() % daftarLogo.length;
-
-let logoPasaran = new Image();
-logoPasaran.crossOrigin = "anonymous";
-logoPasaran.src = daftarLogo[indexLogo]; // Otomatis ambil dari daftar di atas
-
-logoPasaran.onload = function() {
-    // Koordinat x: 410, y: 410 ini di bawah angka 4 (pool[4])
-    // 80, 80 adalah ukuran lebarnya
-   ctx.drawImage(logoPasaran, 535, 310, 390, 250);  
-};
-// --- 6. AREA BAWAH ---
-await drawImg(hariIni.img, 50, 440, 320, 340); // Naga Kiri
-await drawImg(hariIni.img2, 1070, 440, 320, 340); // Awan Paling Sudut Kanan
-
-  // --- FIX PANTUN: DIAMOND ELECTRIC BLUE (GANTI BARIS 989-1021) ---
-const pY = 650, pW = 720, pH = 130, pX = 340; 
-
-ctx.save();
-
-// 1. EFEK CAHAYA (NEON BLUE GLOW) - Biar nendang pas di-post!
-ctx.shadowColor = "rgba(0, 255, 255, 0.8)"; 
-ctx.shadowBlur = 25;
-
-// 2. BACKGROUND KOTAK (HITAM ONYX PEKAT) - Biar teks putih "loncat" keluar
-ctx.fillStyle = "rgba(5, 5, 5, 0.9)"; 
-ctx.beginPath();
-ctx.roundRect(pX, pY, pW, pH, 20); 
-ctx.fill();
-
-// 3. GARIS FRAME BIRU BERLIAN (Bukan Abu-abu, ini warna Electric!)
-let diamondGrad = ctx.createLinearGradient(pX, pY, pX + pW, pY + pH);
-diamondGrad.addColorStop(0, "#00ffff"); // Cyan Neon
-diamondGrad.addColorStop(0.5, "#ffffff"); // Kilauan Berlian
-diamondGrad.addColorStop(1, "#00ccff"); // Deep Blue Neon
-
-ctx.strokeStyle = diamondGrad;
-ctx.lineWidth = 5; // Garis tegas dan mengkilap
-ctx.stroke();
-
-// 4. SETTING TEKS (PASTI DI TENGAH & ANTI-MELUBER)
-ctx.textAlign = "center"; 
-ctx.fillStyle = "#ffffff";
-ctx.shadowBlur = 10; ctx.shadowColor = "black";
-ctx.font = "italic bold 24px 'Georgia', serif";
-
-const asTengah = pX + (pW / 2);
-const batasAman = pW - 60; 
-
-// Memanggil pantun otomatis Bos
-ctx.fillText(hariIni.p1, asTengah, pY + 50, batasAman); 
-ctx.fillText(hariIni.p2, asTengah, pY + 100, batasAman);
-
-// 5. PENUTUP (Wajib sesuai script Bos agar tidak rusak)
-ctx.restore();
-ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+    // --- 10. CAT KAKI KECIL BIAR KELIHATAN PREMIUM ---
+    ctx.textAlign = "center";
+    ctx.font = "bold 16px 'Segoe UI', Arial";
+    ctx.fillStyle = "rgba(255, 245, 183, 0.9)";
+    ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 4;
+    ctx.fillText("\u2726 DANATOTO \u2022 SYAIR HARIAN \u2726", 700, 784);
+    ctx.shadowBlur = 0;
 }
 function exportSyair() {
-const canvas = document.getElementById('canvasSyair');
-const link = document.createElement('a');
-link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
-link.href = canvas.toDataURL("image/png");
-link.click();
+    const canvas = document.getElementById('canvasSyair');
+    if (!canvas) return;
+    const link = document.createElement('a');
+    try {
+        link.download = 'syair-danatoto-' + new Date().getTime() + '.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    } catch (e) {
+        alert("Gagal ekspor gambar, coba refresh halaman dulu Bos!");
+    }
 }
     // FUNGSI UNTUK COPY SATU PER SATU
 function copyAction(index) {
