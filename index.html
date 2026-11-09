@@ -1,4 +1,4 @@
-                                                               <!DOCTYPE html>
+                                                              <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -446,7 +446,51 @@ async function doLogin() {
         location.reload();
         return;
     }
-   }
+
+    try {
+        // AMBIL DATA DARI PUSAT (GOOGLE SHEETS)
+        const response = await fetch(spreadSheetUrl);
+        const db = await response.json();
+
+        // CARI USER DI DATABASE SHEETS
+        let userKetemu = db.find(item => item.user === u && item.pass === p);
+
+        if (userKetemu) {
+            // PROSES CEK IP
+            let ipSekarang = "";
+            try {
+                const respIp = await fetch('https://api.ipify.org?format=json');
+                const dataIp = await respIp.json();
+                ipSekarang = dataIp.ip;
+            } catch (e) { console.log("Gagal deteksi IP"); }
+
+            if (userKetemu.ip !== ipSekarang) {
+                errDisplay.innerHTML = "❌ IP ANDA TIDAK TERDAFTAR!";
+                errDisplay.style.color = "#ff4d4d";
+                return;
+            }
+
+            // JIKA SEMUA OK
+            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('currentUser', u);
+            location.reload();
+            
+        } else {
+            errDisplay.innerHTML = "❌ USERNAME / PASSWORD SALAH!";
+            errDisplay.style.color = "#ff4d4d";
+            errDisplay.style.fontWeight = "bold";
+        }
+    } catch (error) {
+        errDisplay.innerHTML = "❌ GAGAL TERHUBUNG KE DATABASE!";
+        errDisplay.style.color = "#ff4d4d";
+        console.error("Error Login:", error);
+    }
+}
+
+    function doLogout() {
+        sessionStorage.removeItem('isLoggedIn');
+        location.reload();
+    }
 
     function resetMenu() {
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active-menu'));
@@ -714,8 +758,6 @@ async function renderSyair() {
     const hariIni = daftarHarian[idx];
 
     // ============ MESIN ANGKA HARIAN (ACAK TIAP HARI, TIDAK PERNAH KEMBAR) ============
-    // FIX: seed lama (tahun+bulan+tanggal) sering tabrakan, contoh 2026+10+9 = 2026+11+8,
-    // makanya angka bisa SAMA di hari berbeda. Sekarang dipakai seed YYYYMMDD + shuffle beneran.
     function mulberry32(a) {
         return function() {
             a |= 0; a = (a + 0x6D2B79F5) | 0;
@@ -727,23 +769,20 @@ async function renderSyair() {
     const seedHarian = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
     const rnd = mulberry32(seedHarian);
 
-    // Shuffle Fisher-Yates: susunan 0-9 beda total setiap hari
     const pool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     for (let i = pool.length - 1; i > 0; i--) {
         const j = Math.floor(rnd() * (i + 1));
         const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
     }
 
+    // FIX: ANGKA MAIN balik 4 nomor seperti script lama
     const bbfsSyair = pool.slice(0, 7).join('');
-    const amSyair = pool[7] + pool[8];
-    const cbSyair = pool[0] + " / " + pool[1];
-    const cb2dSyair = pool[5] + pool[9] + " / " + pool[2] + pool[6];
-    const twinA = pool[3], twinB = pool[4];
-    const twinSyair = twinA + twinA + " / " + twinB + twinB;
+    const amSyair = pool[7] + pool[8] + pool[9] + pool[1];
+    const cbSyair = pool[2] + " / " + pool[3];
+    const cb2dSyair = pool[4] + pool[5] + " / " + pool[6] + pool[1];
+    const twinSyair = pool[7] + pool[7] + " / " + pool[8] + pool[8];
 
     // ============ LOADER GAMBAR ANTI-GAGAL ============
-    // Gambar dicoba langsung dulu. Kalau gagal (CORS/link rewel), otomatis dicoba
-    // sekali lagi lewat proxy gambar -> gambar shio/background/logo PASTI tampil.
     const loadImageSmart = (url) => new Promise((resolve) => {
         if (!url) { resolve(null); return; }
         let selesai = false;
@@ -764,7 +803,6 @@ async function renderSyair() {
     const drawImg = async (url, x, y, w, h, mode) => {
         const im = await loadImageSmart(url);
         if (!im) {
-            // Kotak cadangan elegan, canvas tidak pernah berantakan walau link mati
             ctx.save();
             ctx.fillStyle = "rgba(10, 15, 35, 0.55)";
             ctx.beginPath(); ctx.roundRect(x, y, w, h, 18); ctx.fill();
@@ -787,17 +825,16 @@ async function renderSyair() {
         }
     };
 
-    // ============ ALAT GAMBAR LUXURY ============
+    // Border emas standar (dipakai kotak tanggal & shio)
     const goldGrad = (x0, y0, x1, y1) => {
         const g = ctx.createLinearGradient(x0, y0, x1, y1);
         g.addColorStop(0, "#B8860B");
-        g.addColorStop(0.35, "#FFD700");
-        g.addColorStop(0.55, "#FFF5B7");
+        g.addColorStop(0.5, "#FFD700");
         g.addColorStop(1, "#8B6914");
         return g;
     };
 
-    // Dasar gradasi mewah (canvas tidak pernah kosong walau background gagal)
+    // Dasar gradasi (canvas tidak pernah kosong walau background gagal)
     let bgGrad = ctx.createLinearGradient(0, 0, 1400, 800);
     bgGrad.addColorStop(0, "#0a0f1e");
     bgGrad.addColorStop(0.5, "#141b36");
@@ -809,9 +846,9 @@ async function renderSyair() {
     await drawImg("https://lh3.googleusercontent.com/d/1V0_XhOpifLOSMYlj1yI9OWF7b4kjRX3r", 0, 0, 1400, 800, "cover");
     await drawImg("https://lh3.googleusercontent.com/d/1pckwhI3Smy2kikMu-46kg3MTUVrEPcTC", 568, 26, 264, 130, "fit");
 
-    // --- 2. KOTAK TANGGAL (KIRI ATAS) - KAPSUL EMAS, TEKS OTOMATIS PAS ---
+    // --- 2. KOTAK TANGGAL (KIRI ATAS) ---
     ctx.save();
-    ctx.shadowColor = "rgba(255, 215, 0, 0.35)"; ctx.shadowBlur = 14;
+    ctx.shadowColor = "rgba(255, 215, 0, 0.35)"; ctx.shadowBlur = 12;
     ctx.fillStyle = "rgba(8, 10, 24, 0.92)";
     ctx.beginPath(); ctx.roundRect(25, 30, 330, 56, 28); ctx.fill();
     ctx.restore();
@@ -826,18 +863,18 @@ async function renderSyair() {
         fsTgl--;
         ctx.font = "bold " + fsTgl + "px 'Segoe UI', Arial";
     }
-    ctx.fillStyle = "#FFF5B7";
+    ctx.fillStyle = "#FFFFFF";
     ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 4;
     ctx.fillText("\u{1F4C5} " + tglStr, 190, 58);
     ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
 
-    // --- 3. KOTAK LINK (KANAN ATAS) - EMERALD NEON RAPI ---
+    // --- 3. KOTAK LINK (KANAN ATAS) ---
     let gradLink = ctx.createLinearGradient(1045, 30, 1375, 86);
     gradLink.addColorStop(0, "#002b2b");
     gradLink.addColorStop(0.5, "#004d40");
     gradLink.addColorStop(1, "#002b2b");
     ctx.save();
-    ctx.shadowColor = "rgba(0, 255, 204, 0.45)"; ctx.shadowBlur = 14;
+    ctx.shadowColor = "rgba(0, 255, 204, 0.45)"; ctx.shadowBlur = 12;
     ctx.fillStyle = gradLink;
     ctx.beginPath(); ctx.roundRect(1045, 30, 330, 56, 28); ctx.fill();
     ctx.restore();
@@ -851,55 +888,52 @@ async function renderSyair() {
     ctx.fillText("\u{1F517} destypagedanaofficial026", 1210, 58, 304);
     ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
 
-    // --- 4. KOTAK ANGKA SERAGAM SEJAJAR (GLASS + RANGKA EMAS) ---
+    // --- 4. KOTAK ANGKA - WARNA POLOS KAYAK SCRIPT ASLI (label cyan, angka kuning) ---
+    // Kiri: BBFS + TWIN. Kanan: ANGKA MAIN + COLOK BEBAS + COLOK BEBAS 2D (selesai y=429,
+    // tidak sentuh gambar sudut kanan yang mulai y=440 persis posisi lama).
     const drawBox = (x, y, w, h, label, value) => {
         ctx.save();
-        ctx.shadowColor = "rgba(255, 215, 0, 0.32)"; ctx.shadowBlur = 16;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.55)"; ctx.shadowBlur = 10;
         ctx.fillStyle = "rgba(6, 10, 28, 0.93)";
-        ctx.beginPath(); ctx.roundRect(x, y, w, h, 16); ctx.fill();
+        ctx.beginPath(); ctx.roundRect(x, y, w, h, 14); ctx.fill();
         ctx.restore();
 
-        ctx.save();
         ctx.strokeStyle = goldGrad(x, y, x + w, y + h);
         ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.roundRect(x, y, w, h, 16); ctx.stroke();
-        ctx.strokeStyle = "rgba(255, 245, 183, 0.22)";
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.roundRect(x + 4, y + 4, w - 8, h - 8, 12); ctx.stroke();
-        ctx.restore();
+        ctx.beginPath(); ctx.roundRect(x, y, w, h, 14); ctx.stroke();
 
         ctx.textAlign = "center";
-        ctx.fillStyle = "#00e5ff";
-        ctx.font = "900 22px 'Segoe UI', Arial";
-        ctx.shadowColor = "rgba(0, 229, 255, 0.6)"; ctx.shadowBlur = 8;
-        ctx.fillText(label, x + w / 2, y + 34);
+        ctx.fillStyle = "#00f2ff";
+        ctx.font = "900 20px 'Segoe UI', Arial";
+        ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 3;
+        ctx.fillText(label, x + w / 2, y + 30);
         ctx.shadowBlur = 0;
 
-        ctx.fillStyle = goldGrad(x, y + 45, x, y + h - 6);
-        ctx.font = "900 44px 'Arial Black', 'Segoe UI', Arial";
-        ctx.shadowColor = "rgba(0,0,0,0.9)"; ctx.shadowBlur = 4;
-        ctx.fillText(value, x + w / 2, y + h - 20, w - 22);
+        ctx.fillStyle = "#ffeb3b";
+        ctx.font = "900 42px 'Arial Black', 'Segoe UI', Arial";
+        ctx.shadowColor = "rgba(0,0,0,0.9)"; ctx.shadowBlur = 5;
+        ctx.fillText(value, x + w / 2, y + h - 24, w - 22);
         ctx.shadowBlur = 0;
     };
 
-    drawBox(45, 105, 305, 112, "BBFS", bbfsSyair);
-    drawBox(1050, 105, 305, 112, "ANGKA MAIN", amSyair);
-    drawBox(45, 232, 305, 112, "TWIN", twinSyair);
-    drawBox(1050, 232, 305, 112, "COLOK BEBAS", cbSyair);
-    drawBox(1050, 359, 305, 112, "COLOK BEBAS 2D", cb2dSyair);
+    drawBox(45, 105, 305, 100, "BBFS", bbfsSyair);
+    drawBox(45, 217, 305, 100, "TWIN", twinSyair);
+    drawBox(1050, 105, 305, 100, "ANGKA MAIN", amSyair);
+    drawBox(1050, 217, 305, 100, "COLOK BEBAS", cbSyair);
+    drawBox(1050, 329, 305, 100, "COLOK BEBAS 2D", cb2dSyair);
 
     // --- 5. KOTAK SHIO (KAPSUL EMAS DI ATAS GAMBAR SHIO) ---
-    const sX2 = 75, sY2 = 372, sW2 = 245, sH2 = 52;
+    const sX2 = 75, sY2 = 355, sW2 = 245, sH2 = 52;
     ctx.save();
     ctx.shadowColor = "rgba(255, 215, 0, 0.4)"; ctx.shadowBlur = 12;
-      ctx.fillStyle = "rgba(8, 10, 24, 0.94)";
+    ctx.fillStyle = "rgba(8, 10, 24, 0.94)";
     ctx.beginPath(); ctx.roundRect(sX2, sY2, sW2, sH2, 26); ctx.fill();
     ctx.restore();
     ctx.strokeStyle = goldGrad(sX2, sY2, sX2 + sW2, sY2 + sH2);
     ctx.lineWidth = 3;
     ctx.beginPath(); ctx.roundRect(sX2, sY2, sW2, sH2, 26); ctx.stroke();
 
-    const shioText = "\u2B50 SHIO " + hariIni.shio.toUpperCase() + " \u2B50";
+    const shioText = "SHIO " + hariIni.shio.toUpperCase();
     let fsS = 22;
     ctx.font = "bold " + fsS + "px 'Segoe UI', Arial";
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
@@ -912,10 +946,10 @@ async function renderSyair() {
     ctx.fillText(shioText, sX2 + sW2 / 2, sY2 + sH2 / 2);
     ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
 
-    // --- 6. BINTANG PREMIUM + 4 ANGKA KELILING ---
-    const cx = 700, cy = 250, outerRad = 85, innerRad = 40;
+    // --- 6. BINTANG + 4 ANGKA KELILING (warna kuning polos + garis hitam) ---
+    const cx = 700, cy = 245, outerRad = 80, innerRad = 38;
     ctx.save();
-    ctx.shadowBlur = 25; ctx.shadowColor = "#ffeb3b";
+    ctx.shadowBlur = 22; ctx.shadowColor = "#ffeb3b";
     ctx.strokeStyle = goldGrad(cx - outerRad, cy - outerRad, cx + outerRad, cy + outerRad);
     ctx.lineWidth = 8;
     ctx.beginPath();
@@ -926,10 +960,10 @@ async function renderSyair() {
         ctx.lineTo(cx + Math.cos(angle + Math.PI / 5) * innerRad, cy - Math.sin(angle + Math.PI / 5) * innerRad);
     }
     ctx.closePath(); ctx.stroke();
-    ctx.shadowBlur = 12; ctx.shadowColor = "#00f2ff"; ctx.stroke();
+    ctx.shadowBlur = 10; ctx.shadowColor = "#00f2ff"; ctx.stroke();
     ctx.restore();
 
-    const angkaBintang = [pool[4], pool[9], pool[3], pool[8]];
+    const angkaBintang = [pool[2], pool[3], pool[9], pool[5]];
     const posisi = [[cx - 105, cy - 30], [cx + 105, cy - 30], [cx - 88, cy + 112], [cx + 88, cy + 112]];
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
     angkaBintang.forEach((n, i2) => {
@@ -939,14 +973,12 @@ async function renderSyair() {
         ctx.shadowColor = "rgba(0,0,0,0.7)"; ctx.shadowBlur = 6;
         ctx.strokeText(n, posisi[i2][0], posisi[i2][1]);
         ctx.shadowBlur = 0;
-        ctx.fillStyle = "#FFD700";
-        ctx.shadowColor = "rgba(255, 215, 0, 0.6)"; ctx.shadowBlur = 14;
+        ctx.fillStyle = "#ffeb3b";
         ctx.fillText(n, posisi[i2][0], posisi[i2][1]);
-        ctx.shadowBlur = 0;
     });
     ctx.textBaseline = "alphabetic";
 
-    // --- 7. LOGO PASARAN (GANTI TIAP HARI, SUDAH DI-AWAIT: GAK AKAN TUMPANG TINDIH LAGI) ---
+    // --- 7. LOGO PASARAN (DIPERBESAR: slot 400x195, ganti tiap hari) ---
     const daftarLogo = [
         "https://i.ibb.co/YBxW7tH9/logo-pasaran.png",
         "https://i.ibb.co/99QGxMQF/logo-pasaran.png",
@@ -960,11 +992,11 @@ async function renderSyair() {
         "https://i.ibb.co/6JWRCMbs/logo-pasaran.png"
     ];
     const indexLogo = new Date().getDate() % daftarLogo.length;
-    await drawImg(daftarLogo[indexLogo], 555, 405, 290, 120, "fit");
+    await drawImg(daftarLogo[indexLogo], 500, 398, 400, 195, "fit");
 
-    // --- 8. GAMBAR SHIO KIRI + GAMBAR TEMPAT KANAN (ROTASI HARIAN SAMA SEPERTI BUATAN BOS) ---
-    await drawImg(hariIni.img, 45, 445, 285, 315, "fit");
-    await drawImg(hariIni.img2, 1050, 490, 305, 270, "fit");
+    // --- 8. GAMBAR SHIO KIRI + GAMBAR SUDUT KANAN (POSISI ASLI SCRIPT LAMA: 1070,440,320,340) ---
+    await drawImg(hariIni.img, 45, 425, 285, 335, "fit");
+    await drawImg(hariIni.img2, 1070, 440, 320, 340, "fit");
 
     // --- 9. KOTAK PANTUN - DIAMOND ELECTRIC BLUE ---
     const pY = 610, pW = 690, pH = 140, pX = 355;
@@ -992,14 +1024,6 @@ async function renderSyair() {
     ctx.fillText(hariIni.p1, asTengah, pY + 50, batasAman);
     ctx.fillText(hariIni.p2, asTengah, pY + 100, batasAman);
     ctx.shadowBlur = 0; ctx.textBaseline = "alphabetic";
-
-    // --- 10. CAT KAKI KECIL BIAR KELIHATAN PREMIUM ---
-    ctx.textAlign = "center";
-    ctx.font = "bold 16px 'Segoe UI', Arial";
-    ctx.fillStyle = "rgba(255, 245, 183, 0.9)";
-    ctx.shadowColor = "rgba(0,0,0,0.85)"; ctx.shadowBlur = 4;
-    ctx.fillText("\u2726 DANATOTO \u2022 SYAIR HARIAN \u2726", 700, 784);
-    ctx.shadowBlur = 0;
 }
 function exportSyair() {
     const canvas = document.getElementById('canvasSyair');
